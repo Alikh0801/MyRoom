@@ -1,0 +1,22 @@
+import Link from "next/link";
+
+export const metadata = {
+  title: "Email təsdiqi",
+};
+
+export default function CheckEmailPage() {
+  return (
+    <div className="auth-page">
+      <div className="auth-card auth-card--center">
+        <h1 className="auth-card__title">Emailinizi yoxlayın</h1>
+        <p className="auth-card__subtitle">
+          Qeydiyyat tamamlamaq üçün email ünvanınıza göndərilən linkə
+          klikləyin. Təsdiqdən sonra avtomatik daxil olacaqsınız.
+        </p>
+        <Link href="/auth/login" className="btn btn--primary">
+          Giriş səhifəsinə qayıt
+        </Link>
+      </div>
+    </div>
+  );
+}

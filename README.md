@@ -23,6 +23,9 @@ npm install
 2. SQL Editor-də `supabase/migrations/001_initial_schema.sql` faylını işlədin
 3. Storage → yeni bucket: `property-images` (public)
 4. Storage → S3 Access Keys yaradın
+5. **Authentication → URL Configuration**:
+  - Site URL: `http://localhost:3000`
+  - Redirect URLs: `http://localhost:3000/auth/callback`
 
 ### 3. Environment
 
@@ -59,7 +62,7 @@ src/
 
 ## Növbəti addımlar
 
-- [ ] Supabase Auth (giriş / qeydiyyat)
+- [x] Supabase Auth (giriş / qeydiyyat)
 - [ ] Elan yaratma forması
 - [ ] Admin təsdiq paneli
 - [ ] Seed elanlar (Instagram icazəli)

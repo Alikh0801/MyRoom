@@ -1,6 +1,23 @@
 import Link from "next/link";
+import { HeaderActions } from "@/components/layout/HeaderActions";
+import { createClient } from "@/lib/supabase/server";
 
-export function Header() {
+export async function Header() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let fullName: string | null = null;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .single();
+    fullName = profile?.full_name ?? null;
+  }
+
   return (
     <header className="header">
       <div className="container header__inner">
@@ -12,14 +29,7 @@ export function Header() {
           <Link href="/search?category=a-frame">A-frame</Link>
           <Link href="/search?category=hostel">Hostel</Link>
         </nav>
-        <div className="header__actions">
-          <Link href="/auth/login" className="btn btn--ghost">
-            Daxil ol
-          </Link>
-          <Link href="/dashboard/listings/new" className="btn btn--primary">
-            Elan yerləşdir
-          </Link>
-        </div>
+        <HeaderActions user={user} fullName={fullName} />
       </div>
     </header>
   );
