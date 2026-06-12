@@ -50,6 +50,7 @@ create table public.listings (
   bathrooms int not null default 1 check (bathrooms >= 0),
   whatsapp_phone text not null,
   status text not null default 'pending' check (status in ('draft', 'pending', 'approved', 'rejected')),
+  is_vip boolean not null default false,
   view_count int not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -75,6 +76,7 @@ create table public.listing_amenities (
 
 -- İndekslər
 create index listings_status_idx on public.listings (status);
+create index listings_is_vip_idx on public.listings (is_vip) where is_vip = true;
 create index listings_region_idx on public.listings (region);
 create index listings_category_idx on public.listings (category_id);
 create index listing_images_listing_idx on public.listing_images (listing_id, sort_order);
@@ -184,9 +186,7 @@ insert into public.categories (slug, name_az, sort_order) values
   ('hostel', 'Hostel', 2),
   ('a-frame', 'A-frame', 3),
   ('villa', 'Villa / Bağ evi', 4),
-  ('menzil', 'Mənzil', 5),
-  ('rayon-evi', 'Rayon evi', 6),
-  ('glamping', 'Glamping', 7);
+  ('rayon-evi', 'Rayon evi', 5);
 
 -- Seed: amenities
 insert into public.amenities (slug, name_az) values

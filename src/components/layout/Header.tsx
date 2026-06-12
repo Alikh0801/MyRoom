@@ -24,11 +24,6 @@ export async function Header() {
         <Link href="/" className="header__logo">
           My<span>Room</span>
         </Link>
-        <nav className="header__nav">
-          <Link href="/search">Axtar</Link>
-          <Link href="/search?category=a-frame">A-frame</Link>
-          <Link href="/search?category=hostel">Hostel</Link>
-        </nav>
         <HeaderActions user={user} fullName={fullName} />
       </div>
     </header>

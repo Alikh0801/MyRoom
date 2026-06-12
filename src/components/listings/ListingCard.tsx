@@ -4,9 +4,10 @@ import type { ListingCardData } from "@/types/database";
 
 interface ListingCardProps {
   listing: ListingCardData;
+  vip?: boolean;
 }
 
-export function ListingCard({ listing }: ListingCardProps) {
+export function ListingCard({ listing, vip = false }: ListingCardProps) {
   return (
     <Link href={`/listings/${listing.id}`} className="listing-card">
       <div className="listing-card__image">
@@ -21,6 +22,7 @@ export function ListingCard({ listing }: ListingCardProps) {
         ) : (
           <div className="listing-card__placeholder">Şəkil yoxdur</div>
         )}
+        {vip && <span className="listing-card__vip">VIP</span>}
         <span className="listing-card__badge">{listing.category.name_az}</span>
       </div>
       <div className="listing-card__body">

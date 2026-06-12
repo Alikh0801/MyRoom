@@ -45,6 +45,7 @@ export interface Listing {
   bathrooms: number;
   whatsapp_phone: string;
   status: ListingStatus;
+  is_vip: boolean;
   view_count: number;
   created_at: string;
   updated_at: string;

@@ -8,12 +8,93 @@ const LISTING_SELECT = `
   listing_amenities(amenity:amenities(*))
 `;
 
+const CARD_SELECT = `
+  id, title, price_per_night, currency, city, region, max_guests,
+  category:categories(slug, name_az),
+  listing_images(url, is_cover, sort_order)
+`;
+
 export interface SearchFilters {
   region?: string;
   category?: string;
   minPrice?: number;
   maxPrice?: number;
   guests?: number;
+}
+
+type ListingRow = {
+  id: string;
+  title: string;
+  price_per_night: number;
+  currency: string;
+  city: string;
+  region: string;
+  max_guests: number;
+  category: { slug: string; name_az: string } | { slug: string; name_az: string }[];
+  listing_images: { url: string; is_cover: boolean; sort_order: number }[];
+};
+
+function mapToListingCards(rows: ListingRow[]): ListingCardData[] {
+  return rows.map((row) => {
+    const images = row.listing_images ?? [];
+    const sorted = [...images].sort((a, b) => {
+      if (a.is_cover) return -1;
+      if (b.is_cover) return 1;
+      return a.sort_order - b.sort_order;
+    });
+
+    const category = Array.isArray(row.category) ? row.category[0] : row.category;
+
+    return {
+      id: row.id,
+      title: row.title,
+      price_per_night: row.price_per_night,
+      currency: row.currency,
+      city: row.city,
+      region: row.region,
+      max_guests: row.max_guests,
+      category: category ?? { slug: "", name_az: "" },
+      cover_image: sorted[0]?.url ?? null,
+    };
+  });
+}
+
+export async function getVipListings(limit = 6): Promise<ListingCardData[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("listings")
+    .select(CARD_SELECT)
+    .eq("status", "approved")
+    .eq("is_vip", true)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error("getVipListings:", error.message);
+    return [];
+  }
+
+  return mapToListingCards((data ?? []) as ListingRow[]);
+}
+
+export async function getHomeListings(limit = 12): Promise<ListingCardData[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("listings")
+    .select(CARD_SELECT)
+    .eq("status", "approved")
+    .eq("is_vip", false)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error("getHomeListings:", error.message);
+    return [];
+  }
+
+  return mapToListingCards((data ?? []) as ListingRow[]);
 }
 
 export async function getApprovedListings(
@@ -23,13 +104,7 @@ export async function getApprovedListings(
 
   let query = supabase
     .from("listings")
-    .select(
-      `
-      id, title, price_per_night, currency, city, region, max_guests,
-      category:categories(slug, name_az),
-      listing_images(url, is_cover, sort_order)
-    `
-    )
+    .select(CARD_SELECT)
     .eq("status", "approved")
     .order("created_at", { ascending: false });
 
@@ -54,32 +129,7 @@ export async function getApprovedListings(
     return [];
   }
 
-  return (data ?? []).map((row) => {
-    const images = (row.listing_images ?? []) as {
-      url: string;
-      is_cover: boolean;
-      sort_order: number;
-    }[];
-    const sorted = [...images].sort((a, b) => {
-      if (a.is_cover) return -1;
-      if (b.is_cover) return 1;
-      return a.sort_order - b.sort_order;
-    });
-
-    const category = Array.isArray(row.category) ? row.category[0] : row.category;
-
-    return {
-      id: row.id,
-      title: row.title,
-      price_per_night: row.price_per_night,
-      currency: row.currency,
-      city: row.city,
-      region: row.region,
-      max_guests: row.max_guests,
-      category: category ?? { slug: "", name_az: "" },
-      cover_image: sorted[0]?.url ?? null,
-    };
-  });
+  return mapToListingCards((data ?? []) as ListingRow[]);
 }
 
 export async function getListingById(
