@@ -6,7 +6,12 @@ export const metadata = {
   title: "Panel",
 };
 
-export default async function DashboardPage() {
+interface DashboardPageProps {
+  searchParams: Promise<{ created?: string }>;
+}
+
+export default async function DashboardPage({ searchParams }: DashboardPageProps) {
+  const params = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -26,6 +31,12 @@ export default async function DashboardPage() {
     <div className="container dashboard">
       <h1 className="section__title">Salam, {name}!</h1>
       <p className="section__subtitle">Mülk sahibi panelinizə xoş gəldiniz.</p>
+
+      {params.created === "1" && (
+        <div className="dashboard__alert">
+          Elanınız uğurla göndərildi. Admin təsdiqindən sonra saytda görünəcək.
+        </div>
+      )}
 
       <div className="dashboard__cards">
         <Link href="/dashboard/listings/new" className="dashboard__card">
