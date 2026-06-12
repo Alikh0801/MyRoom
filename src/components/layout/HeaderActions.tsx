@@ -4,9 +4,10 @@ import { signOut } from "@/lib/auth/actions";
 interface HeaderActionsProps {
   user: { email?: string } | null;
   fullName: string | null;
+  isAdmin?: boolean;
 }
 
-export function HeaderActions({ user, fullName }: HeaderActionsProps) {
+export function HeaderActions({ user, fullName, isAdmin = false }: HeaderActionsProps) {
   if (!user) {
     return (
       <div className="header__actions">
@@ -24,6 +25,11 @@ export function HeaderActions({ user, fullName }: HeaderActionsProps) {
 
   return (
     <div className="header__actions">
+      {isAdmin && (
+        <Link href="/admin" className="btn btn--ghost">
+          Admin
+        </Link>
+      )}
       <Link href="/dashboard" className="header__user">
         {displayName}
       </Link>

@@ -9,13 +9,15 @@ export async function Header() {
   } = await supabase.auth.getUser();
 
   let fullName: string | null = null;
+  let isAdmin = false;
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("full_name")
+      .select("full_name, role")
       .eq("id", user.id)
       .single();
     fullName = profile?.full_name ?? null;
+    isAdmin = profile?.role === "admin";
   }
 
   return (
@@ -24,7 +26,7 @@ export async function Header() {
         <Link href="/" className="header__logo">
           My<span>Room</span>
         </Link>
-        <HeaderActions user={user} fullName={fullName} />
+        <HeaderActions user={user} fullName={fullName} isAdmin={isAdmin} />
       </div>
     </header>
   );

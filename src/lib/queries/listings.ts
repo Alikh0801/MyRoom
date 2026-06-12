@@ -1,3 +1,4 @@
+import { isAdminUser } from "@/lib/admin/auth";
 import { createClient } from "@/lib/supabase/server";
 import type { ListingCardData, ListingWithRelations } from "@/types/database";
 
@@ -136,13 +137,18 @@ export async function getListingById(
   id: string
 ): Promise<ListingWithRelations | null> {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const { data, error } = await supabase
-    .from("listings")
-    .select(LISTING_SELECT)
-    .eq("id", id)
-    .eq("status", "approved")
-    .single();
+  let query = supabase.from("listings").select(LISTING_SELECT).eq("id", id);
+
+  const admin = user ? await isAdminUser(user.id) : false;
+  if (!admin) {
+    query = query.eq("status", "approved");
+  }
+
+  const { data, error } = await query.single();
 
   if (error || !data) return null;
 
