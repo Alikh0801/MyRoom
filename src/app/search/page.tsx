@@ -4,7 +4,6 @@ import { SearchFilters } from "@/components/search/SearchFilters";
 import {
   getApprovedListings,
   getCategories,
-  getRegions,
 } from "@/lib/queries/listings";
 
 interface SearchPageProps {
@@ -24,7 +23,7 @@ export const metadata = {
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
-  const [listings, categories, regions] = await Promise.all([
+  const [listings, categories] = await Promise.all([
     getApprovedListings({
       region: params.region,
       category: params.category,
@@ -33,13 +32,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined,
     }),
     getCategories(),
-    getRegions(),
   ]);
 
   return (
     <div className="container search-layout">
       <Suspense fallback={<div>Yüklənir...</div>}>
-        <SearchFilters categories={categories} regions={regions} />
+        <SearchFilters categories={categories} />
       </Suspense>
 
       <div>

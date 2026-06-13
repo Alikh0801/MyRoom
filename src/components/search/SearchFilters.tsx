@@ -2,14 +2,14 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
+import { RegionCombobox } from "@/components/ui/RegionCombobox";
 import type { Category } from "@/types/database";
 
 interface SearchFiltersProps {
   categories: Category[];
-  regions: string[];
 }
 
-export function SearchFilters({ categories, regions }: SearchFiltersProps) {
+export function SearchFilters({ categories }: SearchFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -44,14 +44,13 @@ export function SearchFilters({ categories, regions }: SearchFiltersProps) {
 
       <label className="search-filters__field">
         Rayon
-        <select value={region} onChange={(e) => setRegion(e.target.value)}>
-          <option value="">Hamısı</option>
-          {regions.map((r) => (
-            <option key={r} value={r}>
-              {r}
-            </option>
-          ))}
-        </select>
+        <RegionCombobox
+          value={region}
+          onChange={setRegion}
+          placeholder="Rayon və ya şəhər seç"
+          allowEmpty
+          emptyLabel="Hamısı"
+        />
       </label>
 
       <label className="search-filters__field">

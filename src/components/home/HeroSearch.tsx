@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { RegionCombobox } from "@/components/ui/RegionCombobox";
 
 export function HeroSearch() {
   const router = useRouter();
@@ -18,15 +19,17 @@ export function HeroSearch() {
 
   return (
     <form className="hero__search" onSubmit={handleSearch}>
-      <input
-        type="text"
-        placeholder="Rayon (məs: Quba, Şəki...)"
+      <RegionCombobox
         value={region}
-        onChange={(e) => setRegion(e.target.value)}
+        onChange={setRegion}
+        placeholder="Rayon və ya şəhər seç"
+        inputClassName="hero__search-input"
+        allowEmpty
+        emptyLabel="Bütün rayonlar"
       />
       <select value={category} onChange={(e) => setCategory(e.target.value)}>
         <option value="">Bütün növlər</option>
-        <option value="a-frame">A-frame</option>
+        <option value="a-frame">A-frame (Glamping)</option>
         <option value="hostel">Hostel</option>
         <option value="otel">Otel</option>
         <option value="villa">Villa</option>

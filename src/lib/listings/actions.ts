@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { isValidRegion } from "@/lib/regions";
 import { createClient } from "@/lib/supabase/server";
 
 export interface CreateListingState {
@@ -55,6 +56,9 @@ export async function createListing(
   }
   if (!city || !region) {
     return { error: "Şəhər və rayon mütləqdir." };
+  }
+  if (!isValidRegion(region)) {
+    return { error: "Rayon siyahıdan seçin." };
   }
   if (!maxGuests || maxGuests < 1) {
     return { error: "Qonaq sayı ən azı 1 olmalıdır." };

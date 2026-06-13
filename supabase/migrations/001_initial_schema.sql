@@ -238,7 +238,7 @@ create policy "listing_room_type_amenities_insert_own" on public.listing_room_ty
 insert into public.categories (slug, name_az, sort_order) values
   ('otel', 'Otel', 1),
   ('hostel', 'Hostel', 2),
-  ('a-frame', 'A-frame', 3),
+  ('a-frame', 'A-frame (Glamping)', 3),
   ('villa', 'Villa / Bağ evi', 4),
   ('rayon-evi', 'Rayon evi', 5);
 

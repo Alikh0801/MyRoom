@@ -8,7 +8,9 @@ import { ImagePreviewSlider } from "@/components/listings/ImagePreviewSlider";
 import { HotelRoomTypeFields } from "@/components/listings/HotelRoomTypeFields";
 import { PRICE_UNIT_OPTIONS } from "@/lib/price";
 import { AmenitiesPicker } from "@/components/listings/AmenitiesPicker";
+import { RegionCombobox } from "@/components/ui/RegionCombobox";
 import { filterAmenityGroupsBySlug } from "@/lib/amenities/helpers";
+import { isValidRegion } from "@/lib/regions";
 import { createListing } from "@/lib/listings/actions";
 import type { AmenityGroup, Category } from "@/types/database";
 
@@ -81,6 +83,7 @@ export function CreateListingForm({
   const router = useRouter();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [categoryId, setCategoryId] = useState("");
+  const [region, setRegion] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -113,6 +116,11 @@ export function CreateListingForm({
 
     if (selectedFiles.length === 0) {
       setError("Ən azı 1 şəkil seçin.");
+      return;
+    }
+
+    if (!isValidRegion(region)) {
+      setError("Rayon siyahıdan seçin.");
       return;
     }
 
@@ -153,7 +161,7 @@ export function CreateListingForm({
             name="title"
             required
             minLength={5}
-            placeholder="Məs: Quba dağ mənzərəli A-frame ev"
+            placeholder="Məs: Quba dağ mənzərəli A-frame (Glamping) ev"
           />
         </label>
 
@@ -234,7 +242,13 @@ export function CreateListingForm({
         <div className="listing-form__row">
           <label className="auth-form__field">
             Rayon *
-            <input type="text" name="region" required placeholder="Quba" />
+            <RegionCombobox
+              name="region"
+              value={region}
+              onChange={setRegion}
+              required
+              placeholder="Rayon və ya şəhər seç"
+            />
           </label>
 
           <label className="auth-form__field">

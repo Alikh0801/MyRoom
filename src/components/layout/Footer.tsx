@@ -14,7 +14,7 @@ export function Footer() {
         </div>
         <div className="footer__links">
           <Link href="/search">Bütün elanlar</Link>
-          <Link href="/search?category=a-frame">A-frame evlər</Link>
+          <Link href="/search?category=a-frame">A-frame (Glamping)</Link>
           <Link href="/search?category=rayon-evi">Rayon evləri</Link>
         </div>
         <p className="footer__copy">

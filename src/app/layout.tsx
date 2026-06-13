@@ -9,10 +9,11 @@ export const metadata: Metadata = {
     template: "%s | MyRoom",
   },
   description:
-    "Otel, hostel, A-frame və rayon evləri. Qısamüddətli istirahət üçün elanlar — Azərbaycan üzrə.",
+    "Otel, hostel, A-frame (Glamping) və rayon evləri. Qısamüddətli istirahət üçün elanlar — Azərbaycan üzrə.",
   keywords: [
     "günlük icarə",
-    "A-frame",
+    "A-frame (Glamping)",
+    "glamping",
     "hostel",
     "otel",
     "rayon evi",

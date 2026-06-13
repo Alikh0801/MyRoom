@@ -23,7 +23,7 @@ export default async function HomePage() {
             Azərbaycanda istirahət üçün ideal yerinizi tapın
           </h1>
           <p className="hero__subtitle">
-            Otel, hostel, A-frame və rayon evləri — qısamüddətli günlük icarə
+            Otel, hostel, A-frame (Glamping) və rayon evləri — qısamüddətli günlük icarə
             elanları bir yerdə.
           </p>
           <HeroSearch />
