@@ -575,6 +575,17 @@ img {
   gap: 0.5rem;
 }
 
+.listing-card__guests {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  color: var(--color-text-muted);
+}
+
+.listing-card__guest-icon {
+  flex-shrink: 0;
+}
+
 .listing-card__price {
   font-weight: 700;
   color: var(--color-primary);

@@ -32,7 +32,27 @@ export function ListingCard({ listing, vip = false }: ListingCardProps) {
           {listing.region}, {listing.city}
         </p>
         <div className="listing-card__meta">
-          <span>{listing.max_guests} qonaq</span>
+          <span
+            className="listing-card__guests"
+            aria-label={`${listing.max_guests} qonaq`}
+          >
+            {listing.max_guests}
+            <svg
+              className="listing-card__guest-icon"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </span>
           <span className="listing-card__price">
             {listing.price_per_night} {listing.currency}
             <small>{formatPriceSuffix(listing.price_unit ?? "day")}</small>
