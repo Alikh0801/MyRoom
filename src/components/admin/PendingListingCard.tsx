@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { approveListing, rejectListing } from "@/lib/admin/actions";
+import { formatPriceSuffix } from "@/lib/price";
 import type { PendingListing } from "@/lib/queries/admin";
 
 interface PendingListingCardProps {
@@ -36,7 +37,8 @@ export function PendingListingCard({ listing }: PendingListingCardProps) {
           {listing.category?.name_az} · {listing.region}, {listing.city}
         </p>
         <p className="admin-card__meta">
-          {listing.price_per_night} {listing.currency}/gecə · {listing.max_guests}{" "}
+          {listing.price_per_night} {listing.currency}
+          {formatPriceSuffix(listing.price_unit ?? "day")} · {listing.max_guests}{" "}
           qonaq
         </p>
         <p className="admin-card__meta">

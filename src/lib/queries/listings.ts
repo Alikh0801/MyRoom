@@ -6,11 +6,13 @@ const LISTING_SELECT = `
   *,
   category:categories(*),
   listing_images(*),
-  listing_amenities(amenity:amenities(*))
+  listing_amenities(amenity:amenities(*, category:amenity_categories(*))),
+  listing_room_types(*, listing_room_type_amenities(amenity:amenities(*, category:amenity_categories(*)))),
+  owner:profiles(full_name, phone, whatsapp_phone, avatar_url)
 `;
 
 const CARD_SELECT = `
-  id, title, price_per_night, currency, city, region, max_guests,
+  id, title, price_per_night, price_unit, currency, city, region, max_guests,
   category:categories(slug, name_az),
   listing_images(url, is_cover, sort_order)
 `;
@@ -27,6 +29,7 @@ type ListingRow = {
   id: string;
   title: string;
   price_per_night: number;
+  price_unit: "day" | "week" | "month";
   currency: string;
   city: string;
   region: string;
@@ -50,6 +53,7 @@ function mapToListingCards(rows: ListingRow[]): ListingCardData[] {
       id: row.id,
       title: row.title,
       price_per_night: row.price_per_night,
+      price_unit: row.price_unit ?? "day",
       currency: row.currency,
       city: row.city,
       region: row.region,
@@ -133,6 +137,49 @@ export async function getApprovedListings(
   return mapToListingCards((data ?? []) as ListingRow[]);
 }
 
+export async function getSimilarListings(
+  listingId: string,
+  categoryId: string,
+  region: string,
+  limit = 4
+): Promise<ListingCardData[]> {
+  const supabase = await createClient();
+  const results: ListingCardData[] = [];
+  const excludeIds = new Set([listingId]);
+
+  async function collect(applyRegion: boolean) {
+    if (results.length >= limit) return;
+
+    let query = supabase
+      .from("listings")
+      .select(CARD_SELECT)
+      .eq("status", "approved")
+      .eq("category_id", categoryId)
+      .order("created_at", { ascending: false })
+      .limit(limit * 2);
+
+    if (applyRegion) query = query.ilike("region", region);
+
+    const { data, error } = await query;
+    if (error) {
+      console.error("getSimilarListings:", error.message);
+      return;
+    }
+
+    for (const row of (data ?? []) as ListingRow[]) {
+      if (results.length >= limit) break;
+      if (excludeIds.has(row.id)) continue;
+      excludeIds.add(row.id);
+      results.push(mapToListingCards([row])[0]);
+    }
+  }
+
+  await collect(true);
+  if (results.length < limit) await collect(false);
+
+  return results;
+}
+
 export async function getListingById(
   id: string
 ): Promise<ListingWithRelations | null> {
@@ -156,6 +203,10 @@ export async function getListingById(
   listing.listing_images = [...(listing.listing_images ?? [])].sort(
     (a, b) => a.sort_order - b.sort_order
   );
+
+  if (Array.isArray(listing.owner)) {
+    listing.owner = listing.owner[0] ?? null;
+  }
 
   return listing;
 }

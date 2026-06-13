@@ -1,14 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
-import type { Amenity, Category } from "@/types/database";
+import type { Category } from "@/types/database";
+import { getAmenitiesGrouped } from "@/lib/queries/amenities";
 
-export async function getAmenities(): Promise<Amenity[]> {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("amenities")
-    .select("*")
-    .order("name_az");
-  return data ?? [];
-}
+export { getAmenitiesGrouped };
 
 export async function getCategoriesForForm(): Promise<Category[]> {
   const supabase = await createClient();

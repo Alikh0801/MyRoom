@@ -1,9 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 
+import type { PriceUnit } from "@/types/database";
+
 export interface PendingListing {
   id: string;
   title: string;
   price_per_night: number;
+  price_unit: PriceUnit;
   currency: string;
   city: string;
   region: string;
@@ -53,7 +56,7 @@ export async function getPendingListings(): Promise<PendingListing[]> {
     .from("listings")
     .select(
       `
-      id, title, price_per_night, currency, city, region,
+      id, title, price_per_night, price_unit, currency, city, region,
       max_guests, whatsapp_phone, created_at,
       category:categories(name_az),
       owner:profiles(full_name, phone),
@@ -87,6 +90,7 @@ export async function getPendingListings(): Promise<PendingListing[]> {
       id: row.id,
       title: row.title,
       price_per_night: row.price_per_night,
+      price_unit: (row.price_unit as PriceUnit) ?? "day",
       currency: row.currency,
       city: row.city,
       region: row.region,

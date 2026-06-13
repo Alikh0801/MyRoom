@@ -10,12 +10,22 @@ create table public.categories (
   created_at timestamptz not null default now()
 );
 
--- Amenities (imkanlar)
+-- Amenities (Daxildir)
+create table public.amenity_categories (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  name_az text not null,
+  sort_order int not null default 0,
+  created_at timestamptz not null default now()
+);
+
 create table public.amenities (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
   name_az text not null,
+  category_id uuid not null references public.amenity_categories (id),
   icon text,
+  sort_order int not null default 0,
   created_at timestamptz not null default now()
 );
 
@@ -39,6 +49,7 @@ create table public.listings (
   title text not null,
   description text not null,
   price_per_night numeric(10, 2) not null check (price_per_night > 0),
+  price_unit text not null default 'day' check (price_unit in ('day', 'week', 'month')),
   currency text not null default 'AZN',
   city text not null,
   region text not null,
@@ -74,12 +85,29 @@ create table public.listing_amenities (
   primary key (listing_id, amenity_id)
 );
 
+-- Otel otaq tipləri
+create table public.listing_room_types (
+  id uuid primary key default gen_random_uuid(),
+  listing_id uuid not null references public.listings (id) on delete cascade,
+  name text not null,
+  floor int check (floor is null or floor >= 0),
+  sort_order int not null default 0,
+  created_at timestamptz not null default now()
+);
+
+create table public.listing_room_type_amenities (
+  room_type_id uuid not null references public.listing_room_types (id) on delete cascade,
+  amenity_id uuid not null references public.amenities (id) on delete cascade,
+  primary key (room_type_id, amenity_id)
+);
+
 -- İndekslər
 create index listings_status_idx on public.listings (status);
 create index listings_is_vip_idx on public.listings (is_vip) where is_vip = true;
 create index listings_region_idx on public.listings (region);
 create index listings_category_idx on public.listings (category_id);
 create index listing_images_listing_idx on public.listing_images (listing_id, sort_order);
+create index listing_room_types_listing_idx on public.listing_room_types (listing_id, sort_order);
 
 -- updated_at trigger
 create or replace function public.handle_updated_at()
@@ -117,14 +145,18 @@ create trigger on_auth_user_created
 
 -- Row Level Security
 alter table public.categories enable row level security;
+alter table public.amenity_categories enable row level security;
 alter table public.amenities enable row level security;
 alter table public.profiles enable row level security;
 alter table public.listings enable row level security;
 alter table public.listing_images enable row level security;
 alter table public.listing_amenities enable row level security;
+alter table public.listing_room_types enable row level security;
+alter table public.listing_room_type_amenities enable row level security;
 
 -- Kateqoriya və amenities: hamı oxuya bilər
 create policy "categories_public_read" on public.categories for select using (true);
+create policy "amenity_categories_public_read" on public.amenity_categories for select using (true);
 create policy "amenities_public_read" on public.amenities for select using (true);
 
 -- Profil: öz profilini oxu/yenilə
@@ -180,6 +212,28 @@ create policy "listing_amenities_insert_own" on public.listing_amenities
     )
   );
 
+-- Otel otaq tipləri
+create policy "listing_room_types_public_read" on public.listing_room_types
+  for select using (true);
+create policy "listing_room_types_insert_own" on public.listing_room_types
+  for insert with check (
+    exists (
+      select 1 from public.listings l
+      where l.id = listing_id and l.owner_id = auth.uid()
+    )
+  );
+
+create policy "listing_room_type_amenities_public_read" on public.listing_room_type_amenities
+  for select using (true);
+create policy "listing_room_type_amenities_insert_own" on public.listing_room_type_amenities
+  for insert with check (
+    exists (
+      select 1 from public.listing_room_types rt
+      join public.listings l on l.id = rt.listing_id
+      where rt.id = room_type_id and l.owner_id = auth.uid()
+    )
+  );
+
 -- Seed: kateqoriyalar
 insert into public.categories (slug, name_az, sort_order) values
   ('otel', 'Otel', 1),
@@ -188,17 +242,41 @@ insert into public.categories (slug, name_az, sort_order) values
   ('villa', 'Villa / Bağ evi', 4),
   ('rayon-evi', 'Rayon evi', 5);
 
--- Seed: amenities
-insert into public.amenities (slug, name_az) values
-  ('wifi', 'Wi-Fi'),
-  ('parking', 'Parkinq'),
-  ('pool', 'Hovuz'),
-  ('bbq', 'Barbekü'),
-  ('fireplace', 'Ocaq'),
-  ('ac', 'Kondisioner'),
-  ('kitchen', 'Mətbəx'),
-  ('breakfast', 'Səhər yeməyi'),
-  ('pet-friendly', 'Ev heyvanlarına icazə'),
-  ('mountain-view', 'Dağ mənzərəsi'),
-  ('river-view', 'Çay mənzərəsi'),
-  ('forest', 'Meşə yanı');
+create index amenities_category_idx on public.amenities (category_id, sort_order);
+
+-- Seed: amenity kateqoriyaları və daxildir
+insert into public.amenity_categories (slug, name_az, sort_order) values
+  ('room', 'Otaq xüsusiyyətləri', 1),
+  ('property', 'Müəssisə xüsusiyyətləri', 2);
+
+insert into public.amenities (slug, name_az, category_id, sort_order)
+select v.slug, v.name_az, c.id, v.sort_order
+from (values
+  ('wifi', 'Wi-Fi', 'room', 1),
+  ('tv', 'TV', 'room', 2),
+  ('ac', 'Kondisioner', 'room', 3),
+  ('kitchen', 'Mətbəx', 'room', 4),
+  ('refrigerator', 'Soyuducu', 'room', 5),
+  ('coffee-maker', 'Qəhvə aparatı', 'room', 6),
+  ('iron', 'Tefal', 'room', 7),
+  ('bathroom', 'Hamam otağı', 'room', 8),
+  ('hair-dryer', 'Hava fenı', 'room', 9),
+  ('ironing-board', 'Paltar ütüsü', 'room', 10),
+  ('washing-machine', 'Paltaryuyan', 'room', 11),
+  ('bathtub', 'Su vannası', 'room', 12),
+  ('shampoo', 'Şampun', 'room', 13),
+  ('soap', 'Sabun', 'room', 14),
+  ('towel', 'Dəsmal', 'room', 15),
+  ('parking', 'Parkinq', 'property', 1),
+  ('pool', 'Hovuz', 'property', 2),
+  ('jacuzzi', 'Jakuzi', 'property', 3),
+  ('balcony', 'Balkon', 'property', 4),
+  ('reception', 'Resepsiya', 'property', 5),
+  ('room-service', 'Otaq xidməti', 'property', 6),
+  ('breakfast', 'Səhər yeməyi', 'property', 7),
+  ('mountain-view', 'Dağ mənzərəsi', 'property', 8),
+  ('forest-view', 'Meşə mənzərəsi', 'property', 9),
+  ('city-view', 'Şəhər mənzərəsi', 'property', 10),
+  ('water-view', 'Çay (Dəniz) mənzərəsi', 'property', 11)
+) as v(slug, name_az, cat_slug, sort_order)
+join public.amenity_categories c on c.slug = v.cat_slug;

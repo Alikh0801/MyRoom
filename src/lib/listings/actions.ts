@@ -25,6 +25,7 @@ export async function createListing(
   const description = (formData.get("description") as string)?.trim();
   const categoryId = formData.get("categoryId") as string;
   const pricePerNight = Number(formData.get("pricePerNight"));
+  const priceUnit = (formData.get("priceUnit") as string) || "day";
   const city = (formData.get("city") as string)?.trim();
   const region = (formData.get("region") as string)?.trim();
   const address = (formData.get("address") as string)?.trim() || null;
@@ -33,6 +34,9 @@ export async function createListing(
   const bathrooms = Number(formData.get("bathrooms"));
   const whatsappPhone = (formData.get("whatsappPhone") as string)?.trim();
   const amenityIds = formData.getAll("amenities") as string[];
+  const roomTypeName = (formData.get("roomTypeName") as string)?.trim();
+  const roomTypeFloorRaw = formData.get("roomTypeFloor") as string;
+  const roomAmenityIds = formData.getAll("roomAmenities") as string[];
 
   if (!title || title.length < 5) {
     return { error: "Başlıq ən azı 5 simvol olmalıdır." };
@@ -46,6 +50,9 @@ export async function createListing(
   if (!pricePerNight || pricePerNight <= 0) {
     return { error: "Düzgün qiymət daxil edin." };
   }
+  if (!["day", "week", "month"].includes(priceUnit)) {
+    return { error: "Qiymət vahidi seçin." };
+  }
   if (!city || !region) {
     return { error: "Şəhər və rayon mütləqdir." };
   }
@@ -56,6 +63,26 @@ export async function createListing(
     return { error: "WhatsApp nömrəsi mütləqdir." };
   }
 
+  const { data: category } = await supabase
+    .from("categories")
+    .select("slug")
+    .eq("id", categoryId)
+    .single();
+
+  const isHotel = category?.slug === "otel";
+
+  if (isHotel) {
+    if (!roomTypeName || roomTypeName.length < 2) {
+      return { error: "Otaq tipi adı ən azı 2 simvol olmalıdır." };
+    }
+  }
+
+  let roomTypeFloor: number | null = null;
+  if (roomTypeFloorRaw?.trim()) {
+    const n = Number(roomTypeFloorRaw);
+    if (!Number.isNaN(n) && n >= 0) roomTypeFloor = Math.floor(n);
+  }
+
   const { data: listing, error } = await supabase
     .from("listings")
     .insert({
@@ -64,6 +91,7 @@ export async function createListing(
       title,
       description,
       price_per_night: pricePerNight,
+      price_unit: priceUnit,
       city,
       region,
       address,
@@ -80,9 +108,15 @@ export async function createListing(
     return { error: error?.message ?? "Elan yaradıla bilmədi." };
   }
 
+  const listingId = listing.id;
+
+  async function rollbackListing() {
+    await supabase.from("listings").delete().eq("id", listingId);
+  }
+
   if (amenityIds.length > 0) {
     const rows = amenityIds.map((amenityId) => ({
-      listing_id: listing.id,
+      listing_id: listingId,
       amenity_id: amenityId,
     }));
     const { error: amenityError } = await supabase
@@ -90,12 +124,45 @@ export async function createListing(
       .insert(rows);
 
     if (amenityError) {
-      await supabase.from("listings").delete().eq("id", listing.id);
-      return { error: "İmkanlar əlavə edilə bilmədi." };
+      await rollbackListing();
+      return { error: "Daxildir bölməsi saxlanıla bilmədi." };
     }
   }
 
-  return { listingId: listing.id };
+  if (isHotel && roomTypeName) {
+    const { data: roomType, error: roomTypeError } = await supabase
+      .from("listing_room_types")
+      .insert({
+        listing_id: listingId,
+        name: roomTypeName,
+        floor: roomTypeFloor,
+        sort_order: 0,
+      })
+      .select("id")
+      .single();
+
+    if (roomTypeError || !roomType) {
+      await rollbackListing();
+      return { error: "Otaq tipi saxlanıla bilmədi." };
+    }
+
+    if (roomAmenityIds.length > 0) {
+      const rows = roomAmenityIds.map((amenityId) => ({
+        room_type_id: roomType.id,
+        amenity_id: amenityId,
+      }));
+      const { error: rtAmenityError } = await supabase
+        .from("listing_room_type_amenities")
+        .insert(rows);
+
+      if (rtAmenityError) {
+        await rollbackListing();
+        return { error: "Otaq xüsusiyyətləri saxlanıla bilmədi." };
+      }
+    }
+  }
+
+  return { listingId: listingId };
 }
 
 export async function requireAuth() {

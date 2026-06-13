@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { formatPriceSuffix } from "@/lib/price";
 import type { ListingCardData } from "@/types/database";
 
 interface ListingCardProps {
@@ -16,7 +17,7 @@ export function ListingCard({ listing, vip = false }: ListingCardProps) {
             src={listing.cover_image}
             alt={listing.title}
             fill
-            sizes="(max-width: 768px) 100vw, 33vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             className="listing-card__img"
           />
         ) : (
@@ -34,7 +35,7 @@ export function ListingCard({ listing, vip = false }: ListingCardProps) {
           <span>{listing.max_guests} qonaq</span>
           <span className="listing-card__price">
             {listing.price_per_night} {listing.currency}
-            <small>/gecə</small>
+            <small>{formatPriceSuffix(listing.price_unit ?? "day")}</small>
           </span>
         </div>
       </div>

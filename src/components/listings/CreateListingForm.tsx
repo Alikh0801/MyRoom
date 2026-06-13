@@ -1,14 +1,20 @@
 "use client";
 
 import imageCompression from "browser-image-compression";
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ImagePreviewSlider } from "@/components/listings/ImagePreviewSlider";
+import { HotelRoomTypeFields } from "@/components/listings/HotelRoomTypeFields";
+import { PRICE_UNIT_OPTIONS } from "@/lib/price";
+import { AmenitiesPicker } from "@/components/listings/AmenitiesPicker";
+import { filterAmenityGroupsBySlug } from "@/lib/amenities/helpers";
 import { createListing } from "@/lib/listings/actions";
-import type { Amenity, Category } from "@/types/database";
+import type { AmenityGroup, Category } from "@/types/database";
 
 interface CreateListingFormProps {
   categories: Category[];
-  amenities: Amenity[];
+  amenityGroups: AmenityGroup[];
   defaultWhatsapp?: string;
 }
 
@@ -69,13 +75,27 @@ async function uploadImages(listingId: string, files: File[]) {
 
 export function CreateListingForm({
   categories,
-  amenities,
+  amenityGroups,
   defaultWhatsapp = "",
 }: CreateListingFormProps) {
   const router = useRouter();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [categoryId, setCategoryId] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const hotelCategoryId = categories.find((c) => c.slug === "otel")?.id;
+  const isHotel = Boolean(hotelCategoryId && categoryId === hotelCategoryId);
+
+  const propertyAmenityGroups = useMemo(
+    () => filterAmenityGroupsBySlug(amenityGroups, "property"),
+    [amenityGroups]
+  );
+  const roomAmenityGroups = useMemo(
+    () => filterAmenityGroupsBySlug(amenityGroups, "room"),
+    [amenityGroups]
+  );
+  const listingAmenityGroups = isHotel ? propertyAmenityGroups : amenityGroups;
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
@@ -150,7 +170,12 @@ export function CreateListingForm({
 
         <label className="auth-form__field">
           Kateqoriya *
-          <select name="categoryId" required defaultValue="">
+          <select
+            name="categoryId"
+            required
+            defaultValue=""
+            onChange={(e) => setCategoryId(e.target.value)}
+          >
             <option value="" disabled>
               Seçin
             </option>
@@ -168,7 +193,7 @@ export function CreateListingForm({
 
         <div className="listing-form__row">
           <label className="auth-form__field">
-            Gecəlik qiymət (AZN) *
+            Qiymət (AZN) *
             <input
               type="number"
               name="pricePerNight"
@@ -180,16 +205,27 @@ export function CreateListingForm({
           </label>
 
           <label className="auth-form__field">
-            WhatsApp nömrəsi *
-            <input
-              type="tel"
-              name="whatsappPhone"
-              required
-              defaultValue={defaultWhatsapp}
-              placeholder="+994501234567"
-            />
+            Vahid *
+            <select name="priceUnit" required defaultValue="day">
+              {PRICE_UNIT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  /{opt.label.toLowerCase()}
+                </option>
+              ))}
+            </select>
           </label>
         </div>
+
+        <label className="auth-form__field">
+          WhatsApp nömrəsi *
+          <input
+            type="tel"
+            name="whatsappPhone"
+            required
+            defaultValue={defaultWhatsapp}
+            placeholder="+994501234567"
+          />
+        </label>
       </fieldset>
 
       <fieldset className="listing-form__section">
@@ -246,17 +282,17 @@ export function CreateListingForm({
         </div>
       </fieldset>
 
-      {amenities.length > 0 && (
+      {isHotel && (
         <fieldset className="listing-form__section">
-          <legend>İmkanlar</legend>
-          <div className="listing-form__amenities">
-            {amenities.map((amenity) => (
-              <label key={amenity.id} className="listing-form__amenity">
-                <input type="checkbox" name="amenities" value={amenity.id} />
-                {amenity.name_az}
-              </label>
-            ))}
-          </div>
+          <legend>Otaq tipi</legend>
+          <HotelRoomTypeFields roomAmenityGroups={roomAmenityGroups} />
+        </fieldset>
+      )}
+
+      {listingAmenityGroups.some((g) => g.amenities.length > 0) && (
+        <fieldset className="listing-form__section">
+          <legend>{isHotel ? "Müəssisə xüsusiyyətləri" : "Daxildir"}</legend>
+          <AmenitiesPicker groups={listingAmenityGroups} />
         </fieldset>
       )}
 
@@ -275,10 +311,14 @@ export function CreateListingForm({
           />
           <span>
             {selectedFiles.length > 0
-              ? `${selectedFiles.length} şəkil seçildi`
+              ? `${selectedFiles.length} şəkil seçildi — əlavə etmək üçün yenidən klikləyin`
               : "Şəkil seçin"}
           </span>
         </label>
+
+        {selectedFiles.length > 0 && (
+          <ImagePreviewSlider files={selectedFiles} />
+        )}
       </fieldset>
 
       <button

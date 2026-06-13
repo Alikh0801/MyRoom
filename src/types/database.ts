@@ -1,5 +1,6 @@
 export type UserRole = "guest" | "host" | "admin";
 export type ListingStatus = "draft" | "pending" | "approved" | "rejected";
+export type PriceUnit = "day" | "week" | "month";
 
 export interface Category {
   id: string;
@@ -9,11 +10,25 @@ export interface Category {
   sort_order: number;
 }
 
+export interface AmenityCategory {
+  id: string;
+  slug: string;
+  name_az: string;
+  sort_order: number;
+}
+
 export interface Amenity {
   id: string;
   slug: string;
   name_az: string;
+  category_id: string;
   icon: string | null;
+  sort_order: number;
+}
+
+export interface AmenityGroup {
+  category: AmenityCategory;
+  amenities: Amenity[];
 }
 
 export interface Profile {
@@ -34,6 +49,7 @@ export interface Listing {
   title: string;
   description: string;
   price_per_night: number;
+  price_unit: PriceUnit;
   currency: string;
   city: string;
   region: string;
@@ -61,16 +77,33 @@ export interface ListingImage {
   created_at: string;
 }
 
+export interface ListingRoomType {
+  id: string;
+  listing_id: string;
+  name: string;
+  floor: number | null;
+  sort_order: number;
+  created_at: string;
+  listing_room_type_amenities: {
+    amenity: Amenity;
+  }[];
+}
+
 export interface ListingWithRelations extends Listing {
   category: Category;
   listing_images: ListingImage[];
-  listing_amenities: { amenity: Amenity }[];
+  listing_amenities: {
+    amenity: Amenity & { category: AmenityCategory };
+  }[];
+  listing_room_types?: ListingRoomType[];
+  owner: Pick<Profile, "full_name" | "phone" | "whatsapp_phone" | "avatar_url"> | null;
 }
 
 export interface ListingCardData {
   id: string;
   title: string;
   price_per_night: number;
+  price_unit: PriceUnit;
   currency: string;
   city: string;
   region: string;

@@ -1,7 +1,7 @@
 import { CreateListingForm } from "@/components/listings/CreateListingForm";
 import { requireAuth } from "@/lib/listings/actions";
 import {
-  getAmenities,
+  getAmenitiesGrouped,
   getCategoriesForForm,
   getProfileContact,
 } from "@/lib/queries/form-data";
@@ -13,9 +13,9 @@ export const metadata = {
 export default async function NewListingPage() {
   const user = await requireAuth();
 
-  const [categories, amenities, profile] = await Promise.all([
+  const [categories, amenityGroups, profile] = await Promise.all([
     getCategoriesForForm(),
-    getAmenities(),
+    getAmenitiesGrouped(),
     getProfileContact(user.id),
   ]);
 
@@ -31,7 +31,7 @@ export default async function NewListingPage() {
 
       <CreateListingForm
         categories={categories}
-        amenities={amenities}
+        amenityGroups={amenityGroups}
         defaultWhatsapp={defaultWhatsapp}
       />
     </div>
