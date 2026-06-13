@@ -32,7 +32,7 @@ export default async function HomePage() {
 
       <section className="section section--center section--vip">
         <div className="container">
-          <h2 className="section__title">Populyar elanlar</h2>
+          <h2 className="section__title">Önə çıxanlar</h2>
 
           {vipListings.length > 0 ? (
             <div className="listing-grid listing-grid--featured">
