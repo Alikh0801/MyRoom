@@ -15,6 +15,8 @@ interface ImageSliderProps {
   fit?: "cover" | "contain";
   initialIndex?: number;
   sizes?: string;
+  /** Lokal fayl önizləməsi üçün həmişə <img> istifadə et */
+  preferNative?: boolean;
 }
 
 export function ImageSlider({
@@ -23,6 +25,7 @@ export function ImageSlider({
   fit = "contain",
   initialIndex = 0,
   sizes = "(max-width: 900px) 100vw, 640px",
+  preferNative = false,
 }: ImageSliderProps) {
   const [index, setIndex] = useState(initialIndex);
   const count = images.length;
@@ -58,11 +61,12 @@ export function ImageSlider({
 
   const current = images[index];
   const isBlob = current.url.startsWith("blob:");
+  const useNativeImg = preferNative || isBlob || current.url.startsWith("data:");
 
   return (
     <div className={`image-slider${fit === "contain" ? " image-slider--contain" : ""}`}>
       <div className="image-slider__viewport">
-        {isBlob ? (
+        {useNativeImg ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             key={current.id}
