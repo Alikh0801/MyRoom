@@ -83,23 +83,64 @@ export async function getVipListings(limit = 6): Promise<ListingCardData[]> {
   return mapToListingCards((data ?? []) as ListingRow[]);
 }
 
-export async function getHomeListings(limit = 12): Promise<ListingCardData[]> {
-  const supabase = await createClient();
+export const HOME_LISTINGS_PAGE_SIZE = 12;
 
-  const { data, error } = await supabase
+export interface PaginatedListings {
+  listings: ListingCardData[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
+export async function getHomeListingsPaginated(
+  page = 1,
+  pageSize = HOME_LISTINGS_PAGE_SIZE
+): Promise<PaginatedListings> {
+  const supabase = await createClient();
+  const safePage = Math.max(1, page);
+  const from = (safePage - 1) * pageSize;
+  const to = from + pageSize - 1;
+
+  const { data, error, count } = await supabase
     .from("listings")
-    .select(CARD_SELECT)
+    .select(CARD_SELECT, { count: "exact" })
     .eq("status", "approved")
     .eq("is_vip", false)
     .order("created_at", { ascending: false })
-    .limit(limit);
+    .range(from, to);
 
   if (error) {
-    console.error("getHomeListings:", error.message);
-    return [];
+    console.error("getHomeListingsPaginated:", error.message);
+    return {
+      listings: [],
+      page: 1,
+      pageSize,
+      total: 0,
+      totalPages: 1,
+    };
   }
 
-  return mapToListingCards((data ?? []) as ListingRow[]);
+  const total = count ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const clampedPage = Math.min(safePage, totalPages);
+
+  if (clampedPage !== safePage && total > 0) {
+    return getHomeListingsPaginated(clampedPage, pageSize);
+  }
+
+  return {
+    listings: mapToListingCards((data ?? []) as ListingRow[]),
+    page: clampedPage,
+    pageSize,
+    total,
+    totalPages,
+  };
+}
+
+export async function getHomeListings(limit = 12): Promise<ListingCardData[]> {
+  const { listings } = await getHomeListingsPaginated(1, limit);
+  return listings;
 }
 
 export async function getApprovedListings(

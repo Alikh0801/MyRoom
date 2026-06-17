@@ -1,18 +1,29 @@
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { ListingCard } from "@/components/listings/ListingCard";
+import { Pagination } from "@/components/ui/Pagination";
 import {
   getCategories,
-  getHomeListings,
+  getHomeListingsPaginated,
   getVipListings,
+  HOME_LISTINGS_PAGE_SIZE,
 } from "@/lib/queries/listings";
 
-export default async function HomePage() {
-  const [vipListings, categories, listings] = await Promise.all([
+interface HomePageProps {
+  searchParams: Promise<{ page?: string }>;
+}
+
+export default async function HomePage({ searchParams }: HomePageProps) {
+  const params = await searchParams;
+  const requestedPage = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
+
+  const [vipListings, categories, homeListings] = await Promise.all([
     getVipListings(6),
     getCategories(),
-    getHomeListings(12),
+    getHomeListingsPaginated(requestedPage, HOME_LISTINGS_PAGE_SIZE),
   ]);
+
+  const { listings, page, total, totalPages } = homeListings;
 
   return (
     <>
@@ -55,16 +66,31 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section section--center section--listings">
+      <section
+        id="elanlar"
+        className="section section--center section--listings"
+      >
         <div className="container">
           <h2 className="section__title">Elanlar</h2>
+          {total > 0 && (
+            <p className="section__subtitle section__subtitle--count">
+              {total} elan · Səhifə {page} / {totalPages}
+            </p>
+          )}
 
           {listings.length > 0 ? (
-            <div className="listing-grid">
-              {listings.map((listing) => (
-                <ListingCard key={listing.id} listing={listing} />
-              ))}
-            </div>
+            <>
+              <div className="listing-grid">
+                {listings.map((listing) => (
+                  <ListingCard key={listing.id} listing={listing} />
+                ))}
+              </div>
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                hash="#elanlar"
+              />
+            </>
           ) : (
             <div className="empty-state">
               <h3>Hələ elan yoxdur</h3>
