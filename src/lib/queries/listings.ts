@@ -233,7 +233,11 @@ export async function getListingById(
 
   const admin = user ? await isAdminUser(user.id) : false;
   if (!admin) {
-    query = query.eq("status", "approved");
+    if (user) {
+      query = query.or(`status.eq.approved,owner_id.eq.${user.id}`);
+    } else {
+      query = query.eq("status", "approved");
+    }
   }
 
   const { data, error } = await query.single();

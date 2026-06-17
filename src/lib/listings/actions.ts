@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { isValidRegion } from "@/lib/regions";
 import { createClient } from "@/lib/supabase/server";
@@ -167,6 +168,35 @@ export async function createListing(
   }
 
   return { listingId: listingId };
+}
+
+export async function deleteMyListing(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/auth/login?redirectTo=/dashboard/listings");
+  }
+
+  const listingId = formData.get("listingId") as string;
+  if (!listingId) return;
+
+  const { error } = await supabase
+    .from("listings")
+    .delete()
+    .eq("id", listingId)
+    .eq("owner_id", user.id);
+
+  if (error) {
+    console.error("deleteMyListing:", error.message);
+    return;
+  }
+
+  revalidatePath("/dashboard/listings");
+  revalidatePath("/dashboard");
+  redirect("/dashboard/listings");
 }
 
 export async function requireAuth() {

@@ -43,10 +43,10 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           <h2>Yeni elan</h2>
           <p>Əmlakınızı elan kimi yerləşdirin</p>
         </Link>
-        <div className="dashboard__card dashboard__card--muted">
+        <Link href="/dashboard/listings" className="dashboard__card">
           <h2>Mənim elanlarım</h2>
-          <p>Tezliklə — elan idarəetməsi</p>
-        </div>
+          <p>Elanlarınızı izləyin və idarə edin</p>
+        </Link>
       </div>
     </div>
   );

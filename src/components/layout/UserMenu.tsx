@@ -103,12 +103,12 @@ export function UserMenu({
 
           <div className="user-menu__links">
             <Link
-              href="/dashboard"
+              href="/dashboard/listings"
               className="user-menu__item"
               role="menuitem"
               onClick={() => setOpen(false)}
             >
-              Panel
+              Mənim elanlarım
             </Link>
             {isAdmin && (
               <Link
@@ -120,14 +120,6 @@ export function UserMenu({
                 Admin
               </Link>
             )}
-            <Link
-              href="/dashboard/listings/new"
-              className="user-menu__item"
-              role="menuitem"
-              onClick={() => setOpen(false)}
-            >
-              Elan yerləşdir
-            </Link>
           </div>
 
           <form action={signOut} className="user-menu__signout">
