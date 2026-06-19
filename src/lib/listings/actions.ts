@@ -33,7 +33,6 @@ export async function createListing(
   const address = (formData.get("address") as string)?.trim() || null;
   const maxGuests = Number(formData.get("maxGuests"));
   const bedrooms = Number(formData.get("bedrooms"));
-  const bathrooms = Number(formData.get("bathrooms"));
   const whatsappPhone = (formData.get("whatsappPhone") as string)?.trim();
   const amenityIds = formData.getAll("amenities") as string[];
   const roomTypeName = (formData.get("roomTypeName") as string)?.trim();
@@ -102,7 +101,7 @@ export async function createListing(
       address,
       max_guests: maxGuests,
       bedrooms: bedrooms >= 0 ? bedrooms : 1,
-      bathrooms: bathrooms >= 0 ? bathrooms : 1,
+      bathrooms: 1,
       whatsapp_phone: whatsappPhone,
       status: "pending",
     })
@@ -195,7 +194,6 @@ export async function deleteMyListing(formData: FormData) {
   }
 
   revalidatePath("/dashboard/listings");
-  revalidatePath("/dashboard");
   redirect("/dashboard/listings");
 }
 

@@ -1756,6 +1756,14 @@ img {
   margin-bottom: 0;
 }
 
+.dashboard--listing-form .section__title,
+.dashboard--listing-form .section__subtitle {
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
 .my-listings-filters {
   display: flex;
   flex-wrap: wrap;
@@ -1957,8 +1965,9 @@ img {
 
 /* Listing form */
 .listing-form {
+  width: 100%;
   max-width: 640px;
-  margin-top: 2rem;
+  margin: 2rem auto 0;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -2025,14 +2034,12 @@ img {
 
 .listing-form__submit {
   width: 100%;
-  max-width: 640px;
 }
 
 .listing-form__note {
   font-size: 0.875rem;
   color: var(--color-text-muted);
   text-align: center;
-  max-width: 640px;
 }
 
 /* Admin */

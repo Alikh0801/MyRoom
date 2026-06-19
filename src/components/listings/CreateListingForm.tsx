@@ -136,7 +136,7 @@ export function CreateListingForm({
 
     try {
       await uploadImages(result.listingId, selectedFiles);
-      router.push("/dashboard?created=1");
+      router.push("/dashboard/listings?created=1");
     } catch (err) {
       setError(
         err instanceof Error
@@ -262,7 +262,7 @@ export function CreateListingForm({
           <input type="text" name="address" placeholder="Tam ünvan" />
         </label>
 
-        <div className="listing-form__row listing-form__row--3">
+        <div className="listing-form__row">
           <label className="auth-form__field">
             Qonaq *
             <input
@@ -279,16 +279,6 @@ export function CreateListingForm({
             <input
               type="number"
               name="bedrooms"
-              min={0}
-              defaultValue={1}
-            />
-          </label>
-
-          <label className="auth-form__field">
-            Vanna otağı
-            <input
-              type="number"
-              name="bathrooms"
               min={0}
               defaultValue={1}
             />

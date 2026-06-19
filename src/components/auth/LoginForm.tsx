@@ -8,7 +8,7 @@ interface LoginFormProps {
   redirectTo?: string;
 }
 
-export function LoginForm({ redirectTo = "/dashboard" }: LoginFormProps) {
+export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
   const [state, formAction, pending] = useActionState<AuthState | null, FormData>(
     signIn,
     null

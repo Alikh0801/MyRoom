@@ -17,7 +17,7 @@ export const metadata = {
 };
 
 interface MyListingsPageProps {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; created?: string }>;
 }
 
 export default async function MyListingsPage({
@@ -46,9 +46,6 @@ export default async function MyListingsPage({
     <div className="container dashboard">
       <div className="dashboard__header-row">
         <div>
-          <Link href="/dashboard" className="dashboard__back">
-            ← Panel
-          </Link>
           <h1 className="section__title">{pageTitle}</h1>
           <p className="section__subtitle dashboard__subtitle">
             Elanlarınızın statusunu izləyin və idarə edin.
@@ -58,6 +55,12 @@ export default async function MyListingsPage({
           + Yeni elan
         </Link>
       </div>
+
+      {params.created === "1" && (
+        <div className="dashboard__alert">
+          Elanınız uğurla göndərildi. Admin təsdiqindən sonra saytda görünəcək.
+        </div>
+      )}
 
       <MyListingsFilters counts={counts} activeStatus={statusFilter} />
 

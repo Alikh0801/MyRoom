@@ -15,7 +15,7 @@ export async function signIn(
 ): Promise<AuthState | null> {
   const email = (formData.get("email") as string)?.trim();
   const password = formData.get("password") as string;
-  const redirectTo = (formData.get("redirectTo") as string) || "/dashboard";
+  const redirectTo = (formData.get("redirectTo") as string) || "/";
 
   if (!email || !password) {
     return { error: "Email və şifrə daxil edin." };
@@ -54,7 +54,7 @@ export async function signUp(
     password,
     options: {
       data: { full_name: fullName },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/auth/callback?next=/dashboard`,
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/auth/callback?next=/`,
     },
   });
 
@@ -73,7 +73,7 @@ export async function signUp(
       .eq("id", data.user.id);
   }
 
-  redirect("/dashboard");
+  redirect("/");
 }
 
 export async function signOut() {
