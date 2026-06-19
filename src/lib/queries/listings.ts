@@ -166,19 +166,25 @@ async function resolveCategoryId(
   return cat?.id ?? null;
 }
 
-function applySearchFilters<
-  T extends {
-    ilike: (col: string, val: string) => T;
-    eq: (col: string, val: string | number | boolean) => T;
-    gte: (col: string, val: number) => T;
-    lte: (col: string, val: number) => T;
-  },
->(query: T, filters: SearchFilters, categoryId: string | null): T {
+function buildSearchQuery(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  filters: SearchFilters,
+  categoryId: string | null,
+  isVip: boolean
+) {
+  let query = supabase
+    .from("listings")
+    .select(CARD_SELECT)
+    .eq("status", "approved")
+    .eq("is_vip", isVip)
+    .order("created_at", { ascending: false });
+
   if (filters.region) query = query.ilike("region", `%${filters.region}%`);
   if (categoryId) query = query.eq("category_id", categoryId);
   if (filters.minPrice) query = query.gte("price_per_night", filters.minPrice);
   if (filters.maxPrice) query = query.lte("price_per_night", filters.maxPrice);
   if (filters.guests) query = query.gte("max_guests", filters.guests);
+
   return query;
 }
 
@@ -188,20 +194,9 @@ export async function getSearchListings(
   const supabase = await createClient();
   const categoryId = await resolveCategoryId(supabase, filters.category);
 
-  const base = () =>
-    applySearchFilters(
-      supabase
-        .from("listings")
-        .select(CARD_SELECT)
-        .eq("status", "approved")
-        .order("created_at", { ascending: false }),
-      filters,
-      categoryId
-    );
-
   const [vipRes, regularRes] = await Promise.all([
-    base().eq("is_vip", true),
-    base().eq("is_vip", false),
+    buildSearchQuery(supabase, filters, categoryId, true),
+    buildSearchQuery(supabase, filters, categoryId, false),
   ]);
 
   if (vipRes.error) {
