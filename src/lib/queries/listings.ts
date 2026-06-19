@@ -25,6 +25,12 @@ export interface SearchFilters {
   guests?: number;
 }
 
+export interface SearchListingsResult {
+  vipListings: ListingCardData[];
+  regularListings: ListingCardData[];
+  total: number;
+}
+
 type ListingRow = {
   id: string;
   title: string;
@@ -143,39 +149,85 @@ export async function getHomeListings(limit = 12): Promise<ListingCardData[]> {
   return listings;
 }
 
-export async function getApprovedListings(
-  filters: SearchFilters = {}
-): Promise<ListingCardData[]> {
-  const supabase = await createClient();
+async function resolveCategoryId(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  categorySlug?: string
+) {
+  if (!categorySlug) return null;
 
-  let query = supabase
-    .from("listings")
-    .select(CARD_SELECT)
-    .eq("status", "approved")
-    .order("created_at", { ascending: false });
+  const slug = categorySlug === "otel" ? "hotel" : categorySlug;
 
+  const { data: cat } = await supabase
+    .from("categories")
+    .select("id")
+    .eq("slug", slug)
+    .single();
+
+  return cat?.id ?? null;
+}
+
+function applySearchFilters<
+  T extends {
+    ilike: (col: string, val: string) => T;
+    eq: (col: string, val: string | number | boolean) => T;
+    gte: (col: string, val: number) => T;
+    lte: (col: string, val: number) => T;
+  },
+>(query: T, filters: SearchFilters, categoryId: string | null): T {
   if (filters.region) query = query.ilike("region", `%${filters.region}%`);
-
-  if (filters.category) {
-    const { data: cat } = await supabase
-      .from("categories")
-      .select("id")
-      .eq("slug", filters.category)
-      .single();
-    if (cat) query = query.eq("category_id", cat.id);
-  }
+  if (categoryId) query = query.eq("category_id", categoryId);
   if (filters.minPrice) query = query.gte("price_per_night", filters.minPrice);
   if (filters.maxPrice) query = query.lte("price_per_night", filters.maxPrice);
   if (filters.guests) query = query.gte("max_guests", filters.guests);
+  return query;
+}
 
-  const { data, error } = await query;
+export async function getSearchListings(
+  filters: SearchFilters = {}
+): Promise<SearchListingsResult> {
+  const supabase = await createClient();
+  const categoryId = await resolveCategoryId(supabase, filters.category);
 
-  if (error) {
-    console.error("getApprovedListings:", error.message);
-    return [];
+  const base = () =>
+    applySearchFilters(
+      supabase
+        .from("listings")
+        .select(CARD_SELECT)
+        .eq("status", "approved")
+        .order("created_at", { ascending: false }),
+      filters,
+      categoryId
+    );
+
+  const [vipRes, regularRes] = await Promise.all([
+    base().eq("is_vip", true),
+    base().eq("is_vip", false),
+  ]);
+
+  if (vipRes.error) {
+    console.error("getSearchListings vip:", vipRes.error.message);
+  }
+  if (regularRes.error) {
+    console.error("getSearchListings regular:", regularRes.error.message);
   }
 
-  return mapToListingCards((data ?? []) as ListingRow[]);
+  const vipListings = mapToListingCards((vipRes.data ?? []) as ListingRow[]);
+  const regularListings = mapToListingCards(
+    (regularRes.data ?? []) as ListingRow[]
+  );
+
+  return {
+    vipListings,
+    regularListings,
+    total: vipListings.length + regularListings.length,
+  };
+}
+
+export async function getApprovedListings(
+  filters: SearchFilters = {}
+): Promise<ListingCardData[]> {
+  const { vipListings, regularListings } = await getSearchListings(filters);
+  return [...vipListings, ...regularListings];
 }
 
 export async function getSimilarListings(

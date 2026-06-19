@@ -74,7 +74,7 @@ export async function createListing(
     .eq("id", categoryId)
     .single();
 
-  const isHotel = category?.slug === "otel";
+  const isHotel = category?.slug === "hotel";
 
   if (isHotel) {
     if (!roomTypeName || roomTypeName.length < 2) {

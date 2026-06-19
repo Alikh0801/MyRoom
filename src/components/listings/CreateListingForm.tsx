@@ -87,7 +87,7 @@ export function CreateListingForm({
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const hotelCategoryId = categories.find((c) => c.slug === "otel")?.id;
+  const hotelCategoryId = categories.find((c) => c.slug === "hotel")?.id;
   const isHotel = Boolean(hotelCategoryId && categoryId === hotelCategoryId);
 
   const propertyAmenityGroups = useMemo(

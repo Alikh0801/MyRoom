@@ -1,6 +1,6 @@
 # MyRoom
 
-Azərbaycan üzrə qısamüddətli istirahət elanları — otel, hostel, A-frame, rayon evləri.
+Azərbaycan üzrə qısamüddətli istirahət elanları — hotel, hostel, A-frame, rayon evləri.
 
 ## Texnologiyalar
 

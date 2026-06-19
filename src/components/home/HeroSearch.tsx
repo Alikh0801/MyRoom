@@ -31,7 +31,7 @@ export function HeroSearch() {
         <option value="">Bütün növlər</option>
         <option value="a-frame">A-frame (Glamping)</option>
         <option value="hostel">Hostel</option>
-        <option value="otel">Otel</option>
+        <option value="hotel">Hotel</option>
         <option value="villa">Villa</option>
         <option value="rayon-evi">Rayon evi</option>
       </select>

@@ -603,18 +603,23 @@ img {
 .category-card:hover .category-card__icon {
   background: var(--color-primary);
   color: #fff;
+  transform: scale(1.04);
 }
 
 .category-card__icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
-  background: var(--color-bg);
-  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(145deg, #f4f8f4 0%, #e8f0e8 100%);
+  border-radius: 16px;
   color: var(--color-primary);
   transition: all 0.2s;
+}
+
+.category-card__icon svg {
+  display: block;
 }
 
 .category-card__label {
@@ -805,6 +810,24 @@ img {
   flex-direction: column;
   gap: 0.5rem;
   margin-top: 0.5rem;
+}
+
+.search-results__count {
+  margin-bottom: 1.5rem;
+}
+
+.search-results__section {
+  margin-bottom: 2.5rem;
+}
+
+.search-results__section:last-child {
+  margin-bottom: 0;
+}
+
+.search-results__heading {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
 }
 
 /* Listing detail */

@@ -45,7 +45,7 @@ export default async function ListingPage({ params }: ListingPageProps) {
 
   const images = listing.listing_images;
   const owner = listing.owner;
-  const isHotel = listing.category.slug === "otel";
+  const isHotel = listing.category.slug === "hotel";
 
   const selectedAmenities = listing.listing_amenities
     ?.map((la) => {

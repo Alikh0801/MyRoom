@@ -2,8 +2,8 @@ import { Suspense } from "react";
 import { ListingCard } from "@/components/listings/ListingCard";
 import { SearchFilters } from "@/components/search/SearchFilters";
 import {
-  getApprovedListings,
   getCategories,
+  getSearchListings,
 } from "@/lib/queries/listings";
 
 interface SearchPageProps {
@@ -23,16 +23,26 @@ export const metadata = {
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
-  const [listings, categories] = await Promise.all([
-    getApprovedListings({
-      region: params.region,
-      category: params.category,
-      guests: params.guests ? Number(params.guests) : undefined,
-      minPrice: params.minPrice ? Number(params.minPrice) : undefined,
-      maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined,
-    }),
+  const categorySlug =
+    params.category === "otel" ? "hotel" : params.category;
+  const filters = {
+    region: params.region,
+    category: categorySlug,
+    guests: params.guests ? Number(params.guests) : undefined,
+    minPrice: params.minPrice ? Number(params.minPrice) : undefined,
+    maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined,
+  };
+
+  const [searchResult, categories] = await Promise.all([
+    getSearchListings(filters),
     getCategories(),
   ]);
+
+  const { vipListings, regularListings, total } = searchResult;
+  const activeCategory = categories.find((cat) => cat.slug === categorySlug);
+  const pageTitle = activeCategory
+    ? `${activeCategory.name_az} elanları`
+    : "Elan axtarışı";
 
   return (
     <div className="container search-layout">
@@ -40,18 +50,36 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         <SearchFilters categories={categories} />
       </Suspense>
 
-      <div>
-        <h1 className="section__title">Elanlar</h1>
-        <p className="section__subtitle">
-          {listings.length} nəticə tapıldı
+      <div className="search-results">
+        <h1 className="section__title">{pageTitle}</h1>
+        <p className="section__subtitle search-results__count">
+          {total} nəticə tapıldı
         </p>
 
-        {listings.length > 0 ? (
-          <div className="listing-grid">
-            {listings.map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
-            ))}
-          </div>
+        {total > 0 ? (
+          <>
+            {vipListings.length > 0 && (
+              <section className="search-results__section">
+                <h2 className="search-results__heading">Premium elanlar</h2>
+                <div className="listing-grid">
+                  {vipListings.map((listing) => (
+                    <ListingCard key={listing.id} listing={listing} vip />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {regularListings.length > 0 && (
+              <section className="search-results__section">
+                <h2 className="search-results__heading">Elanlar</h2>
+                <div className="listing-grid">
+                  {regularListings.map((listing) => (
+                    <ListingCard key={listing.id} listing={listing} />
+                  ))}
+                </div>
+              </section>
+            )}
+          </>
         ) : (
           <div className="empty-state">
             <h3>Elan tapılmadı</h3>

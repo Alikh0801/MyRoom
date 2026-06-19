@@ -236,7 +236,7 @@ create policy "listing_room_type_amenities_insert_own" on public.listing_room_ty
 
 -- Seed: kateqoriyalar
 insert into public.categories (slug, name_az, sort_order) values
-  ('otel', 'Otel', 1),
+  ('hotel', 'Hotel', 1),
   ('hostel', 'Hostel', 2),
   ('a-frame', 'A-frame (Glamping)', 3),
   ('villa', 'Villa / Bağ evi', 4),
