@@ -45,47 +45,51 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     : "Elan axtarışı";
 
   return (
-    <div className="container search-layout">
-      <Suspense fallback={<div>Yüklənir...</div>}>
-        <SearchFilters categories={categories} />
-      </Suspense>
+    <div className="search-page">
+      <div className="container">
+        <div className="search-page__layout">
+          <Suspense fallback={<div>Yüklənir...</div>}>
+            <SearchFilters categories={categories} />
+          </Suspense>
 
-      <div className="search-results">
-        <h1 className="section__title">{pageTitle}</h1>
-        <p className="section__subtitle search-results__count">
-          {total} nəticə tapıldı
-        </p>
+          <div className="search-results">
+            <h1 className="section__title">{pageTitle}</h1>
+            <p className="section__subtitle search-results__count">
+              {total} nəticə tapıldı
+            </p>
 
-        {total > 0 ? (
-          <>
-            {vipListings.length > 0 && (
-              <section className="search-results__section">
-                <h2 className="search-results__heading">Premium elanlar</h2>
-                <div className="listing-grid">
-                  {vipListings.map((listing) => (
-                    <ListingCard key={listing.id} listing={listing} vip />
-                  ))}
-                </div>
-              </section>
+            {total > 0 ? (
+              <>
+                {vipListings.length > 0 && (
+                  <section className="search-results__section">
+                    <h2 className="search-results__heading">Premium elanlar</h2>
+                    <div className="listing-grid">
+                      {vipListings.map((listing) => (
+                        <ListingCard key={listing.id} listing={listing} vip />
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {regularListings.length > 0 && (
+                  <section className="search-results__section">
+                    <h2 className="search-results__heading">Elanlar</h2>
+                    <div className="listing-grid">
+                      {regularListings.map((listing) => (
+                        <ListingCard key={listing.id} listing={listing} />
+                      ))}
+                    </div>
+                  </section>
+                )}
+              </>
+            ) : (
+              <div className="empty-state">
+                <h3>Elan tapılmadı</h3>
+                <p>Filtrləri dəyişib yenidən cəhd edin.</p>
+              </div>
             )}
-
-            {regularListings.length > 0 && (
-              <section className="search-results__section">
-                <h2 className="search-results__heading">Elanlar</h2>
-                <div className="listing-grid">
-                  {regularListings.map((listing) => (
-                    <ListingCard key={listing.id} listing={listing} />
-                  ))}
-                </div>
-              </section>
-            )}
-          </>
-        ) : (
-          <div className="empty-state">
-            <h3>Elan tapılmadı</h3>
-            <p>Filtrləri dəyişib yenidən cəhd edin.</p>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
