@@ -1,8 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { signIn, type AuthState } from "@/lib/auth/actions";
+import {
+  TurnstileField,
+  useTurnstileRequired,
+} from "@/components/auth/TurnstileField";
 
 interface LoginFormProps {
   redirectTo?: string;
@@ -13,6 +17,10 @@ export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
     signIn,
     null
   );
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRequired = useTurnstileRequired();
+  const submitDisabled =
+    pending || (turnstileRequired && !turnstileToken);
 
   return (
     <form className="auth-form" action={formAction}>
@@ -43,7 +51,19 @@ export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
         />
       </label>
 
-      <button type="submit" className="btn btn--primary auth-form__submit" disabled={pending}>
+      {turnstileRequired && (
+        <input type="hidden" name="turnstileToken" value={turnstileToken} />
+      )}
+      <TurnstileField
+        resetKey={state?.error}
+        onTokenChange={setTurnstileToken}
+      />
+
+      <button
+        type="submit"
+        className="btn btn--primary auth-form__submit"
+        disabled={submitDisabled}
+      >
         {pending ? "Giriş edilir..." : "Daxil ol"}
       </button>
 

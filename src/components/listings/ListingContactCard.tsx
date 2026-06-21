@@ -1,4 +1,5 @@
 import { WhatsAppButton } from "@/components/listings/WhatsAppButton";
+import { formatPhoneDisplay } from "@/lib/phone";
 import { formatPriceSuffix } from "@/lib/price";
 import type { PriceUnit } from "@/types/database";
 
@@ -40,7 +41,7 @@ export function ListingContactCard({
   roomTypeName,
   roomTypeFloor,
 }: ListingContactCardProps) {
-  const displayPhone = whatsappPhone || phone;
+  const callHref = phone ? `tel:${phone.replace(/\s/g, "")}` : null;
 
   return (
     <aside className="listing-detail__contact">
@@ -93,12 +94,21 @@ export function ListingContactCard({
         <p className="listing-detail__owner-name">
           {ownerName ?? "Mülk sahibi"}
         </p>
-        {displayPhone && (
-          <p className="listing-detail__owner-phone">{displayPhone}</p>
+        {phone && callHref && (
+          <a href={callHref} className="listing-detail__owner-phone">
+            Zəng: {formatPhoneDisplay(phone)}
+          </a>
+        )}
+        {whatsappPhone && (
+          <p className="listing-detail__owner-whatsapp">
+            WhatsApp: {formatPhoneDisplay(whatsappPhone)}
+          </p>
         )}
       </div>
 
-      <WhatsAppButton phone={whatsappPhone} listingTitle={listingTitle} />
+      {whatsappPhone && (
+        <WhatsAppButton phone={whatsappPhone} listingTitle={listingTitle} />
+      )}
     </aside>
   );
 }

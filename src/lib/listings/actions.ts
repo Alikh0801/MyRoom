@@ -204,5 +204,8 @@ export async function requireAuth() {
   } = await supabase.auth.getUser();
 
   if (!user) redirect("/auth/login?redirectTo=/dashboard/listings/new");
+  if (!user.email_confirmed_at) {
+    redirect("/auth/check-email?reason=unconfirmed");
+  }
   return user;
 }

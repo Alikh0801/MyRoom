@@ -1448,7 +1448,19 @@ img {
 
 .listing-detail__owner-phone {
   font-size: 0.95rem;
+  color: var(--color-primary);
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.listing-detail__owner-phone:hover {
+  text-decoration: underline;
+}
+
+.listing-detail__owner-whatsapp {
+  font-size: 0.875rem;
   color: var(--color-text-muted);
+  margin-top: 0.25rem;
 }
 
 .listing-detail__content {
@@ -1715,6 +1727,26 @@ img {
   gap: 0.375rem;
   font-size: 0.875rem;
   font-weight: 500;
+}
+
+.auth-form__checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.auth-form__checkbox input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.auth-form__turnstile {
+  min-height: 65px;
 }
 
 .auth-form__field input {

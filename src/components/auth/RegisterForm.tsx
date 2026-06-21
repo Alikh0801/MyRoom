@@ -1,14 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { signUp, type AuthState } from "@/lib/auth/actions";
+import {
+  TurnstileField,
+  useTurnstileRequired,
+} from "@/components/auth/TurnstileField";
 
 export function RegisterForm() {
   const [state, formAction, pending] = useActionState<AuthState | null, FormData>(
     signUp,
     null
   );
+  const [phone, setPhone] = useState("");
+  const [whatsappPhone, setWhatsappPhone] = useState("");
+  const [sameAsPhone, setSameAsPhone] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRequired = useTurnstileRequired();
+
+  function handleSameAsPhoneChange(checked: boolean) {
+    setSameAsPhone(checked);
+    if (checked) {
+      setWhatsappPhone(phone);
+    }
+  }
+
+  function handlePhoneChange(value: string) {
+    setPhone(value);
+    if (sameAsPhone) {
+      setWhatsappPhone(value);
+    }
+  }
+
+  const submitDisabled =
+    pending || (turnstileRequired && !turnstileToken);
 
   return (
     <form className="auth-form" action={formAction}>
@@ -37,14 +63,43 @@ export function RegisterForm() {
       </label>
 
       <label className="auth-form__field">
-        Telefon (WhatsApp)
+        Zəng üçün telefon *
         <input
           type="tel"
           name="phone"
+          required
           autoComplete="tel"
+          value={phone}
+          onChange={(e) => handlePhoneChange(e.target.value)}
           placeholder="+994 50 123 45 67"
         />
       </label>
+
+      <label className="auth-form__checkbox">
+        <input
+          type="checkbox"
+          checked={sameAsPhone}
+          onChange={(e) => handleSameAsPhoneChange(e.target.checked)}
+        />
+        WhatsApp nömrəsi telefon ilə eynidir
+      </label>
+
+      {sameAsPhone ? (
+        <input type="hidden" name="whatsappPhone" value={phone} />
+      ) : (
+        <label className="auth-form__field">
+          WhatsApp nömrəsi *
+          <input
+            type="tel"
+            name="whatsappPhone"
+            required
+            autoComplete="tel"
+            value={whatsappPhone}
+            onChange={(e) => setWhatsappPhone(e.target.value)}
+            placeholder="+994 50 123 45 67"
+          />
+        </label>
+      )}
 
       <label className="auth-form__field">
         Şifrə
@@ -58,7 +113,19 @@ export function RegisterForm() {
         />
       </label>
 
-      <button type="submit" className="btn btn--primary auth-form__submit" disabled={pending}>
+      {turnstileRequired && (
+        <input type="hidden" name="turnstileToken" value={turnstileToken} />
+      )}
+      <TurnstileField
+        resetKey={state?.error}
+        onTokenChange={setTurnstileToken}
+      />
+
+      <button
+        type="submit"
+        className="btn btn--primary auth-form__submit"
+        disabled={submitDisabled}
+      >
         {pending ? "Qeydiyyat..." : "Qeydiyyatdan keç"}
       </button>
 

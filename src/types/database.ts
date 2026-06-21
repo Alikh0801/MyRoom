@@ -34,6 +34,7 @@ export interface AmenityGroup {
 export interface Profile {
   id: string;
   full_name: string | null;
+  email: string | null;
   phone: string | null;
   whatsapp_phone: string | null;
   avatar_url: string | null;
