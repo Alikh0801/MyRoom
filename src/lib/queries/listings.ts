@@ -1,5 +1,7 @@
+import { unstable_cache } from "next/cache";
 import { isAdminUser } from "@/lib/admin/auth";
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { ListingCardData, ListingWithRelations } from "@/types/database";
 
 const LISTING_SELECT = `
@@ -303,14 +305,18 @@ export async function getListingById(
   return listing;
 }
 
-export async function getCategories() {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("categories")
-    .select("*")
-    .order("sort_order");
-  return data ?? [];
-}
+export const getCategories = unstable_cache(
+  async () => {
+    const supabase = createPublicClient();
+    const { data } = await supabase
+      .from("categories")
+      .select("*")
+      .order("sort_order");
+    return data ?? [];
+  },
+  ["categories"],
+  { revalidate: 3600 }
+);
 
 export async function getRegions(): Promise<string[]> {
   const supabase = await createClient();

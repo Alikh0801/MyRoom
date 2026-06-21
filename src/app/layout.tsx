@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { HeaderShell } from "@/components/layout/HeaderShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -31,7 +33,9 @@ export default function RootLayout({
     <html lang="az">
       <body>
         <div className="page-wrapper">
-          <Header />
+          <Suspense fallback={<HeaderShell />}>
+            <Header />
+          </Suspense>
           <main className="main-content">{children}</main>
           <Footer />
         </div>

@@ -1,11 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { RegionCombobox } from "@/components/ui/RegionCombobox";
 
 export function HeroSearch() {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [region, setRegion] = useState("");
   const [category, setCategory] = useState("");
 
@@ -14,7 +15,10 @@ export function HeroSearch() {
     const params = new URLSearchParams();
     if (region) params.set("region", region);
     if (category) params.set("category", category);
-    router.push(`/search?${params.toString()}`);
+    const href = `/search?${params.toString()}`;
+    startTransition(() => {
+      router.push(href);
+    });
   }
 
   return (
@@ -35,8 +39,13 @@ export function HeroSearch() {
         <option value="villa">Villa</option>
         <option value="rayon-evi">Rayon evi</option>
       </select>
-      <button type="submit" className="btn btn--primary">
-        Axtar
+      <button
+        type="submit"
+        className="btn btn--primary"
+        disabled={isPending}
+        aria-busy={isPending}
+      >
+        {isPending ? "Axtarılır..." : "Axtar"}
       </button>
     </form>
   );
