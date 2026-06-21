@@ -17,7 +17,7 @@ export function ListingCard({ listing, vip = false }: ListingCardProps) {
             src={listing.cover_image}
             alt={listing.title}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            sizes="(max-width: 1024px) 50vw, 25vw"
             className="listing-card__img"
           />
         ) : (

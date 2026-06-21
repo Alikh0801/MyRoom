@@ -778,6 +778,8 @@ img {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
+  width: 100%;
+  min-width: 0;
 }
 
 @media (min-width: 1024px) {
@@ -789,9 +791,12 @@ img {
 
 .listing-grid--featured {
   width: 100%;
+  min-width: 0;
 }
 
 .listing-card {
+  display: block;
+  min-width: 0;
   background: var(--color-surface);
   border-radius: var(--radius);
   overflow: hidden;
@@ -905,6 +910,16 @@ img {
   grid-template-columns: 1fr;
   gap: 2rem;
   padding: 2rem 0 4rem;
+  min-width: 0;
+}
+
+.search-layout > * {
+  min-width: 0;
+}
+
+.search-results {
+  width: 100%;
+  min-width: 0;
 }
 
 @media (min-width: 900px) {
@@ -1246,6 +1261,10 @@ img {
 }
 
 @media (max-width: 640px) {
+  .listing-grid {
+    gap: 0.875rem;
+  }
+
   .photo-lightbox .image-slider__viewport {
     min-height: 50vh;
     max-height: 85vh;
@@ -1641,6 +1660,7 @@ img {
 
 .main-content {
   flex: 1;
+  overflow-x: clip;
 }
 
 /* Image uploader */
