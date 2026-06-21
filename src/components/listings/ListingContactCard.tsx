@@ -1,5 +1,4 @@
 import { WhatsAppButton } from "@/components/listings/WhatsAppButton";
-import { formatPhoneDisplay } from "@/lib/phone";
 import { formatPriceSuffix } from "@/lib/price";
 import type { PriceUnit } from "@/types/database";
 
@@ -41,7 +40,10 @@ export function ListingContactCard({
   roomTypeName,
   roomTypeFloor,
 }: ListingContactCardProps) {
-  const callHref = phone ? `tel:${phone.replace(/\s/g, "")}` : null;
+  const callPhone = phone ?? whatsappPhone;
+  const callHref = callPhone
+    ? `tel:${callPhone.replace(/[\s()-]/g, "")}`
+    : null;
 
   return (
     <aside className="listing-detail__contact">
@@ -94,21 +96,34 @@ export function ListingContactCard({
         <p className="listing-detail__owner-name">
           {ownerName ?? "Mülk sahibi"}
         </p>
-        {phone && callHref && (
-          <a href={callHref} className="listing-detail__owner-phone">
-            Zəng: {formatPhoneDisplay(phone)}
-          </a>
-        )}
-        {whatsappPhone && (
-          <p className="listing-detail__owner-whatsapp">
-            WhatsApp: {formatPhoneDisplay(whatsappPhone)}
-          </p>
-        )}
       </div>
 
-      {whatsappPhone && (
-        <WhatsAppButton phone={whatsappPhone} listingTitle={listingTitle} />
-      )}
+      <div className="listing-detail__contact-actions">
+        {whatsappPhone && (
+          <WhatsAppButton phone={whatsappPhone} listingTitle={listingTitle} />
+        )}
+        {callHref && (
+          <a href={callHref} className="btn btn--call">
+            <svg
+              className="btn__icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            Zəng et
+          </a>
+        )}
+      </div>
     </aside>
   );
 }
