@@ -23,7 +23,8 @@ export default async function NewListingPage() {
     profile?.whatsapp_phone ?? profile?.phone ?? "";
 
   return (
-    <div className="container dashboard dashboard--listing-form">
+    <div className="dashboard-page dashboard-page--form">
+      <div className="container dashboard--listing-form">
       <h1 className="section__title">Yeni elan yerləşdir</h1>
       <p className="section__subtitle">
         Məlumatları doldurun — elanınız yoxlanıldıqdan sonra saytda görünəcək.
@@ -34,6 +35,7 @@ export default async function NewListingPage() {
         amenityGroups={amenityGroups}
         defaultWhatsapp={defaultWhatsapp}
       />
+      </div>
     </div>
   );
 }

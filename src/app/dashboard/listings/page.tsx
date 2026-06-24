@@ -43,18 +43,19 @@ export default async function MyListingsPage({
     : "Mənim elanlarım";
 
   return (
-    <div className="container dashboard">
-      <div className="dashboard__header-row">
-        <div>
-          <h1 className="section__title">{pageTitle}</h1>
-          <p className="section__subtitle dashboard__subtitle">
-            Elanlarınızın statusunu izləyin və idarə edin.
-          </p>
+    <div className="dashboard-page">
+      <div className="container">
+        <div className="dashboard__header-row">
+          <div>
+            <h1 className="section__title">{pageTitle}</h1>
+            <p className="section__subtitle dashboard__subtitle">
+              Elanlarınızın statusunu izləyin və idarə edin.
+            </p>
+          </div>
+          <Link href="/dashboard/listings/new" className="btn btn--primary">
+            + Yeni elan
+          </Link>
         </div>
-        <Link href="/dashboard/listings/new" className="btn btn--primary">
-          + Yeni elan
-        </Link>
-      </div>
 
       {params.created === "1" && (
         <div className="dashboard__alert">
@@ -93,6 +94,7 @@ export default async function MyListingsPage({
           )}
         </div>
       )}
+      </div>
     </div>
   );
 }
