@@ -3,6 +3,7 @@ import { AmenitiesDisplay } from "@/components/listings/AmenitiesDisplay";
 import { HotelRoomTypeDisplay } from "@/components/listings/HotelRoomTypeDisplay";
 import { ListingContactCard } from "@/components/listings/ListingContactCard";
 import { ListingGallery } from "@/components/listings/ListingGallery";
+import { ListingMapSection } from "@/components/listings/ListingMapSection";
 import { SimilarListings } from "@/components/listings/SimilarListings";
 import { groupAmenitiesByCategory } from "@/lib/queries/amenities";
 import { getListingById, getSimilarListings } from "@/lib/queries/listings";
@@ -104,6 +105,14 @@ export default async function ListingPage({ params }: ListingPageProps) {
               groups={amenityGroups}
               title={isHotel ? "Müəssisə xüsusiyyətləri" : "Daxildir"}
             />
+
+            {listing.lat != null && listing.lng != null && (
+              <ListingMapSection
+                lat={listing.lat}
+                lng={listing.lng}
+                title={listing.title}
+              />
+            )}
           </div>
 
           <ListingContactCard
@@ -117,6 +126,8 @@ export default async function ListingPage({ params }: ListingPageProps) {
             region={listing.region}
             city={listing.city}
             address={listing.address}
+            lat={listing.lat}
+            lng={listing.lng}
             maxGuests={listing.max_guests}
             bedrooms={listing.bedrooms}
             roomTypeName={isHotel ? roomType?.name : null}

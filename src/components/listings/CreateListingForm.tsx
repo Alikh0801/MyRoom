@@ -1,6 +1,7 @@
 "use client";
 
 import imageCompression from "browser-image-compression";
+import dynamic from "next/dynamic";
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -12,7 +13,21 @@ import { RegionCombobox } from "@/components/ui/RegionCombobox";
 import { filterAmenityGroupsBySlug } from "@/lib/amenities/helpers";
 import { isValidRegion } from "@/lib/regions";
 import { createListing } from "@/lib/listings/actions";
+import { isValidCoordinates } from "@/lib/map";
 import type { AmenityGroup, Category } from "@/types/database";
+
+const LocationPicker = dynamic(
+  () =>
+    import("@/components/listings/LocationPicker").then(
+      (mod) => mod.LocationPicker
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="location-picker__loading">Xəritə yüklənir...</div>
+    ),
+  }
+);
 
 interface CreateListingFormProps {
   categories: Category[];
@@ -84,6 +99,8 @@ export function CreateListingForm({
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [categoryId, setCategoryId] = useState("");
   const [region, setRegion] = useState("");
+  const [lat, setLat] = useState<number | null>(null);
+  const [lng, setLng] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -121,6 +138,11 @@ export function CreateListingForm({
 
     if (!isValidRegion(region)) {
       setError("Rayon siyahıdan seçin.");
+      return;
+    }
+
+    if (lat == null || lng == null || !isValidCoordinates(lat, lng)) {
+      setError("Xəritədə mülkün yerini göstərin.");
       return;
     }
 
@@ -261,6 +283,18 @@ export function CreateListingForm({
           Ünvan (ixtiyari)
           <input type="text" name="address" placeholder="Tam ünvan" />
         </label>
+
+        <div className="auth-form__field">
+          Xəritədə yer *
+          <LocationPicker
+            lat={lat}
+            lng={lng}
+            onChange={(newLat, newLng) => {
+              setLat(newLat);
+              setLng(newLng);
+            }}
+          />
+        </div>
 
         <div className="listing-form__row">
           <label className="auth-form__field">

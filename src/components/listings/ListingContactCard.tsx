@@ -1,5 +1,6 @@
 import { WhatsAppButton } from "@/components/listings/WhatsAppButton";
 import { formatPriceSuffix } from "@/lib/price";
+import { buildDirectionsUrl } from "@/lib/map";
 import type { PriceUnit } from "@/types/database";
 
 interface ListingContactCardProps {
@@ -13,6 +14,8 @@ interface ListingContactCardProps {
   region: string;
   city: string;
   address: string | null;
+  lat: number | null;
+  lng: number | null;
   maxGuests: number;
   bedrooms: number;
   roomTypeName?: string | null;
@@ -35,6 +38,8 @@ export function ListingContactCard({
   region,
   city,
   address,
+  lat,
+  lng,
   maxGuests,
   bedrooms,
   roomTypeName,
@@ -44,6 +49,8 @@ export function ListingContactCard({
   const callHref = callPhone
     ? `tel:${callPhone.replace(/[\s()-]/g, "")}`
     : null;
+  const directionsUrl =
+    lat != null && lng != null ? buildDirectionsUrl(lat, lng) : null;
 
   return (
     <aside className="listing-detail__contact">
@@ -77,7 +84,22 @@ export function ListingContactCard({
 
         <div className="listing-detail__fact">
           <dt>Ünvan</dt>
-          <dd>{formatAddress(region, city, address)}</dd>
+          <dd>
+            {formatAddress(region, city, address)}
+            {directionsUrl && (
+              <>
+                {" "}
+                <a
+                  href={directionsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="listing-detail__directions"
+                >
+                  Yol tap
+                </a>
+              </>
+            )}
+          </dd>
         </div>
 
         <div className="listing-detail__fact">

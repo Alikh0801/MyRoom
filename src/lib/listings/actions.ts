@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { isValidRegion } from "@/lib/regions";
+import { isValidCoordinates } from "@/lib/map";
 import { createClient } from "@/lib/supabase/server";
 
 export interface CreateListingState {
@@ -31,6 +32,8 @@ export async function createListing(
   const city = (formData.get("city") as string)?.trim();
   const region = (formData.get("region") as string)?.trim();
   const address = (formData.get("address") as string)?.trim() || null;
+  const lat = Number(formData.get("lat"));
+  const lng = Number(formData.get("lng"));
   const maxGuests = Number(formData.get("maxGuests"));
   const bedrooms = Number(formData.get("bedrooms"));
   const whatsappPhone = (formData.get("whatsappPhone") as string)?.trim();
@@ -59,6 +62,9 @@ export async function createListing(
   }
   if (!isValidRegion(region)) {
     return { error: "Rayon siyahıdan seçin." };
+  }
+  if (!isValidCoordinates(lat, lng)) {
+    return { error: "Xəritədə düzgün yer seçin." };
   }
   if (!maxGuests || maxGuests < 1) {
     return { error: "Qonaq sayı ən azı 1 olmalıdır." };
@@ -99,6 +105,8 @@ export async function createListing(
       city,
       region,
       address,
+      lat,
+      lng,
       max_guests: maxGuests,
       bedrooms: bedrooms >= 0 ? bedrooms : 1,
       bathrooms: 1,
