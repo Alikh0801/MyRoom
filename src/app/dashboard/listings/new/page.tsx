@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CreateListingForm } from "@/components/listings/CreateListingForm";
 import { requireAuth } from "@/lib/listings/actions";
 import {
@@ -24,17 +25,24 @@ export default async function NewListingPage() {
 
   return (
     <div className="dashboard-page dashboard-page--form">
-      <div className="container dashboard--listing-form">
-      <h1 className="section__title">Yeni elan yerləşdir</h1>
-      <p className="section__subtitle">
-        Məlumatları doldurun — elanınız yoxlanıldıqdan sonra saytda görünəcək.
-      </p>
+      <div className="container listing-form-page">
+        <Link href="/dashboard/listings" className="listing-form-page__back">
+          ← Mənim elanlarım
+        </Link>
 
-      <CreateListingForm
-        categories={categories}
-        amenityGroups={amenityGroups}
-        defaultWhatsapp={defaultWhatsapp}
-      />
+        <header className="listing-form-page__header">
+          <h1 className="listing-form-page__title">Yeni elan yerləşdir</h1>
+          <p className="listing-form-page__subtitle">
+            Addım-addım məlumatları doldurun. Elanınız yoxlanıldıqdan sonra
+            saytda görünəcək.
+          </p>
+        </header>
+
+        <CreateListingForm
+          categories={categories}
+          amenityGroups={amenityGroups}
+          defaultWhatsapp={defaultWhatsapp}
+        />
       </div>
     </div>
   );

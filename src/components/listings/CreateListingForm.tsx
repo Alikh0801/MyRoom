@@ -2,11 +2,12 @@
 
 import imageCompression from "browser-image-compression";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { CategoryPicker } from "@/components/listings/CategoryPicker";
 import { ImagePreviewSlider } from "@/components/listings/ImagePreviewSlider";
 import { HotelRoomTypeFields } from "@/components/listings/HotelRoomTypeFields";
+import { ListingFormSection } from "@/components/listings/ListingFormSection";
 import { PRICE_UNIT_OPTIONS } from "@/lib/price";
 import { AmenitiesPicker } from "@/components/listings/AmenitiesPicker";
 import { RegionCombobox } from "@/components/ui/RegionCombobox";
@@ -34,6 +35,8 @@ interface CreateListingFormProps {
   amenityGroups: AmenityGroup[];
   defaultWhatsapp?: string;
 }
+
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 async function uploadImages(listingId: string, files: File[]) {
   for (let i = 0; i < files.length; i++) {
@@ -101,6 +104,7 @@ export function CreateListingForm({
   const [region, setRegion] = useState("");
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
+  const [dragOver, setDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -117,14 +121,31 @@ export function CreateListingForm({
   );
   const listingAmenityGroups = isHotel ? propertyAmenityGroups : amenityGroups;
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files ?? []);
-    if (files.length > 15) {
-      setError("Maksimum 15 şəkil seçə bilərsiniz");
+  let step = 1;
+
+  function setImageFiles(files: File[]) {
+    const images = files.filter((file) => ACCEPTED_IMAGE_TYPES.includes(file.type));
+
+    if (images.length === 0) {
+      setError("Yalnız JPEG, PNG və ya WebP şəkilləri seçə bilərsiniz.");
+      return;
+    }
+    if (images.length > 15) {
+      setError("Maksimum 15 şəkil seçə bilərsiniz.");
       return;
     }
     setError(null);
-    setSelectedFiles(files);
+    setSelectedFiles(images);
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setImageFiles(Array.from(e.target.files ?? []));
+  }
+
+  function handleDrop(e: React.DragEvent<HTMLLabelElement>) {
+    e.preventDefault();
+    setDragOver(false);
+    setImageFiles(Array.from(e.dataTransfer.files));
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -133,6 +154,11 @@ export function CreateListingForm({
 
     if (selectedFiles.length === 0) {
       setError("Ən azı 1 şəkil seçin.");
+      return;
+    }
+
+    if (!categoryId) {
+      setError("Kateqoriya seçin.");
       return;
     }
 
@@ -171,24 +197,77 @@ export function CreateListingForm({
 
   return (
     <form className="listing-form" onSubmit={handleSubmit}>
-      {error && <p className="auth-form__error">{error}</p>}
+      {error && (
+        <div className="listing-form__alert" role="alert">
+          {error}
+        </div>
+      )}
 
-      <fieldset className="listing-form__section">
-        <legend>Əsas məlumat</legend>
+      <ListingFormSection
+        step={step++}
+        title="Şəkillər"
+        description="İlk şəkil əsas şəkil olacaq. Minimum 1, maksimum 15 şəkil."
+      >
+        <label
+          className={`listing-form__dropzone${dragOver ? " listing-form__dropzone--active" : ""}${selectedFiles.length > 0 ? " listing-form__dropzone--filled" : ""}`}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={handleDrop}
+        >
+          <input
+            type="file"
+            accept={ACCEPTED_IMAGE_TYPES.join(",")}
+            multiple
+            onChange={handleFileChange}
+            hidden
+          />
+          <span className="listing-form__dropzone-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 16V4m0 0L8 8m4-4 4 4M4 20h16"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+          <span className="listing-form__dropzone-title">
+            {selectedFiles.length > 0
+              ? `${selectedFiles.length} şəkil seçildi`
+              : "Şəkilləri buraya sürüşdürün"}
+          </span>
+          <span className="listing-form__dropzone-text">
+            və ya kompüterdən seçmək üçün klikləyin
+          </span>
+        </label>
 
-        <label className="auth-form__field">
-          Elan başlığı *
+        {selectedFiles.length > 0 && (
+          <ImagePreviewSlider files={selectedFiles} />
+        )}
+      </ListingFormSection>
+
+      <ListingFormSection
+        step={step++}
+        title="Əsas məlumat"
+        description="Elanınızı qonaqlar üçün cəlbedici edin."
+      >
+        <label className="listing-form__field">
+          <span className="listing-form__label">Elan başlığı *</span>
           <input
             type="text"
             name="title"
             required
             minLength={5}
-            placeholder="Məs: Quba dağ mənzərəli A-frame (Glamping) ev"
+            placeholder="Məs: Quba dağ mənzərəli A-frame ev"
           />
         </label>
 
-        <label className="auth-form__field">
-          Təsvir *
+        <label className="listing-form__field">
+          <span className="listing-form__label">Təsvir *</span>
           <textarea
             name="description"
             required
@@ -198,72 +277,24 @@ export function CreateListingForm({
           />
         </label>
 
-        <label className="auth-form__field">
-          Kateqoriya *
-          <select
-            name="categoryId"
-            required
-            defaultValue=""
-            onChange={(e) => setCategoryId(e.target.value)}
-          >
-            <option value="" disabled>
-              Seçin
-            </option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name_az}
-              </option>
-            ))}
-          </select>
-        </label>
-      </fieldset>
-
-      <fieldset className="listing-form__section">
-        <legend>Qiymət və əlaqə</legend>
-
-        <div className="listing-form__row">
-          <label className="auth-form__field">
-            Qiymət (AZN) *
-            <input
-              type="number"
-              name="pricePerNight"
-              required
-              min={1}
-              step={1}
-              placeholder="150"
-            />
-          </label>
-
-          <label className="auth-form__field">
-            Vahid *
-            <select name="priceUnit" required defaultValue="day">
-              {PRICE_UNIT_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  /{opt.label.toLowerCase()}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-
-        <label className="auth-form__field">
-          WhatsApp nömrəsi *
-          <input
-            type="tel"
-            name="whatsappPhone"
-            required
-            defaultValue={defaultWhatsapp}
-            placeholder="+994501234567"
+        <div className="listing-form__field">
+          <span className="listing-form__label">Kateqoriya *</span>
+          <CategoryPicker
+            categories={categories}
+            value={categoryId}
+            onChange={setCategoryId}
           />
-        </label>
-      </fieldset>
+        </div>
+      </ListingFormSection>
 
-      <fieldset className="listing-form__section">
-        <legend>Yer və tutum</legend>
-
+      <ListingFormSection
+        step={step++}
+        title="Məkan məlumatları"
+        description="Qonaqlar harada qalacaqlarını və neçə nəfər qəbul edə biləcəyinizi bilsin."
+      >
         <div className="listing-form__row">
-          <label className="auth-form__field">
-            Rayon *
+          <label className="listing-form__field">
+            <span className="listing-form__label">Rayon *</span>
             <RegionCombobox
               name="region"
               value={region}
@@ -273,19 +304,19 @@ export function CreateListingForm({
             />
           </label>
 
-          <label className="auth-form__field">
-            Şəhər / kənd *
+          <label className="listing-form__field">
+            <span className="listing-form__label">Şəhər / kənd *</span>
             <input type="text" name="city" required placeholder="Qəçrəş" />
           </label>
         </div>
 
-        <label className="auth-form__field">
-          Ünvan (ixtiyari)
+        <label className="listing-form__field">
+          <span className="listing-form__label">Ünvan (ixtiyari)</span>
           <input type="text" name="address" placeholder="Tam ünvan" />
         </label>
 
-        <div className="auth-form__field">
-          Xəritədə yer *
+        <div className="listing-form__field">
+          <span className="listing-form__label">Xəritədə yer *</span>
           <LocationPicker
             lat={lat}
             lng={lng}
@@ -297,8 +328,8 @@ export function CreateListingForm({
         </div>
 
         <div className="listing-form__row">
-          <label className="auth-form__field">
-            Qonaq *
+          <label className="listing-form__field">
+            <span className="listing-form__label">Qonaq *</span>
             <input
               type="number"
               name="maxGuests"
@@ -308,8 +339,8 @@ export function CreateListingForm({
             />
           </label>
 
-          <label className="auth-form__field">
-            Yataq otağı
+          <label className="listing-form__field">
+            <span className="listing-form__label">Yataq otağı</span>
             <input
               type="number"
               name="bedrooms"
@@ -318,58 +349,78 @@ export function CreateListingForm({
             />
           </label>
         </div>
-      </fieldset>
+      </ListingFormSection>
+
+      <ListingFormSection
+        step={step++}
+        title="Qiymət və əlaqə"
+        description="Qonaqlar sizinlə asanlıqla əlaqə saxlaya bilsin."
+      >
+        <div className="listing-form__row">
+          <label className="listing-form__field">
+            <span className="listing-form__label">Qiymət (AZN) *</span>
+            <input
+              type="number"
+              name="pricePerNight"
+              required
+              min={1}
+              step={1}
+              placeholder="150"
+            />
+          </label>
+
+          <label className="listing-form__field">
+            <span className="listing-form__label">Vahid *</span>
+            <select name="priceUnit" required defaultValue="day">
+              {PRICE_UNIT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  /{opt.label.toLowerCase()}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <label className="listing-form__field">
+          <span className="listing-form__label">WhatsApp nömrəsi *</span>
+          <input
+            type="tel"
+            name="whatsappPhone"
+            required
+            defaultValue={defaultWhatsapp}
+            placeholder="+994501234567"
+          />
+        </label>
+      </ListingFormSection>
 
       {isHotel && (
-        <fieldset className="listing-form__section">
-          <legend>Otaq tipi</legend>
+        <ListingFormSection step={step++} title="Otaq tipi">
           <HotelRoomTypeFields roomAmenityGroups={roomAmenityGroups} />
-        </fieldset>
+        </ListingFormSection>
       )}
 
       {listingAmenityGroups.some((g) => g.amenities.length > 0) && (
-        <fieldset className="listing-form__section">
-          <legend>{isHotel ? "Müəssisə xüsusiyyətləri" : "Daxildir"}</legend>
+        <ListingFormSection
+          step={step++}
+          title={isHotel ? "Müəssisə xüsusiyyətləri" : "Daxildir"}
+          description="Mülkünüzdə nələrin olduğunu seçin."
+        >
           <AmenitiesPicker groups={listingAmenityGroups} />
-        </fieldset>
+        </ListingFormSection>
       )}
 
-      <fieldset className="listing-form__section">
-        <legend>Şəkillər</legend>
-        <p className="listing-form__hint">
-          Minimum 1, maksimum 15 şəkil. JPEG və PNG avtomatik sıxılır.
+      <div className="listing-form__footer">
+        <p className="listing-form__note">
+          Göndərdikdən sonra elanınız admin tərəfindən yoxlanılacaq.
         </p>
-        <label className="image-uploader__dropzone">
-          <input
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            multiple
-            onChange={handleFileChange}
-            hidden
-          />
-          <span>
-            {selectedFiles.length > 0
-              ? `${selectedFiles.length} şəkil seçildi — əlavə etmək üçün yenidən klikləyin`
-              : "Şəkil seçin"}
-          </span>
-        </label>
-
-        {selectedFiles.length > 0 && (
-          <ImagePreviewSlider files={selectedFiles} />
-        )}
-      </fieldset>
-
-      <button
-        type="submit"
-        className="btn btn--primary listing-form__submit"
-        disabled={submitting}
-      >
-        {submitting ? "Göndərilir..." : "Elanı göndər"}
-      </button>
-
-      <p className="listing-form__note">
-        Elan admin təsdiqindən sonra saytda görünəcək.
-      </p>
+        <button
+          type="submit"
+          className="btn btn--primary listing-form__submit"
+          disabled={submitting}
+        >
+          {submitting ? "Göndərilir..." : "Elanı göndər"}
+        </button>
+      </div>
     </form>
   );
 }

@@ -52,9 +52,6 @@ export default async function MyListingsPage({
               Elanlarınızın statusunu izləyin və idarə edin.
             </p>
           </div>
-          <Link href="/dashboard/listings/new" className="btn btn--primary">
-            + Yeni elan
-          </Link>
         </div>
 
       {params.created === "1" && (

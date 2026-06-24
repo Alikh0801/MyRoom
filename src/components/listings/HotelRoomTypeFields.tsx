@@ -16,8 +16,8 @@ export function HotelRoomTypeFields({
       </p>
 
       <div className="listing-form__row">
-        <label className="auth-form__field">
-          Otaq tipi adı *
+        <label className="listing-form__field">
+          <span className="listing-form__label">Otaq tipi adı *</span>
           <input
             type="text"
             name="roomTypeName"
@@ -26,8 +26,8 @@ export function HotelRoomTypeFields({
           />
         </label>
 
-        <label className="auth-form__field">
-          Mərtəbə
+        <label className="listing-form__field">
+          <span className="listing-form__label">Mərtəbə</span>
           <input
             type="number"
             name="roomTypeFloor"
