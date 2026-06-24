@@ -7,6 +7,7 @@ import {
   TurnstileField,
   useTurnstileRequired,
 } from "@/components/auth/TurnstileField";
+import { LegalAcceptanceField } from "@/components/legal/LegalAcceptanceField";
 
 export function RegisterForm() {
   const [state, formAction, pending] = useActionState<AuthState | null, FormData>(
@@ -120,6 +121,8 @@ export function RegisterForm() {
         resetKey={state?.error}
         onTokenChange={setTurnstileToken}
       />
+
+      <LegalAcceptanceField />
 
       <button
         type="submit"

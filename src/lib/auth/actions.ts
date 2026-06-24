@@ -7,6 +7,7 @@ import { verifyTurnstileToken } from "@/lib/auth/turnstile";
 import { isValidPhone, normalizePhone } from "@/lib/phone";
 import { getClientIp } from "@/lib/request";
 import { createClient } from "@/lib/supabase/server";
+import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
 
 export interface AuthState {
   error?: string;
@@ -115,6 +116,12 @@ export async function signUp(
 
   if (password.length < 6) {
     return { error: "Şifrə ən azı 6 simvol olmalıdır." };
+  }
+
+  if (!hasAcceptedLegalTerms(formData)) {
+    return {
+      error: "İstifadəçi şərtləri və Məxfilik siyasəti ilə razı olmalısınız.",
+    };
   }
 
   const ip = await getClientIp();

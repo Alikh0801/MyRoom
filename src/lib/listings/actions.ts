@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { isValidRegion } from "@/lib/regions";
 import { isValidCoordinates } from "@/lib/map";
+import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
 import { createClient } from "@/lib/supabase/server";
 
 export interface CreateListingState {
@@ -65,6 +66,11 @@ export async function createListing(
   }
   if (!isValidCoordinates(lat, lng)) {
     return { error: "Xəritədə düzgün yer seçin." };
+  }
+  if (!hasAcceptedLegalTerms(formData)) {
+    return {
+      error: "İstifadəçi şərtləri və Məxfilik siyasəti ilə razı olmalısınız.",
+    };
   }
   if (!maxGuests || maxGuests < 1) {
     return { error: "Qonaq sayı ən azı 1 olmalıdır." };

@@ -15,6 +15,8 @@ import { filterAmenityGroupsBySlug } from "@/lib/amenities/helpers";
 import { isValidRegion } from "@/lib/regions";
 import { createListing } from "@/lib/listings/actions";
 import { isValidCoordinates } from "@/lib/map";
+import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
+import { LegalAcceptanceField } from "@/components/legal/LegalAcceptanceField";
 import type { AmenityGroup, Category } from "@/types/database";
 
 const LocationPicker = dynamic(
@@ -172,8 +174,13 @@ export function CreateListingForm({
       return;
     }
 
-    setSubmitting(true);
     const formData = new FormData(e.currentTarget);
+    if (!hasAcceptedLegalTerms(formData)) {
+      setError("İstifadəçi şərtləri və Məxfilik siyasəti ilə razı olmalısınız.");
+      return;
+    }
+
+    setSubmitting(true);
     const result = await createListing(null, formData);
 
     if (result.error || !result.listingId) {
@@ -410,6 +417,7 @@ export function CreateListingForm({
       )}
 
       <div className="listing-form__footer">
+        <LegalAcceptanceField className="listing-form__legal" />
         <p className="listing-form__note">
           Göndərdikdən sonra elanınız admin tərəfindən yoxlanılacaq.
         </p>
