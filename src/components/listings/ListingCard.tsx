@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link, { useLinkStatus } from "next/link";
+import { formatListingCardDate } from "@/lib/date";
 import { formatPriceSuffix } from "@/lib/price";
 import { LISTING_CARD_IMAGE_QUALITY } from "@/lib/images/listing-images";
 import type { ListingCardData } from "@/types/database";
@@ -35,6 +36,9 @@ function ListingCardContent({ listing, vip = false }: ListingCardProps) {
         {vip && <span className="listing-card__vip">VIP</span>}
         <span className="listing-card__badge">{listing.category.name_az}</span>
       </div>
+      <time className="listing-card__date" dateTime={listing.created_at}>
+        {formatListingCardDate(listing.created_at)}
+      </time>
       <div className="listing-card__body">
         <h3 className="listing-card__title">{listing.title}</h3>
         <p className="listing-card__location">

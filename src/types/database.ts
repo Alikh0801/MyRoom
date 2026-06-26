@@ -109,6 +109,7 @@ export interface ListingCardData {
   city: string;
   region: string;
   max_guests: number;
+  created_at: string;
   category: Pick<Category, "slug" | "name_az">;
   cover_image: string | null;
 }

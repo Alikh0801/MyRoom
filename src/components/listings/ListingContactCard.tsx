@@ -95,7 +95,7 @@ export function ListingContactCard({
                   rel="noopener noreferrer"
                   className="listing-detail__directions"
                 >
-                  Yol tap
+                  Marşrut təyin et
                 </a>
               </>
             )}

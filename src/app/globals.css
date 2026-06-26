@@ -1188,7 +1188,15 @@ img {
 }
 
 .listing-card__body {
-  padding: 0.75rem 0.875rem 0.875rem;
+  padding: 0.5rem 0.875rem 0.875rem;
+}
+
+.listing-card__date {
+  display: block;
+  padding: 0.5rem 0.875rem 0;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  text-align: left;
 }
 
 .listing-card__title {
@@ -3132,10 +3140,12 @@ img {
   color: var(--color-primary);
   font-weight: 600;
   white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .listing-detail__directions:hover {
-  text-decoration: underline;
+  color: var(--color-primary-dark);
 }
 
 /* Admin */
