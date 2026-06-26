@@ -1,69 +1,22 @@
 # MyRoom
 
-Azərbaycan üzrə qısamüddətli istirahət elanları — hotel, hostel, A-frame, rayon evləri.
+**MyRoom** — Azərbaycan üzrə qısamüddətli istirahət və günlük icarə elanları platformasıdır.
 
-## Texnologiyalar
+Platforma ev sahiblərinə (host) mülk və ya otaqlarını elan yerləşdirməyə, qonaqlara isə region, kateqoriya və digər filtrlər əsasında uyğun variantları tapmağa imkan verir.
 
-- **Next.js 15** (App Router)
-- **Supabase** (PostgreSQL, Auth, Storage)
-- **S3 SDK** (Supabase Storage / gələcəkdə Cloudflare R2)
-- **browser-image-compression** (brauzerdə şəkil sıxma)
+## Nə edir?
 
-## Quraşdırma
+- **Hotel**, **hostel**, **A-frame (Glamping)** və **rayon evləri** kimi kateqoriyalarda elanların yerləşdirilməsi
+- Elanların axtarışı və filtrlənməsi
+- Elan detallarında şəkillər, qiymət, ünvan, xəritədə yer və əlaqə məlumatları
+- Elan sahibi ilə WhatsApp və telefon vasitəsilə birbaşa əlaqə
+- Qeydiyyatlı istifadəçilər üçün elan idarəetməsi və admin təsdiqi
 
-### 1. Asılılıqlar
+## Kimlər üçündür?
 
-```bash
-npm install
-```
+- **Elan sahibləri** — ev, otaq və ya müəssisələrini qısamüddətli icarəyə vermək istəyənlər
+- **Qonaqlar** — Azərbaycan üzrə istirahət və günlük icarə variantlarını axtaranlar
 
-### 2. Supabase layihəsi
+## Qeyd
 
-1. [supabase.com](https://supabase.com) — yeni layihə yaradın
-2. SQL Editor-də `supabase/migrations/001_initial_schema.sql` faylını işlədin
-3. Storage → yeni bucket: `property-images` (public)
-4. Storage → S3 Access Keys yaradın
-5. **Authentication → URL Configuration**:
-  - Site URL: `http://localhost:3000`
-  - Redirect URLs: `http://localhost:3000/auth/callback`
-
-### 3. Environment
-
-```bash
-cp .env.example .env.local
-```
-
-`.env.local` faylını Supabase məlumatlarınızla doldurun.
-
-### 4. İşə salma
-
-```bash
-npm run dev
-```
-
-Brauzer: [http://localhost:3000](http://localhost:3000)
-
-## Layihə strukturu
-
-```
-src/
-├── app/                  # Səhifələr (App Router)
-│   ├── page.tsx          # Ana səhifə
-│   ├── search/           # Axtarış
-│   ├── listings/[id]/    # Elan detalı
-│   └── api/upload/       # Şəkil yükləmə API
-├── components/           # UI komponentləri
-├── lib/
-│   ├── supabase/         # Supabase client
-│   ├── storage/          # S3 upload
-│   └── queries/          # DB sorğuları
-└── types/                # TypeScript tipləri
-```
-
-## Növbəti addımlar
-
-- [x] Supabase Auth (giriş / qeydiyyat)
-- [ ] Elan yaratma forması
-- [ ] Admin təsdiq paneli
-- [ ] Seed elanlar (Instagram icazəli)
-- [ ] Mapbox xəritə inteqrasiyası
+MyRoom elanları birləşdirən onlayn bazar yeridir. İcarə müqaviləsi və ödəniş şərtləri birbaşa elan sahibi ilə qonaq arasında razılaşdırılır.
