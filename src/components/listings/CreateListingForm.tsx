@@ -243,7 +243,7 @@ export function CreateListingForm({
               : "Şəkilləri buraya sürüşdürün"}
           </span>
           <span className="listing-form__dropzone-text">
-            və ya kompüterdən seçmək üçün klikləyin
+            və ya cihazdan seçin
           </span>
         </label>
 
