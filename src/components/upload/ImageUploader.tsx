@@ -1,6 +1,6 @@
 "use client";
 
-import imageCompression from "browser-image-compression";
+import { compressListingImage } from "@/lib/images/listing-images";
 import { useCallback, useState } from "react";
 
 interface ImageUploaderProps {
@@ -36,12 +36,7 @@ export function ImageUploader({
       ]);
 
       try {
-        const compressed = await imageCompression(file, {
-          maxSizeMB: 0.25,
-          maxWidthOrHeight: 1920,
-          useWebWorker: true,
-          fileType: "image/webp",
-        });
+        const compressed = await compressListingImage(file);
 
         const presignRes = await fetch("/api/upload/presign", {
           method: "POST",

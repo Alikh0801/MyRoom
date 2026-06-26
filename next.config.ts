@@ -6,6 +6,7 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
 
 const nextConfig: NextConfig = {
   images: {
+    qualities: [75, 80, 85, 90],
     remotePatterns: [
       {
         protocol: "https",

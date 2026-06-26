@@ -3,6 +3,9 @@
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { ImageSlider, type SliderImage } from "@/components/listings/ImageSlider";
+import {
+  LISTING_IMAGE_DISPLAY_QUALITY,
+} from "@/lib/images/listing-images";
 
 export interface GridImage {
   id: string;
@@ -19,12 +22,14 @@ function GridCell({
   className,
   priority,
   overlay,
+  sizes,
   onClick,
 }: {
   image: GridImage;
   className?: string;
   priority?: boolean;
   overlay?: string;
+  sizes: string;
   onClick: () => void;
 }) {
   return (
@@ -39,7 +44,8 @@ function GridCell({
         alt={image.alt}
         fill
         priority={priority}
-        sizes="(max-width: 900px) 100vw, 33vw"
+        quality={LISTING_IMAGE_DISPLAY_QUALITY}
+        sizes={sizes}
         className="listing-photo-grid__img"
       />
       {overlay && <span className="listing-photo-grid__overlay">{overlay}</span>}
@@ -99,12 +105,14 @@ export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
             image={images[0]}
             className="listing-photo-grid__cell--main"
             priority
+            sizes="(max-width: 900px) 100vw, 66vw"
             onClick={() => openLightbox(0)}
           />
           {images[1] && (
             <GridCell
               image={images[1]}
               className="listing-photo-grid__cell--side-top"
+              sizes="(max-width: 900px) 50vw, 22vw"
               onClick={() => openLightbox(1)}
             />
           )}
@@ -112,6 +120,7 @@ export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
             <GridCell
               image={images[2]}
               className="listing-photo-grid__cell--side-bottom"
+              sizes="(max-width: 900px) 50vw, 22vw"
               onClick={() => openLightbox(2)}
             />
           )}
@@ -137,6 +146,7 @@ export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
                   key={image.id}
                   image={image}
                   overlay={overlay}
+                  sizes="(max-width: 900px) 25vw, 14vw"
                   onClick={() => openLightbox(globalIndex)}
                 />
               );
@@ -170,7 +180,8 @@ export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
               images={sliderImages}
               initialIndex={startIndex}
               fit="contain"
-              sizes="(max-width: 900px) 100vw, 1320px"
+              sizes="(max-width: 900px) 100vw, min(1320px, 90vw)"
+              quality={LISTING_IMAGE_DISPLAY_QUALITY}
             />
           </div>
         </div>

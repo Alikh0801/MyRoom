@@ -1,6 +1,6 @@
 "use client";
 
-import imageCompression from "browser-image-compression";
+import { compressListingImage } from "@/lib/images/listing-images";
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -45,12 +45,7 @@ async function uploadImages(listingId: string, files: File[]) {
     const file = files[i];
     const previewId = crypto.randomUUID();
 
-    const compressed = await imageCompression(file, {
-      maxSizeMB: 0.25,
-      maxWidthOrHeight: 1920,
-      useWebWorker: true,
-      fileType: "image/webp",
-    });
+    const compressed = await compressListingImage(file);
 
     const presignRes = await fetch("/api/upload/presign", {
       method: "POST",

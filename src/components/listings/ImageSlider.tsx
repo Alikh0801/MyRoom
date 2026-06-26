@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
+import { LISTING_IMAGE_DISPLAY_QUALITY } from "@/lib/images/listing-images";
 
 export interface SliderImage {
   id: string;
@@ -15,6 +16,7 @@ interface ImageSliderProps {
   fit?: "cover" | "contain";
   initialIndex?: number;
   sizes?: string;
+  quality?: number;
   /** Lokal fayl önizləməsi üçün həmişə <img> istifadə et */
   preferNative?: boolean;
 }
@@ -25,6 +27,7 @@ export function ImageSlider({
   fit = "contain",
   initialIndex = 0,
   sizes = "(max-width: 900px) 100vw, 640px",
+  quality = LISTING_IMAGE_DISPLAY_QUALITY,
   preferNative = false,
 }: ImageSliderProps) {
   const [index, setIndex] = useState(initialIndex);
@@ -81,6 +84,7 @@ export function ImageSlider({
             alt={current.alt}
             fill
             priority={priority && index === 0}
+            quality={quality}
             sizes={sizes}
             className="image-slider__img"
           />

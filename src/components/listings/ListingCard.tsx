@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link, { useLinkStatus } from "next/link";
 import { formatPriceSuffix } from "@/lib/price";
+import { LISTING_CARD_IMAGE_QUALITY } from "@/lib/images/listing-images";
 import type { ListingCardData } from "@/types/database";
 
 interface ListingCardProps {
@@ -24,6 +25,7 @@ function ListingCardContent({ listing, vip = false }: ListingCardProps) {
             src={listing.cover_image}
             alt={listing.title}
             fill
+            quality={LISTING_CARD_IMAGE_QUALITY}
             sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
             className="listing-card__img"
           />
