@@ -1,30 +1,21 @@
-import Link from "next/link";
-
-export const metadata = {
-  title: "Email təsdiqi",
-};
+import { redirect } from "next/navigation";
 
 interface CheckEmailPageProps {
-  searchParams: Promise<{ reason?: string }>;
+  searchParams: Promise<{ email?: string; reason?: string }>;
 }
 
 export default async function CheckEmailPage({ searchParams }: CheckEmailPageProps) {
   const params = await searchParams;
-  const isUnconfirmed = params.reason === "unconfirmed";
+  const query = new URLSearchParams();
 
-  return (
-    <div className="auth-page">
-      <div className="auth-card auth-card--center">
-        <h1 className="auth-card__title">Emailinizi yoxlayın</h1>
-        <p className="auth-card__subtitle">
-          {isUnconfirmed
-            ? "Elan yerləşdirmək üçün email ünvanınızı təsdiqləməlisiniz. Poçt qutunuzdakı linkə klikləyin."
-            : "Qeydiyyat tamamlamaq üçün email ünvanınıza göndərilən linkə klikləyin. Təsdiqdən sonra daxil ola biləcəksiniz."}
-        </p>
-        <Link href="/auth/login" className="btn btn--primary">
-          Giriş səhifəsinə qayıt
-        </Link>
-      </div>
-    </div>
-  );
+  if (params.email) {
+    query.set("email", params.email);
+  }
+
+  if (params.reason) {
+    query.set("reason", params.reason);
+  }
+
+  const suffix = query.toString();
+  redirect(suffix ? `/auth/verify-email?${suffix}` : "/auth/verify-email");
 }

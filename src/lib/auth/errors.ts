@@ -8,6 +8,13 @@ export function translateAuthError(message: string): string {
     "Signup requires a valid password": "Etibarlı şifrə daxil edin.",
     "Unable to validate email address: invalid format":
       "Email formatı düzgün deyil.",
+    "Token has expired or is invalid": "Təsdiq kodu səhvdir və ya vaxtı bitib.",
+    "Email link is invalid or has expired":
+      "Təsdiq kodu səhvdir və ya vaxtı bitib.",
+    "For security purposes, you can only request this after":
+      "Yeni kod göndərmək üçün bir az gözləyin.",
+    "Error sending confirmation email":
+      "Təsdiq emaili göndərilmədi. Supabase SMTP və Resend ayarlarını yoxlayın.",
   };
 
   return map[message] ?? message;

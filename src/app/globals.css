@@ -2223,6 +2223,83 @@ img {
   text-decoration: underline;
 }
 
+.auth-form__success {
+  background: #e8f8ef;
+  color: #1e7e45;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+.auth-verify-email__hint {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.auth-verify-email__email {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.auth-verify-email {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth-otp {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.5rem 0 0.25rem;
+  max-width: 100%;
+}
+
+.auth-otp__digit {
+  width: 2.35rem;
+  height: 3rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-align: center;
+  font-family: inherit;
+  background: var(--color-surface);
+}
+
+.auth-otp__digit:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+  border-color: var(--color-primary);
+}
+
+.auth-verify-email__resend {
+  text-align: center;
+}
+
+.auth-verify-email__resend-btn {
+  border: none;
+  background: none;
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  font-family: inherit;
+}
+
+.auth-verify-email__resend-btn:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.auth-verify-email__resend-btn:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
 /* Dashboard */
 .dashboard-page {
   padding: 2rem 0 4rem;

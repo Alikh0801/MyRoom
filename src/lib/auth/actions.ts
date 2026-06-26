@@ -8,6 +8,7 @@ import { isValidPhone, normalizePhone } from "@/lib/phone";
 import { getClientIp } from "@/lib/request";
 import { createClient } from "@/lib/supabase/server";
 import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
+import { EMAIL_OTP_LENGTH } from "@/lib/auth/otp";
 
 export interface AuthState {
   error?: string;
@@ -174,7 +175,7 @@ export async function signUp(
   }
 
   if (data.user && !data.session) {
-    redirect("/auth/check-email");
+    redirect(`/auth/verify-email?email=${encodeURIComponent(email)}`);
   }
 
   if (data.user && data.session) {
@@ -190,6 +191,74 @@ export async function signUp(
   }
 
   redirect("/");
+}
+
+export async function verifyEmailOtp(
+  _prevState: AuthState | null,
+  formData: FormData
+): Promise<AuthState | null> {
+  const email = normalizeEmail((formData.get("email") as string) ?? "");
+  const token = (formData.get("token") as string)?.trim();
+
+  if (!email) {
+    return { error: "Email ünvanı tapılmadı." };
+  }
+
+  if (!token) {
+    return { error: "Təsdiq kodunu daxil edin." };
+  }
+
+  if (!new RegExp(`^\\d{${EMAIL_OTP_LENGTH}}$`).test(token)) {
+    return { error: `${EMAIL_OTP_LENGTH} rəqəmli kodu daxil edin.` };
+  }
+
+  const ip = await getClientIp();
+  const rateLimit = await checkAuthRateLimit("verify-otp", ip);
+  if (!rateLimit.ok) {
+    return { error: rateLimit.error };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.verifyOtp({
+    email,
+    token,
+    type: "signup",
+  });
+
+  if (error) {
+    return { error: translateAuthError(error.message) };
+  }
+
+  redirect("/");
+}
+
+export async function resendVerificationOtp(
+  _prevState: AuthState | null,
+  formData: FormData
+): Promise<AuthState | null> {
+  const email = normalizeEmail((formData.get("email") as string) ?? "");
+
+  if (!email) {
+    return { error: "Email ünvanı tapılmadı." };
+  }
+
+  const ip = await getClientIp();
+  const rateLimit = await checkAuthRateLimit("resend-otp", ip);
+  if (!rateLimit.ok) {
+    return { error: rateLimit.error };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email,
+  });
+
+  if (error) {
+    return { error: translateAuthError(error.message) };
+  }
+
+  return { success: "Yeni təsdiq kodu email ünvanınıza göndərildi." };
 }
 
 export async function signOut() {

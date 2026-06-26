@@ -1,7 +1,11 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-export type AuthRateLimitAction = "signup" | "signin";
+export type AuthRateLimitAction =
+  | "signup"
+  | "signin"
+  | "verify-otp"
+  | "resend-otp";
 
 function getRedis(): Redis | null {
   const url = process.env.UPSTASH_REDIS_REST_URL;
@@ -16,6 +20,22 @@ function getLimiter(action: AuthRateLimitAction, redis: Redis): Ratelimit {
       redis,
       limiter: Ratelimit.slidingWindow(3, "1 h"),
       prefix: "myroom:auth:signup",
+    });
+  }
+
+  if (action === "verify-otp") {
+    return new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(10, "15 m"),
+      prefix: "myroom:auth:verify-otp",
+    });
+  }
+
+  if (action === "resend-otp") {
+    return new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(3, "1 h"),
+      prefix: "myroom:auth:resend-otp",
     });
   }
 
@@ -54,10 +74,14 @@ export async function checkAuthRateLimit(
     Math.ceil((resetDate.getTime() - Date.now()) / 60000)
   );
 
-  const message =
-    action === "signup"
-      ? `Çox sayda qeydiyyat cəhdi. ${minutesLeft} dəqiqə sonra yenidən cəhd edin.`
-      : `Çox sayda giriş cəhdi. ${minutesLeft} dəqiqə sonra yenidən cəhd edin.`;
+  const messages: Record<AuthRateLimitAction, string> = {
+    signup: `Çox sayda qeydiyyat cəhdi. ${minutesLeft} dəqiqə sonra yenidən cəhd edin.`,
+    signin: `Çox sayda giriş cəhdi. ${minutesLeft} dəqiqə sonra yenidən cəhd edin.`,
+    "verify-otp": `Çox sayda təsdiq cəhdi. ${minutesLeft} dəqiqə sonra yenidən cəhd edin.`,
+    "resend-otp": `Çox sayda kod göndərmə cəhdi. ${minutesLeft} dəqiqə sonra yenidən cəhd edin.`,
+  };
+
+  const message = messages[action];
 
   return { ok: false, error: message };
 }

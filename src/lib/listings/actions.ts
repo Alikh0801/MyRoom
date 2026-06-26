@@ -219,7 +219,10 @@ export async function requireAuth() {
 
   if (!user) redirect("/auth/login?redirectTo=/dashboard/listings/new");
   if (!user.email_confirmed_at) {
-    redirect("/auth/check-email?reason=unconfirmed");
+    const email = user.email
+      ? `?email=${encodeURIComponent(user.email)}&reason=unconfirmed`
+      : "?reason=unconfirmed";
+    redirect(`/auth/verify-email${email}`);
   }
   return user;
 }

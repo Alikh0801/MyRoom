@@ -49,14 +49,20 @@ export async function updateSession(request: NextRequest) {
 
   if (user && !emailConfirmed && pathname.startsWith("/dashboard")) {
     const url = request.nextUrl.clone();
-    url.pathname = "/auth/check-email";
+    url.pathname = "/auth/verify-email";
+    if (user.email) {
+      url.searchParams.set("email", user.email);
+    }
     url.searchParams.set("reason", "unconfirmed");
     return NextResponse.redirect(url);
   }
 
   if (user && !emailConfirmed && pathname.startsWith("/admin")) {
     const url = request.nextUrl.clone();
-    url.pathname = "/auth/check-email";
+    url.pathname = "/auth/verify-email";
+    if (user.email) {
+      url.searchParams.set("email", user.email);
+    }
     url.searchParams.set("reason", "unconfirmed");
     return NextResponse.redirect(url);
   }
@@ -71,7 +77,9 @@ export async function updateSession(request: NextRequest) {
   if (
     user &&
     emailConfirmed &&
-    (pathname === "/auth/login" || pathname === "/auth/register")
+    (pathname === "/auth/login" ||
+      pathname === "/auth/register" ||
+      pathname === "/auth/verify-email")
   ) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
