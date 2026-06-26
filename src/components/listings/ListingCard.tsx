@@ -1,5 +1,7 @@
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { formatPriceSuffix } from "@/lib/price";
 import type { ListingCardData } from "@/types/database";
 
@@ -8,9 +10,14 @@ interface ListingCardProps {
   vip?: boolean;
 }
 
-export function ListingCard({ listing, vip = false }: ListingCardProps) {
+function ListingCardContent({ listing, vip = false }: ListingCardProps) {
+  const { pending } = useLinkStatus();
+
   return (
-    <Link href={`/listings/${listing.id}`} className="listing-card">
+    <article
+      className={`listing-card${pending ? " listing-card--pending" : ""}`}
+      aria-busy={pending}
+    >
       <div className="listing-card__image">
         {listing.cover_image ? (
           <Image
@@ -49,7 +56,7 @@ export function ListingCard({ listing, vip = false }: ListingCardProps) {
               strokeLinejoin="round"
               aria-hidden="true"
             >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <path d="M20 21v2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
           </span>
@@ -59,6 +66,14 @@ export function ListingCard({ listing, vip = false }: ListingCardProps) {
           </span>
         </div>
       </div>
+    </article>
+  );
+}
+
+export function ListingCard({ listing, vip = false }: ListingCardProps) {
+  return (
+    <Link href={`/listings/${listing.id}`} className="listing-card-link">
+      <ListingCardContent listing={listing} vip={vip} />
     </Link>
   );
 }
