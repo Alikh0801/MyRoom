@@ -23,12 +23,14 @@ export function HeaderActions({
   if (!user) {
     return (
       <div className="header__actions">
-        <LanguageSwitcher />
+        <LanguageSwitcher variant="desktop" />
         <Link href="/auth/login" className="btn btn--ghost btn--header">
-          {t("login")}
+          <span className="header__auth-full">{t("login")}</span>
+          <span className="header__auth-short">{t("loginShort")}</span>
         </Link>
         <Link href="/auth/register" className="btn btn--primary btn--header">
-          {t("register")}
+          <span className="header__auth-full">{t("register")}</span>
+          <span className="header__auth-short">{t("registerShort")}</span>
         </Link>
       </div>
     );
@@ -36,7 +38,7 @@ export function HeaderActions({
 
   return (
     <div className="header__actions">
-      <LanguageSwitcher />
+      <LanguageSwitcher variant="desktop" />
       <Link
         href="/dashboard/listings/new"
         className="btn btn--primary btn--header header__cta"

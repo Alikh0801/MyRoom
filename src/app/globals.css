@@ -64,13 +64,24 @@ img {
   align-items: center;
   justify-content: space-between;
   height: 64px;
-  gap: 1.5rem;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.header__start {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  flex-shrink: 0;
 }
 
 .header__logo {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--color-primary);
+  flex-shrink: 0;
+  line-height: 1;
 }
 
 .header__logo span {
@@ -81,16 +92,36 @@ img {
   display: flex;
   align-items: center;
   gap: 0.625rem;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
-.lang-switcher {
-  display: inline-flex;
+.lang-switcher--desktop {
+  display: none;
   align-items: center;
   gap: 0.25rem;
   padding: 0.2rem;
   border: 1px solid var(--color-border);
   border-radius: 999px;
   background: var(--color-surface);
+}
+
+.lang-switcher--mobile {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  font-family: inherit;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .lang-switcher__btn {
@@ -528,6 +559,13 @@ img {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.header__auth-short {
+  display: none;
 }
 
 .header__cta {
@@ -536,6 +574,44 @@ img {
 
 .header__cta-short {
   display: none;
+}
+
+@media (min-width: 640px) {
+  .lang-switcher--desktop {
+    display: inline-flex;
+  }
+
+  .lang-switcher--mobile {
+    display: none;
+  }
+}
+
+@media (max-width: 639px) {
+  .header__inner {
+    gap: 0.5rem;
+    height: 56px;
+  }
+
+  .header__logo {
+    font-size: 1.25rem;
+  }
+
+  .header__actions {
+    gap: 0.35rem;
+  }
+
+  .btn--header {
+    padding: 0.45rem 0.65rem;
+    font-size: 0.75rem;
+  }
+
+  .header__auth-full {
+    display: none;
+  }
+
+  .header__auth-short {
+    display: inline;
+  }
 }
 
 @media (max-width: 480px) {

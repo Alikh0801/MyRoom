@@ -6,7 +6,9 @@
   },
   "nav": {
     "login": "Daxil ol",
+    "loginShort": "Giriş",
     "register": "Qeydiyyat",
+    "registerShort": "Qeydiyyat",
     "postListing": "+ Elan yerləşdir",
     "postListingShort": "+ Elan",
     "myListings": "Mənim elanlarım",

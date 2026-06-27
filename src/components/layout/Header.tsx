@@ -1,5 +1,6 @@
 import { Link } from "@/i18n/navigation";
 import { HeaderActions } from "@/components/layout/HeaderActions";
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { createClient } from "@/lib/supabase/server";
 
 export async function Header() {
@@ -28,9 +29,12 @@ export async function Header() {
   return (
     <header className="header">
       <div className="container header__inner">
-        <Link href="/" className="header__logo">
-          My<span>Room</span>
-        </Link>
+        <div className="header__start">
+          <Link href="/" className="header__logo">
+            My<span>Room</span>
+          </Link>
+          <LanguageSwitcher variant="mobile" />
+        </div>
         <HeaderActions
           user={user}
           fullName={fullName}

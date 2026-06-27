@@ -6,7 +6,9 @@
   },
   "nav": {
     "login": "Войти",
+    "loginShort": "Вход",
     "register": "Регистрация",
+    "registerShort": "Регистр.",
     "postListing": "+ Разместить объявление",
     "postListingShort": "+ Объявление",
     "myListings": "Мои объявления",
