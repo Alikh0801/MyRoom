@@ -11,6 +11,15 @@ export function ListingDetailSkeleton() {
           <div className="listing-detail__top">
             <div className="listing-detail__gallery-col">
               <Skeleton className="skeleton-detail__gallery" />
+
+              <div className="listing-detail__content">
+                <Skeleton className="skeleton-detail__badge" />
+                <Skeleton className="skeleton-detail__title" />
+                <Skeleton className="skeleton-detail__line" />
+                <Skeleton className="skeleton-detail__line skeleton-detail__line--short" />
+                <Skeleton className="skeleton-detail__line" />
+              </div>
+
               <Skeleton className="skeleton-detail__block" />
             </div>
 
@@ -28,14 +37,6 @@ export function ListingDetailSkeleton() {
               <Skeleton className="skeleton-detail__btn" />
               <Skeleton className="skeleton-detail__btn skeleton-detail__btn--secondary" />
             </aside>
-          </div>
-
-          <div className="listing-detail__content">
-            <Skeleton className="skeleton-detail__badge" />
-            <Skeleton className="skeleton-detail__title" />
-            <Skeleton className="skeleton-detail__line" />
-            <Skeleton className="skeleton-detail__line skeleton-detail__line--short" />
-            <Skeleton className="skeleton-detail__line" />
           </div>
         </div>
 

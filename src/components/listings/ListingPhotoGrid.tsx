@@ -80,16 +80,39 @@ export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
   if (images.length === 0) return null;
 
   const count = images.length;
-  const featuredCount = Math.min(count, 3);
   const thumbImages = images.slice(3, 8);
+  const leftThumbs = thumbImages.slice(0, 3);
+  const rightThumbs = thumbImages.slice(3, 5);
   const remainingCount = count - 8;
 
   const featuredClass =
-    featuredCount === 1
+    count === 1
       ? "listing-photo-grid__featured listing-photo-grid__featured--single"
-      : featuredCount === 2
+      : count === 2
         ? "listing-photo-grid__featured listing-photo-grid__featured--double"
         : "listing-photo-grid__featured";
+
+  const lastThumbGlobalIndex = 3 + thumbImages.length - 1;
+
+  function renderThumb(
+    image: GridImage,
+    globalIndex: number
+  ) {
+    const overlay =
+      globalIndex === lastThumbGlobalIndex && remainingCount > 0
+        ? `+${remainingCount} foto`
+        : undefined;
+
+    return (
+      <GridCell
+        key={image.id}
+        image={image}
+        overlay={overlay}
+        sizes="(max-width: 900px) 25vw, 14vw"
+        onClick={() => openLightbox(globalIndex)}
+      />
+    );
+  }
 
   const sliderImages: SliderImage[] = images.map((img) => ({
     id: img.id,
@@ -127,30 +150,16 @@ export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
         </div>
 
         {thumbImages.length > 0 && (
-          <div
-            className="listing-photo-grid__thumbs"
-            style={{
-              gridTemplateColumns: `repeat(${Math.min(thumbImages.length, 5)}, 1fr)`,
-            }}
-          >
-            {thumbImages.map((image, i) => {
-              const globalIndex = i + 3;
-              const isLast = i === thumbImages.length - 1;
-              const overlay =
-                isLast && remainingCount > 0
-                  ? `+${remainingCount} foto`
-                  : undefined;
+          <div className="listing-photo-grid__thumbs">
+            <div className="listing-photo-grid__thumbs-col listing-photo-grid__thumbs-col--main">
+              {leftThumbs.map((image, i) => renderThumb(image, i + 3))}
+            </div>
 
-              return (
-                <GridCell
-                  key={image.id}
-                  image={image}
-                  overlay={overlay}
-                  sizes="(max-width: 900px) 25vw, 14vw"
-                  onClick={() => openLightbox(globalIndex)}
-                />
-              );
-            })}
+            {rightThumbs.length > 0 && (
+              <div className="listing-photo-grid__thumbs-col listing-photo-grid__thumbs-col--side">
+                {rightThumbs.map((image, i) => renderThumb(image, i + 6))}
+              </div>
+            )}
           </div>
         )}
       </div>

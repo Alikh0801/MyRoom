@@ -97,6 +97,12 @@ export default async function ListingPage({ params }: ListingPageProps) {
               <div className="listing-detail__no-image">Şəkil yoxdur</div>
             )}
 
+            <div className="listing-detail__content">
+              <span className="listing-card__badge">{listing.category.name_az}</span>
+              <h1 className="listing-detail__title">{listing.title}</h1>
+              <p className="listing-detail__description">{listing.description}</p>
+            </div>
+
             {isHotel && roomType && (
               <HotelRoomTypeDisplay roomType={roomType} />
             )}
@@ -133,12 +139,6 @@ export default async function ListingPage({ params }: ListingPageProps) {
             roomTypeName={isHotel ? roomType?.name : null}
             roomTypeFloor={isHotel ? roomType?.floor ?? null : null}
           />
-        </div>
-
-        <div className="listing-detail__content">
-          <span className="listing-card__badge">{listing.category.name_az}</span>
-          <h1 className="listing-detail__title">{listing.title}</h1>
-          <p className="listing-detail__description">{listing.description}</p>
         </div>
       </div>
 

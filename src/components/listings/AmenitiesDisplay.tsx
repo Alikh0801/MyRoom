@@ -1,4 +1,5 @@
 import type { AmenityGroup } from "@/types/database";
+import { amenityTitleClassName } from "@/lib/amenities/feature-titles";
 
 interface AmenitiesDisplayProps {
   groups: AmenityGroup[];
@@ -24,12 +25,21 @@ export function AmenitiesDisplay({
       }
     >
       {!compact && (
-        <h2 className="listing-detail__amenities-title">{title}</h2>
+        <h2 className={amenityTitleClassName(title, "listing-detail__amenities-title")}>
+          {title}
+        </h2>
       )}
       {nonEmpty.map((group) => (
         <div key={group.category.id} className="amenities-group">
           {(compact || group.category.name_az !== title) && (
-            <h3 className="amenities-group__title">{group.category.name_az}</h3>
+            <h3
+              className={amenityTitleClassName(
+                group.category.name_az,
+                "amenities-group__title"
+              )}
+            >
+              {group.category.name_az}
+            </h3>
           )}
           <div className="amenities">
             {group.amenities.map((a) => (

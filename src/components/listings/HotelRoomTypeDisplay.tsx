@@ -16,7 +16,7 @@ export function HotelRoomTypeDisplay({ roomType }: HotelRoomTypeDisplayProps) {
 
   return (
     <div className="listing-detail__amenities">
-      <h2 className="listing-detail__amenities-title">Otaq xüsusiyyətləri</h2>
+      <h2 className="amenities-feature-title">Otaq xüsusiyyətləri</h2>
       <div className="amenities">
         {amenities.map((amenity) => (
           <span key={amenity.id} className="amenity-tag">
