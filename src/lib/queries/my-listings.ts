@@ -20,7 +20,9 @@ type MyListingRow = {
   region: string;
   created_at: string;
   updated_at: string;
-  category: { slug: string; name_az: string } | { slug: string; name_az: string }[];
+  category:
+    | { slug: string; name_az: string }
+    | { slug: string; name_az: string }[];
   listing_images: { url: string; is_cover: boolean; sort_order: number }[];
 };
 

@@ -17,3 +17,10 @@ export const LISTING_STATUS_HINTS: Record<ListingStatus, string> = {
 export function isListingStatus(value: string): value is ListingStatus {
   return ["draft", "pending", "approved", "rejected"].includes(value);
 }
+
+export function parseListingStatusFilter(
+  value?: string
+): ListingStatus | undefined {
+  if (!value || !isListingStatus(value)) return undefined;
+  return value;
+}

@@ -1,9 +1,13 @@
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { DeleteListingButton } from "@/components/dashboard/DeleteListingButton";
 import { ListingStatusBadge } from "@/components/dashboard/ListingStatusBadge";
-import { LISTING_STATUS_HINTS } from "@/lib/listings/status";
+import { getLocalizedName } from "@/lib/i18n/localized-name";
 import { formatPriceSuffix } from "@/lib/price";
+import type { Locale } from "@/i18n/routing";
 import type { MyListingItem } from "@/lib/queries/my-listings";
 
 interface MyListingCardProps {
@@ -11,7 +15,11 @@ interface MyListingCardProps {
 }
 
 export function MyListingCard({ listing }: MyListingCardProps) {
-  const createdAt = new Date(listing.created_at).toLocaleDateString("az-AZ", {
+  const t = useTranslations("dashboard");
+  const locale = useLocale() as Locale;
+  const dateLocale = locale === "ru" ? "ru-RU" : "az-AZ";
+
+  const createdAt = new Date(listing.created_at).toLocaleDateString(dateLocale, {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -31,7 +39,7 @@ export function MyListingCard({ listing }: MyListingCardProps) {
             className="my-listing-card__img"
           />
         ) : (
-          <span className="my-listing-card__no-image">Şəkil yoxdur</span>
+          <span className="my-listing-card__no-image">{t("card.noImage")}</span>
         )}
       </div>
 
@@ -41,29 +49,38 @@ export function MyListingCard({ listing }: MyListingCardProps) {
           <div className="my-listing-card__badges">
             <ListingStatusBadge status={listing.status} />
             {listing.is_vip && listing.status === "approved" && (
-              <span className="my-listing-card__vip">VIP</span>
+              <span className="my-listing-card__vip">{t("card.vip")}</span>
             )}
           </div>
         </div>
 
         <p className="my-listing-card__meta">
-          {listing.category.name_az} · {listing.region}, {listing.city}
+          {getLocalizedName(listing.category, locale)} · {listing.region},{" "}
+          {listing.city}
         </p>
         <p className="my-listing-card__meta">
           {listing.price_per_night} {listing.currency}
-          {formatPriceSuffix(listing.price_unit)} · Yaradılıb: {createdAt}
+          {formatPriceSuffix(listing.price_unit, locale)} ·{" "}
+          {t("card.createdAt", { date: createdAt })}
         </p>
         <p className="my-listing-card__hint">
-          {LISTING_STATUS_HINTS[listing.status]}
+          {t(`statusHints.${listing.status}`)}
         </p>
       </div>
 
       <div className="my-listing-card__actions">
         <Link
+          href={`/dashboard/listings/${listing.id}/edit`}
+          className="btn btn--primary"
+        >
+          {t("card.edit")}
+        </Link>
+
+        <Link
           href={`/listings/${listing.id}`}
           className="btn btn--ghost"
         >
-          {canViewPublic ? "Saytda bax" : "Önizləmə"}
+          {canViewPublic ? t("card.viewPublic") : t("card.preview")}
         </Link>
 
         {listing.status === "rejected" && (
@@ -71,7 +88,7 @@ export function MyListingCard({ listing }: MyListingCardProps) {
             href="/dashboard/listings/new"
             className="btn btn--primary"
           >
-            Yeni elan
+            {t("card.newListing")}
           </Link>
         )}
 

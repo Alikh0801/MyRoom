@@ -1,5 +1,7 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import type { ListingStatus } from "@/types/database";
-import { LISTING_STATUS_LABELS } from "@/lib/listings/status";
 
 const STATUS_CLASS: Record<ListingStatus, string> = {
   draft: "listing-status--draft",
@@ -13,9 +15,11 @@ interface ListingStatusBadgeProps {
 }
 
 export function ListingStatusBadge({ status }: ListingStatusBadgeProps) {
+  const t = useTranslations("dashboard.status");
+
   return (
     <span className={`listing-status ${STATUS_CLASS[status]}`}>
-      {LISTING_STATUS_LABELS[status]}
+      {t(status)}
     </span>
   );
 }

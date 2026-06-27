@@ -253,7 +253,73 @@
       "roomTypeNameTooShort": "Otaq tipi adı ən azı 2 simvol olmalıdır.",
       "amenitiesSaveFailed": "Daxildir bölməsi saxlanıla bilmədi.",
       "roomTypeSaveFailed": "Otaq tipi saxlanıla bilmədi.",
-      "roomAmenitiesSaveFailed": "Otaq xüsusiyyətləri saxlanıla bilmədi."
+      "roomAmenitiesSaveFailed": "Otaq xüsusiyyətləri saxlanıla bilmədi.",
+      "updateFailed": "Elan yenilənə bilmədi.",
+      "notFound": "Elan tapılmadı.",
+      "tooManyImagesTotal": "Ümumi şəkil sayı maksimum 15 ola bilər.",
+      "imagesSaveFailed": "Şəkillər yenilənə bilmədi.",
+      "cannotDeleteLastPhoto": "Ən azı bir şəkil qalmalıdır."
+    },
+    "edit": {
+      "metaTitle": "Elanı redaktə et",
+      "pageTitle": "Elanı redaktə et",
+      "pageSubtitle": "Məlumatları yeniləyin. Təsdiqlənmiş elanlar dəyişiklikdən sonra yenidən yoxlanıla bilər.",
+      "backLink": "← Mənim elanlarım",
+      "existingPhotos": "Mövcud şəkillər",
+      "coverBadge": "Əsas",
+      "addPhotos": "Yeni şəkil əlavə et",
+      "photosDesc": "Şəkilləri silə, sırasını dəyişə və ya yeni şəkil əlavə edə bilərsiniz.",
+      "reorderHint": "Oxlarla sıranı dəyişin. İlk şəkil əsas şəkil olacaq.",
+      "deletePhoto": "Şəkli sil",
+      "moveLeft": "Sola köçür",
+      "moveRight": "Sağa köçür",
+      "submit": "Yadda saxla",
+      "submitting": "Saxlanılır...",
+      "note": "Dəyişikliklər admin tərəfindən yenidən yoxlanıla bilər."
+    }
+  },
+  "dashboard": {
+    "metaTitle": "Mənim elanlarım",
+    "pageTitle": "Mənim elanlarım",
+    "subtitle": "Elanlarınızın statusunu izləyin və idarə edin.",
+    "alerts": {
+      "created": "Elanınız uğurla göndərildi. Admin təsdiqindən sonra saytda görünəcək.",
+      "updated": "Elanınız yeniləndi. Təsdiqlənmiş elanlar dəyişiklikdən sonra yenidən yoxlanıla bilər."
+    },
+    "filters": {
+      "ariaLabel": "Elan statusu",
+      "all": "Hamısı"
+    },
+    "status": {
+      "draft": "Qaralama",
+      "pending": "Gözləyir",
+      "approved": "Təsdiqlənib",
+      "rejected": "Rədd edilib"
+    },
+    "statusHints": {
+      "draft": "Elan hələ tamamlanmayıb.",
+      "pending": "Admin təsdiqini gözləyir.",
+      "approved": "Elan saytda görünür.",
+      "rejected": "Elan rədd edilib. Düzəliş edib yenidən göndərə bilərsiniz."
+    },
+    "empty": {
+      "noneTitle": "Hələ elanınız yoxdur",
+      "noneDesc": "İlk elanınızı yerləşdirərək qonaqları qəbul etməyə başlayın.",
+      "filteredTitle": "{status} elan yoxdur",
+      "filteredDesc": "Bu statusda elan tapılmadı.",
+      "createCta": "Elan yerləşdir"
+    },
+    "card": {
+      "noImage": "Şəkil yoxdur",
+      "createdAt": "Yaradılıb: {date}",
+      "vip": "VIP",
+      "edit": "Redaktə et",
+      "viewPublic": "Saytda bax",
+      "preview": "Önizləmə",
+      "newListing": "Yeni elan",
+      "delete": "Sil",
+      "deleting": "Silinir...",
+      "deleteConfirm": "\"{title}\" elanını silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz."
     }
   },
   "locale": {

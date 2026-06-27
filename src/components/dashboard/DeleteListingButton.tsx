@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { deleteMyListing } from "@/lib/listings/actions";
 
 interface DeleteListingButtonProps {
@@ -12,14 +13,11 @@ export function DeleteListingButton({
   listingId,
   listingTitle,
 }: DeleteListingButtonProps) {
+  const t = useTranslations("dashboard.card");
   const [pending, startTransition] = useTransition();
 
   function handleDelete() {
-    if (
-      !window.confirm(
-        `"${listingTitle}" elanını silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.`
-      )
-    ) {
+    if (!window.confirm(t("deleteConfirm", { title: listingTitle }))) {
       return;
     }
 
@@ -37,7 +35,7 @@ export function DeleteListingButton({
       onClick={handleDelete}
       disabled={pending}
     >
-      {pending ? "Silinir..." : "Sil"}
+      {pending ? t("deleting") : t("delete")}
     </button>
   );
 }

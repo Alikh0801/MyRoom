@@ -7,6 +7,7 @@ import { isValidRegion } from "@/lib/regions";
 import { isValidCoordinates } from "@/lib/map";
 import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
 import { createClient } from "@/lib/supabase/server";
+import { syncListingImages } from "@/lib/listings/sync-images";
 
 export interface CreateListingState {
   error?: string;
@@ -195,6 +196,260 @@ export async function createListing(
   return { listingId: listingId };
 }
 
+export async function updateListing(
+  _prevState: CreateListingState | null,
+  formData: FormData
+): Promise<CreateListingState> {
+  const t = await getTranslations("listingForm.errors");
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: t("authRequired") };
+  }
+
+  const listingId = (formData.get("listingId") as string)?.trim();
+  if (!listingId) {
+    return { error: t("notFound") };
+  }
+
+  const { data: existing } = await supabase
+    .from("listings")
+    .select("id, status")
+    .eq("id", listingId)
+    .eq("owner_id", user.id)
+    .maybeSingle();
+
+  if (!existing) {
+    return { error: t("notFound") };
+  }
+
+  const title = (formData.get("title") as string)?.trim();
+  const description = (formData.get("description") as string)?.trim();
+  const titleRuRaw = (formData.get("titleRu") as string)?.trim();
+  const descriptionRuRaw = (formData.get("descriptionRu") as string)?.trim();
+  const titleRu = titleRuRaw || null;
+  const descriptionRu = descriptionRuRaw || null;
+  const categoryId = formData.get("categoryId") as string;
+  const pricePerNight = Number(formData.get("pricePerNight"));
+  const priceUnit = (formData.get("priceUnit") as string) || "day";
+  const city = (formData.get("city") as string)?.trim();
+  const region = (formData.get("region") as string)?.trim();
+  const address = (formData.get("address") as string)?.trim() || null;
+  const lat = Number(formData.get("lat"));
+  const lng = Number(formData.get("lng"));
+  const maxGuests = Number(formData.get("maxGuests"));
+  const bedrooms = Number(formData.get("bedrooms"));
+  const whatsappPhone = (formData.get("whatsappPhone") as string)?.trim();
+  const amenityIds = formData.getAll("amenities") as string[];
+  const roomTypeName = (formData.get("roomTypeName") as string)?.trim();
+  const roomTypeFloorRaw = formData.get("roomTypeFloor") as string;
+  const roomTypeId = (formData.get("roomTypeId") as string)?.trim() || null;
+  const roomAmenityIds = formData.getAll("roomAmenities") as string[];
+
+  if (!title || title.length < 5) {
+    return { error: t("titleTooShort") };
+  }
+  if (!description || description.length < 20) {
+    return { error: t("descriptionTooShort") };
+  }
+  if (titleRu && titleRu.length < 5) {
+    return { error: t("titleRuTooShort") };
+  }
+  if (descriptionRu && descriptionRu.length < 20) {
+    return { error: t("descriptionRuTooShort") };
+  }
+  if (!categoryId) {
+    return { error: t("selectCategory") };
+  }
+  if (!pricePerNight || pricePerNight <= 0) {
+    return { error: t("invalidPrice") };
+  }
+  if (!["day", "week", "month"].includes(priceUnit)) {
+    return { error: t("invalidPriceUnit") };
+  }
+  if (!city || !region) {
+    return { error: t("cityRegionRequired") };
+  }
+  if (!isValidRegion(region)) {
+    return { error: t("selectRegion") };
+  }
+  if (!isValidCoordinates(lat, lng)) {
+    return { error: t("invalidMapLocation") };
+  }
+  if (!maxGuests || maxGuests < 1) {
+    return { error: t("minGuests") };
+  }
+  if (!whatsappPhone) {
+    return { error: t("whatsappRequired") };
+  }
+
+  const { data: category } = await supabase
+    .from("categories")
+    .select("slug")
+    .eq("id", categoryId)
+    .single();
+
+  const isHotel = category?.slug === "hotel";
+
+  if (isHotel) {
+    if (!roomTypeName || roomTypeName.length < 2) {
+      return { error: t("roomTypeNameTooShort") };
+    }
+  }
+
+  let roomTypeFloor: number | null = null;
+  if (roomTypeFloorRaw?.trim()) {
+    const n = Number(roomTypeFloorRaw);
+    if (!Number.isNaN(n) && n >= 0) roomTypeFloor = Math.floor(n);
+  }
+
+  const needsReview =
+    existing.status === "approved" || existing.status === "rejected";
+  const nextStatus = needsReview ? "pending" : existing.status;
+
+  const { error } = await supabase
+    .from("listings")
+    .update({
+      category_id: categoryId,
+      title,
+      description,
+      title_ru: titleRu,
+      description_ru: descriptionRu,
+      price_per_night: pricePerNight,
+      price_unit: priceUnit,
+      city,
+      region,
+      address,
+      lat,
+      lng,
+      max_guests: maxGuests,
+      bedrooms: bedrooms >= 0 ? bedrooms : 1,
+      whatsapp_phone: whatsappPhone,
+      status: nextStatus,
+    })
+    .eq("id", listingId)
+    .eq("owner_id", user.id);
+
+  if (error) {
+    return { error: error.message ?? t("updateFailed") };
+  }
+
+  const deletedImageIds = formData.getAll("deletedImageIds") as string[];
+  const imageOrder = formData.getAll("imageOrder") as string[];
+  const imageSync = await syncListingImages(
+    supabase,
+    listingId,
+    deletedImageIds,
+    imageOrder
+  );
+
+  if (imageSync.error) {
+    console.error("updateListing sync images:", imageSync.error);
+    return { error: t("imagesSaveFailed") };
+  }
+
+  const { error: deleteAmenitiesError } = await supabase
+    .from("listing_amenities")
+    .delete()
+    .eq("listing_id", listingId);
+
+  if (deleteAmenitiesError) {
+    console.error("updateListing delete amenities:", deleteAmenitiesError.message);
+    return { error: t("amenitiesSaveFailed") };
+  }
+
+  if (amenityIds.length > 0) {
+    const rows = amenityIds.map((amenityId) => ({
+      listing_id: listingId,
+      amenity_id: amenityId,
+    }));
+    const { error: amenityError } = await supabase
+      .from("listing_amenities")
+      .insert(rows);
+
+    if (amenityError) {
+      console.error("updateListing insert amenities:", amenityError.message);
+      return { error: t("amenitiesSaveFailed") };
+    }
+  }
+
+  if (!isHotel) {
+    await supabase.from("listing_room_types").delete().eq("listing_id", listingId);
+  } else if (roomTypeName) {
+    let activeRoomTypeId = roomTypeId;
+
+    if (activeRoomTypeId) {
+      const { error: roomUpdateError } = await supabase
+        .from("listing_room_types")
+        .update({ name: roomTypeName, floor: roomTypeFloor })
+        .eq("id", activeRoomTypeId)
+        .eq("listing_id", listingId);
+
+      if (roomUpdateError) {
+        return { error: t("roomTypeSaveFailed") };
+      }
+    } else {
+      const { data: roomType, error: roomTypeError } = await supabase
+        .from("listing_room_types")
+        .insert({
+          listing_id: listingId,
+          name: roomTypeName,
+          floor: roomTypeFloor,
+          sort_order: 0,
+        })
+        .select("id")
+        .single();
+
+      if (roomTypeError || !roomType) {
+        return { error: t("roomTypeSaveFailed") };
+      }
+
+      activeRoomTypeId = roomType.id;
+    }
+
+    if (activeRoomTypeId) {
+      const { error: deleteRoomAmenitiesError } = await supabase
+        .from("listing_room_type_amenities")
+        .delete()
+        .eq("room_type_id", activeRoomTypeId);
+
+      if (deleteRoomAmenitiesError) {
+        console.error(
+          "updateListing delete room amenities:",
+          deleteRoomAmenitiesError.message
+        );
+        return { error: t("roomAmenitiesSaveFailed") };
+      }
+
+      if (roomAmenityIds.length > 0) {
+        const rows = roomAmenityIds.map((amenityId) => ({
+          room_type_id: activeRoomTypeId,
+          amenity_id: amenityId,
+        }));
+        const { error: rtAmenityError } = await supabase
+          .from("listing_room_type_amenities")
+          .insert(rows);
+
+        if (rtAmenityError) {
+          console.error(
+            "updateListing insert room amenities:",
+            rtAmenityError.message
+          );
+          return { error: t("roomAmenitiesSaveFailed") };
+        }
+      }
+    }
+  }
+
+  revalidatePath("/dashboard/listings");
+  revalidatePath(`/listings/${listingId}`);
+
+  return { listingId };
+}
+
 export async function deleteMyListing(formData: FormData) {
   const supabase = await createClient();
   const {
@@ -223,14 +478,16 @@ export async function deleteMyListing(formData: FormData) {
   return localizedRedirect("/dashboard/listings");
 }
 
-export async function requireAuth() {
+export async function requireAuth(redirectTo = "/dashboard/listings/new") {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return localizedRedirect("/auth/login?redirectTo=/dashboard/listings/new");
+    return localizedRedirect(
+      `/auth/login?redirectTo=${encodeURIComponent(redirectTo)}`
+    );
   }
 
   if (!user.email_confirmed_at) {

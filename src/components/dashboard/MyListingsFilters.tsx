@@ -1,5 +1,7 @@
-import Link from "next/link";
-import { isListingStatus, LISTING_STATUS_LABELS } from "@/lib/listings/status";
+"use client";
+
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import type { ListingStatus } from "@/types/database";
 import type { MyListingCounts } from "@/lib/queries/my-listings";
 
@@ -8,11 +10,11 @@ interface MyListingsFiltersProps {
   activeStatus?: ListingStatus;
 }
 
-const FILTERS: { key: ListingStatus | "all"; label: string }[] = [
-  { key: "all", label: "Hamısı" },
-  { key: "pending", label: LISTING_STATUS_LABELS.pending },
-  { key: "approved", label: LISTING_STATUS_LABELS.approved },
-  { key: "rejected", label: LISTING_STATUS_LABELS.rejected },
+const FILTER_KEYS: (ListingStatus | "all")[] = [
+  "all",
+  "pending",
+  "approved",
+  "rejected",
 ];
 
 function filterHref(status: ListingStatus | "all") {
@@ -33,35 +35,34 @@ export function MyListingsFilters({
   counts,
   activeStatus,
 }: MyListingsFiltersProps) {
+  const t = useTranslations("dashboard");
+
   return (
-    <div className="my-listings-filters" role="tablist" aria-label="Elan statusu">
-      {FILTERS.map((filter) => {
-        const isActive =
-          filter.key === "all" ? !activeStatus : activeStatus === filter.key;
-        const count = countFor(counts, filter.key);
+    <div
+      className="my-listings-filters"
+      role="tablist"
+      aria-label={t("filters.ariaLabel")}
+    >
+      {FILTER_KEYS.map((key) => {
+        const isActive = key === "all" ? !activeStatus : activeStatus === key;
+        const count = countFor(counts, key);
+        const label = key === "all" ? t("filters.all") : t(`status.${key}`);
 
         return (
           <Link
-            key={filter.key}
-            href={filterHref(filter.key)}
+            key={key}
+            href={filterHref(key)}
             className={`my-listings-filters__tab${
               isActive ? " my-listings-filters__tab--active" : ""
             }`}
             role="tab"
             aria-selected={isActive}
           >
-            {filter.label}
+            {label}
             <span className="my-listings-filters__count">{count}</span>
           </Link>
         );
       })}
     </div>
   );
-}
-
-export function parseListingStatusFilter(
-  value?: string
-): ListingStatus | undefined {
-  if (!value || !isListingStatus(value)) return undefined;
-  return value;
 }

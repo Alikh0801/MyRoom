@@ -1,11 +1,11 @@
 "use client";
 
-import { compressListingImage } from "@/lib/images/listing-images";
 import dynamic from "next/dynamic";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { CategoryPicker } from "@/components/listings/CategoryPicker";
+import { ExistingListingImages } from "@/components/listings/ExistingListingImages";
 import { ImagePreviewSlider } from "@/components/listings/ImagePreviewSlider";
 import { HotelRoomTypeFields } from "@/components/listings/HotelRoomTypeFields";
 import { ListingFormSection } from "@/components/listings/ListingFormSection";
@@ -15,10 +15,15 @@ import { PremiumPlanPicker } from "@/components/listings/PremiumPlanPicker";
 import { RegionCombobox } from "@/components/ui/RegionCombobox";
 import { filterAmenityGroupsBySlug } from "@/lib/amenities/helpers";
 import { isValidRegion } from "@/lib/regions";
-import { createListing } from "@/lib/listings/actions";
+import { createListing, updateListing } from "@/lib/listings/actions";
+import {
+  ACCEPTED_IMAGE_TYPES,
+  uploadListingImages,
+} from "@/lib/listings/upload-images";
 import { isValidCoordinates } from "@/lib/map";
 import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
 import { LegalAcceptanceField } from "@/components/legal/LegalAcceptanceField";
+import type { EditListingData } from "@/lib/queries/edit-listing";
 import type { Locale } from "@/i18n/routing";
 import type { AmenityGroup, Category } from "@/types/database";
 
@@ -44,70 +49,20 @@ interface CreateListingFormProps {
   categories: Category[];
   amenityGroups: AmenityGroup[];
   defaultWhatsapp?: string;
+  editData?: EditListingData;
 }
 
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
-
-async function uploadImages(
-  listingId: string,
-  files: File[],
-  tErrors: (key: string) => string
-) {
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const previewId = crypto.randomUUID();
-
-    const compressed = await compressListingImage(file);
-
-    const presignRes = await fetch("/api/upload/presign", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        listingId,
-        fileName: `${previewId}.webp`,
-        contentType: "image/webp",
-      }),
-    });
-
-    if (!presignRes.ok) {
-      const err = await presignRes.json();
-      throw new Error(err.error ?? tErrors("uploadFailed"));
-    }
-
-    const { uploadUrl, storagePath } = await presignRes.json();
-
-    const uploadRes = await fetch(uploadUrl, {
-      method: "PUT",
-      headers: { "Content-Type": "image/webp" },
-      body: compressed,
-    });
-
-    if (!uploadRes.ok) throw new Error(tErrors("uploadServerFailed"));
-
-    const confirmRes = await fetch("/api/upload/confirm", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        listingId,
-        storagePath,
-        isCover: i === 0,
-        sortOrder: i,
-      }),
-    });
-
-    if (!confirmRes.ok) {
-      const err = await confirmRes.json();
-      throw new Error(err.error ?? tErrors("uploadConfirmFailed"));
-    }
-  }
-}
+const MAX_IMAGES = 15;
 
 export function CreateListingForm({
   categories,
   amenityGroups,
   defaultWhatsapp = "",
+  editData,
 }: CreateListingFormProps) {
+  const isEdit = Boolean(editData);
   const t = useTranslations("listingForm");
+  const tEdit = useTranslations("listingForm.edit");
   const tListing = useTranslations("listing");
   const tErrors = useTranslations("listingForm.errors");
   const locale = useLocale() as Locale;
@@ -118,13 +73,25 @@ export function CreateListingForm({
   );
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [categoryId, setCategoryId] = useState("");
-  const [region, setRegion] = useState("");
-  const [lat, setLat] = useState<number | null>(null);
-  const [lng, setLng] = useState<number | null>(null);
+  const [categoryId, setCategoryId] = useState(editData?.category_id ?? "");
+  const [region, setRegion] = useState(editData?.region ?? "");
+  const [lat, setLat] = useState<number | null>(editData?.lat ?? null);
+  const [lng, setLng] = useState<number | null>(editData?.lng ?? null);
+  const [selectedAmenityIds, setSelectedAmenityIds] = useState<string[]>(
+    editData?.amenity_ids ?? []
+  );
+  const [selectedRoomAmenityIds, setSelectedRoomAmenityIds] = useState<string[]>(
+    editData?.room_type?.amenity_ids ?? []
+  );
   const [dragOver, setDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [existingImages, setExistingImages] = useState(() =>
+    [...(editData?.images ?? [])].sort((a, b) => a.sort_order - b.sort_order)
+  );
+  const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
+
+  const existingImageCount = existingImages.length;
 
   const hotelCategoryId = categories.find((c) => c.slug === "hotel")?.id;
   const isHotel = Boolean(hotelCategoryId && categoryId === hotelCategoryId);
@@ -148,16 +115,22 @@ export function CreateListingForm({
       setError(tErrors("invalidImageType"));
       return;
     }
-    if (images.length > 15) {
-      setError(tErrors("tooManyImages"));
+
+    const combined = [...selectedFiles, ...images];
+    const totalCount = existingImageCount + combined.length;
+
+    if (totalCount > MAX_IMAGES) {
+      setError(tErrors("tooManyImagesTotal"));
       return;
     }
+
     setError(null);
-    setSelectedFiles(images);
+    setSelectedFiles(combined);
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     setImageFiles(Array.from(e.target.files ?? []));
+    e.target.value = "";
   }
 
   function handleDrop(e: React.DragEvent<HTMLLabelElement>) {
@@ -166,12 +139,32 @@ export function CreateListingForm({
     setImageFiles(Array.from(e.dataTransfer.files));
   }
 
+  function handleDeleteExistingImage(imageId: string) {
+    if (existingImageCount + selectedFiles.length <= 1) {
+      setError(tErrors("cannotDeleteLastPhoto"));
+      return;
+    }
+
+    setError(null);
+    setDeletedImageIds((prev) =>
+      prev.includes(imageId) ? prev : [...prev, imageId]
+    );
+    setExistingImages((prev) => prev.filter((image) => image.id !== imageId));
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
 
-    if (selectedFiles.length === 0) {
+    const totalImages = existingImageCount + selectedFiles.length;
+
+    if (totalImages === 0) {
       setError(tErrors("minOneImage"));
+      return;
+    }
+
+    if (totalImages > MAX_IMAGES) {
+      setError(tErrors("tooManyImagesTotal"));
       return;
     }
 
@@ -191,23 +184,40 @@ export function CreateListingForm({
     }
 
     const formData = new FormData(e.currentTarget);
-    if (!hasAcceptedLegalTerms(formData)) {
+
+    if (!isEdit && !hasAcceptedLegalTerms(formData)) {
       setError(tErrors("legalRequired"));
       return;
     }
 
     setSubmitting(true);
-    const result = await createListing(null, formData);
+
+    const result = isEdit
+      ? await updateListing(null, formData)
+      : await createListing(null, formData);
 
     if (result.error || !result.listingId) {
-      setError(result.error ?? tErrors("createFailed"));
+      setError(result.error ?? tErrors(isEdit ? "updateFailed" : "createFailed"));
       setSubmitting(false);
       return;
     }
 
+    if (selectedFiles.length === 0) {
+      router.push(
+        isEdit ? "/dashboard/listings?updated=1" : "/dashboard/listings?created=1"
+      );
+      return;
+    }
+
     try {
-      await uploadImages(result.listingId, selectedFiles, tErrors);
-      router.push("/dashboard/listings?created=1");
+      await uploadListingImages(result.listingId, selectedFiles, tErrors, {
+        startSortOrder: existingImageCount,
+        setCover: existingImageCount === 0,
+      });
+
+      router.push(
+        isEdit ? "/dashboard/listings?updated=1" : "/dashboard/listings?created=1"
+      );
     } catch (err) {
       setError(
         err instanceof Error
@@ -220,6 +230,8 @@ export function CreateListingForm({
 
   return (
     <form className="listing-form" onSubmit={handleSubmit}>
+      {isEdit && <input type="hidden" name="listingId" value={editData!.id} />}
+
       {error && (
         <div className="listing-form__alert" role="alert">
           {error}
@@ -229,8 +241,27 @@ export function CreateListingForm({
       <ListingFormSection
         step={step++}
         title={t("sections.photosTitle")}
-        description={t("sections.photosDesc")}
+        description={
+          isEdit ? tEdit("photosDesc") : t("sections.photosDesc")
+        }
       >
+        {isEdit && (
+          <>
+            {deletedImageIds.map((id) => (
+              <input key={id} type="hidden" name="deletedImageIds" value={id} />
+            ))}
+            <ExistingListingImages
+              images={existingImages}
+              title={editData!.title}
+              label={tEdit("existingPhotos")}
+              coverLabel={tEdit("coverBadge")}
+              canDelete={existingImageCount + selectedFiles.length > 1}
+              onChange={setExistingImages}
+              onDelete={handleDeleteExistingImage}
+            />
+          </>
+        )}
+
         <label
           className={`listing-form__dropzone${dragOver ? " listing-form__dropzone--active" : ""}${selectedFiles.length > 0 ? " listing-form__dropzone--filled" : ""}`}
           onDragOver={(e) => {
@@ -261,7 +292,9 @@ export function CreateListingForm({
           <span className="listing-form__dropzone-title">
             {selectedFiles.length > 0
               ? t("dropzone.selected", { count: selectedFiles.length })
-              : t("dropzone.dragHere")}
+              : isEdit
+                ? tEdit("addPhotos")
+                : t("dropzone.dragHere")}
           </span>
           <span className="listing-form__dropzone-text">
             {t("dropzone.orSelect")}
@@ -285,6 +318,7 @@ export function CreateListingForm({
             name="title"
             required
             minLength={5}
+            defaultValue={editData?.title}
             placeholder={t("placeholders.title")}
           />
         </label>
@@ -296,6 +330,7 @@ export function CreateListingForm({
             required
             minLength={20}
             rows={5}
+            defaultValue={editData?.description}
             placeholder={t("placeholders.description")}
           />
         </label>
@@ -308,6 +343,7 @@ export function CreateListingForm({
             type="text"
             name="titleRu"
             minLength={5}
+            defaultValue={editData?.title_ru ?? ""}
             placeholder={t("placeholders.titleRu")}
           />
         </label>
@@ -318,6 +354,7 @@ export function CreateListingForm({
             name="descriptionRu"
             minLength={20}
             rows={5}
+            defaultValue={editData?.description_ru ?? ""}
             placeholder={t("placeholders.descriptionRu")}
           />
         </label>
@@ -355,6 +392,7 @@ export function CreateListingForm({
               type="text"
               name="city"
               required
+              defaultValue={editData?.city}
               placeholder={t("placeholders.city")}
             />
           </label>
@@ -365,6 +403,7 @@ export function CreateListingForm({
           <input
             type="text"
             name="address"
+            defaultValue={editData?.address ?? ""}
             placeholder={t("placeholders.address")}
           />
         </label>
@@ -389,7 +428,7 @@ export function CreateListingForm({
               name="maxGuests"
               required
               min={1}
-              defaultValue={2}
+              defaultValue={editData?.max_guests ?? 2}
             />
           </label>
 
@@ -399,7 +438,7 @@ export function CreateListingForm({
               type="number"
               name="bedrooms"
               min={0}
-              defaultValue={1}
+              defaultValue={editData?.bedrooms ?? 1}
             />
           </label>
         </div>
@@ -419,13 +458,18 @@ export function CreateListingForm({
               required
               min={1}
               step={1}
+              defaultValue={editData?.price_per_night}
               placeholder={t("placeholders.price")}
             />
           </label>
 
           <label className="listing-form__field">
             <span className="listing-form__label">{t("fields.priceUnit")}</span>
-            <select name="priceUnit" required defaultValue="day">
+            <select
+              name="priceUnit"
+              required
+              defaultValue={editData?.price_unit ?? "day"}
+            >
               {priceUnitOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   /{opt.label.toLowerCase()}
@@ -441,7 +485,7 @@ export function CreateListingForm({
             type="tel"
             name="whatsappPhone"
             required
-            defaultValue={defaultWhatsapp}
+            defaultValue={editData?.whatsapp_phone ?? defaultWhatsapp}
             placeholder={t("placeholders.whatsapp")}
           />
         </label>
@@ -449,7 +493,18 @@ export function CreateListingForm({
 
       {isHotel && (
         <ListingFormSection step={step++} title={t("sections.roomTypeTitle")}>
-          <HotelRoomTypeFields roomAmenityGroups={roomAmenityGroups} />
+          <HotelRoomTypeFields
+            roomAmenityGroups={roomAmenityGroups}
+            defaultName={editData?.room_type?.name}
+            defaultFloor={editData?.room_type?.floor}
+            roomTypeId={editData?.room_type?.id}
+            selectedRoomAmenityIds={
+              isEdit ? selectedRoomAmenityIds : undefined
+            }
+            onRoomAmenitiesChange={
+              isEdit ? setSelectedRoomAmenityIds : undefined
+            }
+          />
         </ListingFormSection>
       )}
 
@@ -461,28 +516,46 @@ export function CreateListingForm({
           }
           description={t("sections.amenitiesDesc")}
         >
-          <AmenitiesPicker groups={listingAmenityGroups} />
+          {isEdit ? (
+            <AmenitiesPicker
+              groups={listingAmenityGroups}
+              selectedIds={selectedAmenityIds}
+              onChange={setSelectedAmenityIds}
+            />
+          ) : (
+            <AmenitiesPicker groups={listingAmenityGroups} />
+          )}
         </ListingFormSection>
       )}
 
-      <ListingFormSection
-        step={step++}
-        title={t("sections.premiumTitle")}
-        description={t("sections.premiumDesc")}
-        className="listing-form__section--premium"
-      >
-        <PremiumPlanPicker />
-      </ListingFormSection>
+      {!isEdit && (
+        <ListingFormSection
+          step={step++}
+          title={t("sections.premiumTitle")}
+          description={t("sections.premiumDesc")}
+          className="listing-form__section--premium"
+        >
+          <PremiumPlanPicker />
+        </ListingFormSection>
+      )}
 
       <div className="listing-form__footer">
-        <LegalAcceptanceField className="listing-form__legal" />
-        <p className="listing-form__note">{t("footer.note")}</p>
+        {!isEdit && <LegalAcceptanceField className="listing-form__legal" />}
+        <p className="listing-form__note">
+          {isEdit ? tEdit("note") : t("footer.note")}
+        </p>
         <button
           type="submit"
           className="btn btn--primary listing-form__submit"
           disabled={submitting}
         >
-          {submitting ? t("footer.submitting") : t("footer.submit")}
+          {submitting
+            ? isEdit
+              ? tEdit("submitting")
+              : t("footer.submitting")
+            : isEdit
+              ? tEdit("submit")
+              : t("footer.submit")}
         </button>
       </div>
     </form>

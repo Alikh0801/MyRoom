@@ -33,6 +33,10 @@ export function AmenitiesPicker({
 
   return (
     <div className="amenities-picker">
+      {controlled &&
+        selectedIds.map((id) => (
+          <input key={id} type="hidden" name={name} value={id} />
+        ))}
       {groups.map((group) => (
         <div key={group.category.id} className="amenities-picker__group">
           <h3 className="amenities-picker__heading">
