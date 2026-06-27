@@ -3131,6 +3131,145 @@ h3.amenities-feature-title {
   max-width: 100%;
 }
 
+/* Premium plan picker (listing form) */
+.listing-form__section--premium {
+  border-color: rgba(212, 163, 115, 0.35);
+  background: linear-gradient(
+    165deg,
+    rgba(212, 163, 115, 0.08) 0%,
+    var(--color-surface) 45%
+  );
+}
+
+.listing-form__section--premium .listing-form__step {
+  background: linear-gradient(135deg, var(--color-accent), #c4956a);
+  color: #fff;
+}
+
+.premium-picker__intro {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.premium-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 720px) {
+  .premium-picker__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.premium-picker__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  padding: 1rem 1rem 0.9rem;
+  border: 2px solid var(--color-border);
+  border-radius: calc(var(--radius) + 2px);
+  background: var(--color-surface);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.15s;
+}
+
+.premium-picker__card:hover {
+  border-color: rgba(212, 163, 115, 0.55);
+  transform: translateY(-1px);
+}
+
+.premium-picker__card--selected {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.22);
+}
+
+.premium-picker__card--recommended.premium-picker__card--selected {
+  border-color: #c4956a;
+  box-shadow: 0 0 0 3px rgba(196, 149, 106, 0.28);
+}
+
+.premium-picker__card--free.premium-picker__card--selected {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+}
+
+.premium-picker__badge {
+  position: absolute;
+  top: -0.55rem;
+  right: 0.65rem;
+  background: linear-gradient(135deg, var(--color-accent), #c4956a);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+}
+
+.premium-picker__vip {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--color-accent), #c4956a);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.4rem;
+  border-radius: 999px;
+}
+
+.premium-picker__duration {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-top: 0.15rem;
+}
+
+.premium-picker__price {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.premium-picker__price strong {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin-right: 0.15rem;
+}
+
+.premium-picker__card--recommended .premium-picker__price strong {
+  color: #a67c52;
+}
+
+.premium-picker__desc {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+  margin-top: 0.15rem;
+}
+
+.premium-picker__note {
+  margin-top: 1rem;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  background: rgba(45, 106, 79, 0.06);
+  border: 1px dashed rgba(45, 106, 79, 0.2);
+  border-radius: 8px;
+  line-height: 1.45;
+}
+
 /* Legal */
 .legal-page {
   padding: 2.5rem 0 4rem;

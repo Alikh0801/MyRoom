@@ -148,6 +148,8 @@
       "locationDesc": "Qonaqlar harada qalacaqlarını və neçə nəfər qəbul edə biləcəyinizi bilsin.",
       "priceTitle": "Qiymət və əlaqə",
       "priceDesc": "Qonaqlar sizinlə asanlıqla əlaqə saxlaya bilsin.",
+      "premiumTitle": "Premium elan",
+      "premiumDesc": "Elanınızı VIP bölməsində önə çıxarın.",
       "roomTypeTitle": "Otaq tipi",
       "amenitiesDesc": "Mülkünüzdə nələrin olduğunu seçin."
     },
@@ -196,6 +198,27 @@
       "hint": "Bu elan bir otaq tipini təmsil edir (məs: Standart). Fərqli otaq tipi üçün ayrıca yeni elan yaradın.",
       "typeName": "Otaq tipi adı *",
       "floor": "Mərtəbə"
+    },
+    "premium": {
+      "ariaLabel": "Premium elan paketi",
+      "intro": "Elanınızı VIP bölməsində göstərin və daha çox baxış əldə edin.",
+      "recommended": "Ən sərfəli",
+      "comingSoon": "Ödəniş funksionallığı tezliklə aktiv olacaq. Hazırda seçim yalnız önizləmə üçündür.",
+      "plans": {
+        "none": {
+          "duration": "Standart",
+          "price": "Pulsuz",
+          "desc": "Adi elanlar siyahısında görünür"
+        },
+        "day": {
+          "duration": "1 gün",
+          "desc": "VIP bölməsində 24 saat"
+        },
+        "week": {
+          "duration": "1 həftə",
+          "desc": "VIP bölməsində 7 gün"
+        }
+      }
     },
     "footer": {
       "note": "Göndərdikdən sonra elanınız admin tərəfindən yoxlanılacaq.",

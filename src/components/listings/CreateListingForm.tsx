@@ -11,6 +11,7 @@ import { HotelRoomTypeFields } from "@/components/listings/HotelRoomTypeFields";
 import { ListingFormSection } from "@/components/listings/ListingFormSection";
 import { getPriceUnitOptions } from "@/lib/price";
 import { AmenitiesPicker } from "@/components/listings/AmenitiesPicker";
+import { PremiumPlanPicker } from "@/components/listings/PremiumPlanPicker";
 import { RegionCombobox } from "@/components/ui/RegionCombobox";
 import { filterAmenityGroupsBySlug } from "@/lib/amenities/helpers";
 import { isValidRegion } from "@/lib/regions";
@@ -463,6 +464,15 @@ export function CreateListingForm({
           <AmenitiesPicker groups={listingAmenityGroups} />
         </ListingFormSection>
       )}
+
+      <ListingFormSection
+        step={step++}
+        title={t("sections.premiumTitle")}
+        description={t("sections.premiumDesc")}
+        className="listing-form__section--premium"
+      >
+        <PremiumPlanPicker />
+      </ListingFormSection>
 
       <div className="listing-form__footer">
         <LegalAcceptanceField className="listing-form__legal" />
