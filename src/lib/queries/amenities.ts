@@ -1,31 +1,40 @@
-import { createClient } from "@/lib/supabase/server";
+import { unstable_cache } from "next/cache";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { Amenity, AmenityCategory, AmenityGroup } from "@/types/database";
 
 export { filterAmenityGroupsBySlug } from "@/lib/amenities/helpers";
 
+const getAmenitiesGroupedCached = unstable_cache(
+  async (): Promise<AmenityGroup[]> => {
+    const supabase = createPublicClient();
+
+    const { data: categories } = await supabase
+      .from("amenity_categories")
+      .select("*")
+      .order("sort_order");
+
+    const { data: amenities } = await supabase
+      .from("amenities")
+      .select("*")
+      .order("sort_order");
+
+    if (!categories?.length) return [];
+
+    const amenityList = amenities ?? [];
+
+    return categories.map((category) => ({
+      category: category as AmenityCategory,
+      amenities: amenityList.filter(
+        (a) => a.category_id === category.id
+      ) as Amenity[],
+    }));
+  },
+  ["amenity-groups"],
+  { revalidate: 3600 }
+);
+
 export async function getAmenitiesGrouped(): Promise<AmenityGroup[]> {
-  const supabase = await createClient();
-
-  const { data: categories } = await supabase
-    .from("amenity_categories")
-    .select("*")
-    .order("sort_order");
-
-  const { data: amenities } = await supabase
-    .from("amenities")
-    .select("*")
-    .order("sort_order");
-
-  if (!categories?.length) return [];
-
-  const amenityList = amenities ?? [];
-
-  return categories.map((category) => ({
-    category: category as AmenityCategory,
-    amenities: amenityList.filter(
-      (a) => a.category_id === category.id
-    ) as Amenity[],
-  }));
+  return getAmenitiesGroupedCached();
 }
 
 export function groupAmenitiesByCategory(

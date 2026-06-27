@@ -1,8 +1,14 @@
 import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { isAdminUser } from "@/lib/admin/auth";
 import { createClient } from "@/lib/supabase/server";
 import { createPublicClient } from "@/lib/supabase/public";
 import type { ListingCardData, ListingWithRelations } from "@/types/database";
+
+const LISTINGS_CACHE_TAG = "listings";
+const LISTINGS_REVALIDATE_SECONDS = 60;
+
+export { LISTINGS_CACHE_TAG };
 
 const LISTING_SELECT = `
   *,
@@ -77,23 +83,31 @@ function mapToListingCards(rows: ListingRow[]): ListingCardData[] {
 }
 
 export async function getVipListings(limit = 6): Promise<ListingCardData[]> {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from("listings")
-    .select(CARD_SELECT)
-    .eq("status", "approved")
-    .eq("is_vip", true)
-    .order("created_at", { ascending: false })
-    .limit(limit);
-
-  if (error) {
-    console.error("getVipListings:", error.message);
-    return [];
-  }
-
-  return mapToListingCards((data ?? []) as ListingRow[]);
+  return getVipListingsCached(limit);
 }
+
+const getVipListingsCached = unstable_cache(
+  async (limit: number) => {
+    const supabase = createPublicClient();
+
+    const { data, error } = await supabase
+      .from("listings")
+      .select(CARD_SELECT)
+      .eq("status", "approved")
+      .eq("is_vip", true)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      console.error("getVipListings:", error.message);
+      return [];
+    }
+
+    return mapToListingCards((data ?? []) as ListingRow[]);
+  },
+  ["vip-listings"],
+  { revalidate: LISTINGS_REVALIDATE_SECONDS, tags: [LISTINGS_CACHE_TAG] }
+);
 
 export const HOME_LISTINGS_PAGE_SIZE = 12;
 
@@ -105,49 +119,58 @@ export interface PaginatedListings {
   totalPages: number;
 }
 
+const getHomeListingsPageData = unstable_cache(
+  async (safePage: number, pageSize: number): Promise<PaginatedListings> => {
+    const supabase = createPublicClient();
+    const from = (safePage - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    const { data, error, count } = await supabase
+      .from("listings")
+      .select(CARD_SELECT, { count: "exact" })
+      .eq("status", "approved")
+      .eq("is_vip", false)
+      .order("created_at", { ascending: false })
+      .range(from, to);
+
+    if (error) {
+      console.error("getHomeListingsPaginated:", error.message);
+      return {
+        listings: [],
+        page: 1,
+        pageSize,
+        total: 0,
+        totalPages: 1,
+      };
+    }
+
+    const total = count ?? 0;
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+    return {
+      listings: mapToListingCards((data ?? []) as ListingRow[]),
+      page: safePage,
+      pageSize,
+      total,
+      totalPages,
+    };
+  },
+  ["home-listings-page"],
+  { revalidate: LISTINGS_REVALIDATE_SECONDS, tags: [LISTINGS_CACHE_TAG] }
+);
+
 export async function getHomeListingsPaginated(
   page = 1,
   pageSize = HOME_LISTINGS_PAGE_SIZE
 ): Promise<PaginatedListings> {
-  const supabase = await createClient();
   const safePage = Math.max(1, page);
-  const from = (safePage - 1) * pageSize;
-  const to = from + pageSize - 1;
+  const result = await getHomeListingsPageData(safePage, pageSize);
 
-  const { data, error, count } = await supabase
-    .from("listings")
-    .select(CARD_SELECT, { count: "exact" })
-    .eq("status", "approved")
-    .eq("is_vip", false)
-    .order("created_at", { ascending: false })
-    .range(from, to);
-
-  if (error) {
-    console.error("getHomeListingsPaginated:", error.message);
-    return {
-      listings: [],
-      page: 1,
-      pageSize,
-      total: 0,
-      totalPages: 1,
-    };
+  if (result.total > 0 && safePage > result.totalPages) {
+    return getHomeListingsPageData(result.totalPages, pageSize);
   }
 
-  const total = count ?? 0;
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const clampedPage = Math.min(safePage, totalPages);
-
-  if (clampedPage !== safePage && total > 0) {
-    return getHomeListingsPaginated(clampedPage, pageSize);
-  }
-
-  return {
-    listings: mapToListingCards((data ?? []) as ListingRow[]),
-    page: clampedPage,
-    pageSize,
-    total,
-    totalPages,
-  };
+  return result;
 }
 
 export async function getHomeListings(limit = 12): Promise<ListingCardData[]> {
@@ -155,13 +178,11 @@ export async function getHomeListings(limit = 12): Promise<ListingCardData[]> {
   return listings;
 }
 
-async function resolveCategoryId(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  categorySlug?: string
-) {
+async function resolveCategoryIdPublic(categorySlug?: string) {
   if (!categorySlug) return null;
 
   const slug = categorySlug === "otel" ? "hotel" : categorySlug;
+  const supabase = createPublicClient();
 
   const { data: cat } = await supabase
     .from("categories")
@@ -172,8 +193,8 @@ async function resolveCategoryId(
   return cat?.id ?? null;
 }
 
-function buildSearchQuery(
-  supabase: Awaited<ReturnType<typeof createClient>>,
+function buildPublicSearchQuery(
+  supabase: ReturnType<typeof createPublicClient>,
   filters: SearchFilters,
   categoryId: string | null,
   isVip: boolean
@@ -194,34 +215,51 @@ function buildSearchQuery(
   return query;
 }
 
+const getSearchListingsCached = unstable_cache(
+  async (filtersKey: string): Promise<SearchListingsResult> => {
+    const filters = JSON.parse(filtersKey) as SearchFilters;
+    const supabase = createPublicClient();
+    const categoryId = await resolveCategoryIdPublic(filters.category);
+
+    const [vipRes, regularRes] = await Promise.all([
+      buildPublicSearchQuery(supabase, filters, categoryId, true),
+      buildPublicSearchQuery(supabase, filters, categoryId, false),
+    ]);
+
+    if (vipRes.error) {
+      console.error("getSearchListings vip:", vipRes.error.message);
+    }
+    if (regularRes.error) {
+      console.error("getSearchListings regular:", regularRes.error.message);
+    }
+
+    const vipListings = mapToListingCards((vipRes.data ?? []) as ListingRow[]);
+    const regularListings = mapToListingCards(
+      (regularRes.data ?? []) as ListingRow[]
+    );
+
+    return {
+      vipListings,
+      regularListings,
+      total: vipListings.length + regularListings.length,
+    };
+  },
+  ["search-listings"],
+  { revalidate: LISTINGS_REVALIDATE_SECONDS, tags: [LISTINGS_CACHE_TAG] }
+);
+
 export async function getSearchListings(
   filters: SearchFilters = {}
 ): Promise<SearchListingsResult> {
-  const supabase = await createClient();
-  const categoryId = await resolveCategoryId(supabase, filters.category);
+  const filtersKey = JSON.stringify({
+    region: filters.region ?? "",
+    category: filters.category ?? "",
+    minPrice: filters.minPrice ?? null,
+    maxPrice: filters.maxPrice ?? null,
+    guests: filters.guests ?? null,
+  });
 
-  const [vipRes, regularRes] = await Promise.all([
-    buildSearchQuery(supabase, filters, categoryId, true),
-    buildSearchQuery(supabase, filters, categoryId, false),
-  ]);
-
-  if (vipRes.error) {
-    console.error("getSearchListings vip:", vipRes.error.message);
-  }
-  if (regularRes.error) {
-    console.error("getSearchListings regular:", regularRes.error.message);
-  }
-
-  const vipListings = mapToListingCards((vipRes.data ?? []) as ListingRow[]);
-  const regularListings = mapToListingCards(
-    (regularRes.data ?? []) as ListingRow[]
-  );
-
-  return {
-    vipListings,
-    regularListings,
-    total: vipListings.length + regularListings.length,
-  };
+  return getSearchListingsCached(filtersKey);
 }
 
 export async function getApprovedListings(
@@ -237,50 +275,64 @@ export async function getSimilarListings(
   region: string,
   limit = 4
 ): Promise<ListingCardData[]> {
-  const supabase = await createClient();
-  const results: ListingCardData[] = [];
-  const excludeIds = new Set([listingId]);
-
-  async function collect(applyRegion: boolean) {
-    if (results.length >= limit) return;
-
-    let query = supabase
-      .from("listings")
-      .select(CARD_SELECT)
-      .eq("status", "approved")
-      .eq("category_id", categoryId)
-      .order("created_at", { ascending: false })
-      .limit(limit * 2);
-
-    if (applyRegion) query = query.ilike("region", region);
-
-    const { data, error } = await query;
-    if (error) {
-      console.error("getSimilarListings:", error.message);
-      return;
-    }
-
-    for (const row of (data ?? []) as ListingRow[]) {
-      if (results.length >= limit) break;
-      if (excludeIds.has(row.id)) continue;
-      excludeIds.add(row.id);
-      results.push(mapToListingCards([row])[0]);
-    }
-  }
-
-  await collect(true);
-  if (results.length < limit) await collect(false);
-
-  return results;
+  return getSimilarListingsCached(listingId, categoryId, region, limit);
 }
 
-export async function getListingById(
+const getSimilarListingsCached = unstable_cache(
+  async (
+    listingId: string,
+    categoryId: string,
+    region: string,
+    limit: number
+  ) => {
+    const supabase = createPublicClient();
+    const results: ListingCardData[] = [];
+    const excludeIds = new Set([listingId]);
+
+    async function collect(applyRegion: boolean) {
+      if (results.length >= limit) return;
+
+      let query = supabase
+        .from("listings")
+        .select(CARD_SELECT)
+        .eq("status", "approved")
+        .eq("category_id", categoryId)
+        .order("created_at", { ascending: false })
+        .limit(limit * 2);
+
+      if (applyRegion) query = query.ilike("region", region);
+
+      const { data, error } = await query;
+      if (error) {
+        console.error("getSimilarListings:", error.message);
+        return;
+      }
+
+      for (const row of (data ?? []) as ListingRow[]) {
+        if (results.length >= limit) break;
+        if (excludeIds.has(row.id)) continue;
+        excludeIds.add(row.id);
+        results.push(mapToListingCards([row])[0]);
+      }
+    }
+
+    await collect(true);
+    if (results.length < limit) await collect(false);
+
+    return results;
+  },
+  ["similar-listings"],
+  { revalidate: LISTINGS_REVALIDATE_SECONDS, tags: [LISTINGS_CACHE_TAG] }
+);
+
+export const getListingById = cache(async function getListingById(
   id: string
 ): Promise<ListingWithRelations | null> {
   const supabase = await createClient();
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
 
   let query = supabase.from("listings").select(LISTING_SELECT).eq("id", id);
 
@@ -307,7 +359,7 @@ export async function getListingById(
   }
 
   return listing;
-}
+});
 
 export const getCategories = unstable_cache(
   async () => {

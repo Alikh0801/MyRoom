@@ -1,7 +1,8 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/admin/auth";
+import { LISTINGS_CACHE_TAG } from "@/lib/queries/listings";
 import { createClient } from "@/lib/supabase/server";
 
 export async function approveListing(formData: FormData) {
@@ -25,6 +26,7 @@ export async function approveListing(formData: FormData) {
   revalidatePath("/admin/pending");
   revalidatePath("/");
   revalidatePath("/search");
+  revalidateTag(LISTINGS_CACHE_TAG);
 }
 
 export async function rejectListing(formData: FormData) {
@@ -44,4 +46,5 @@ export async function rejectListing(formData: FormData) {
 
   revalidatePath("/admin");
   revalidatePath("/admin/pending");
+  revalidateTag(LISTINGS_CACHE_TAG);
 }

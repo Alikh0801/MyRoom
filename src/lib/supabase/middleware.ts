@@ -6,6 +6,31 @@ import {
   withLocalePrefix,
 } from "@/lib/i18n/locale-path";
 
+function hasSupabaseAuthCookie(request: NextRequest): boolean {
+  return request.cookies.getAll().some(
+    (cookie) =>
+      cookie.name.startsWith("sb-") && cookie.name.includes("-auth-token")
+  );
+}
+
+function isProtectedPath(pathname: string): boolean {
+  return pathname.startsWith("/dashboard") || pathname.startsWith("/admin");
+}
+
+function isAuthPath(pathname: string): boolean {
+  return pathname.startsWith("/auth/");
+}
+
+export function shouldRefreshSupabaseSession(request: NextRequest): boolean {
+  const pathname = stripLocalePrefix(request.nextUrl.pathname);
+
+  return (
+    isProtectedPath(pathname) ||
+    isAuthPath(pathname) ||
+    hasSupabaseAuthCookie(request)
+  );
+}
+
 export async function updateSession(
   request: NextRequest,
   response: NextResponse = NextResponse.next({ request })
@@ -31,8 +56,10 @@ export async function updateSession(
   );
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const user = session?.user ?? null;
 
   const locale = getLocaleFromPathname(request.nextUrl.pathname);
   const pathname = stripLocalePrefix(request.nextUrl.pathname);

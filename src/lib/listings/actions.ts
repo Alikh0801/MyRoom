@@ -1,8 +1,9 @@
 "use server";
 
 import { getTranslations } from "next-intl/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { localizedRedirect } from "@/lib/i18n/server-redirect";
+import { LISTINGS_CACHE_TAG } from "@/lib/queries/listings";
 import { isValidRegion } from "@/lib/regions";
 import { isValidCoordinates } from "@/lib/map";
 import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
@@ -446,6 +447,7 @@ export async function updateListing(
 
   revalidatePath("/dashboard/listings");
   revalidatePath(`/listings/${listingId}`);
+  revalidateTag(LISTINGS_CACHE_TAG);
 
   return { listingId };
 }
@@ -475,6 +477,7 @@ export async function deleteMyListing(formData: FormData) {
   }
 
   revalidatePath("/dashboard/listings");
+  revalidateTag(LISTINGS_CACHE_TAG);
   return localizedRedirect("/dashboard/listings");
 }
 

@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { localizedRedirect } from "@/lib/i18n/server-redirect";
 
@@ -20,7 +21,7 @@ export async function requireAdmin() {
   return user!;
 }
 
-export async function isAdminUser(userId: string): Promise<boolean> {
+export const isAdminUser = cache(async (userId: string): Promise<boolean> => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("profiles")
@@ -28,4 +29,4 @@ export async function isAdminUser(userId: string): Promise<boolean> {
     .eq("id", userId)
     .single();
   return data?.role === "admin";
-}
+});

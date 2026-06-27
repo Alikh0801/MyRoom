@@ -16,6 +16,8 @@ interface SearchPageProps {
   }>;
 }
 
+export const revalidate = 60;
+
 export const metadata = {
   title: "Elan axtarışı",
   description: "Rayon, kateqoriya və qiymətə görə istirahət elanları axtarın.",

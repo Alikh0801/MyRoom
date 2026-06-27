@@ -1,30 +1,10 @@
-import { Link } from "@/i18n/navigation";
 import { HeaderActions } from "@/components/layout/HeaderActions";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
-import { createClient } from "@/lib/supabase/server";
+import { Link } from "@/i18n/navigation";
+import { getHeaderAuth } from "@/lib/auth/session";
 
 export async function Header() {
-  const supabase = await createClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  const user = session?.user ?? null;
-
-  let fullName: string | null = null;
-  let avatarUrl: string | null = null;
-  let isAdmin = false;
-
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("full_name, role, avatar_url")
-      .eq("id", user.id)
-      .single();
-    fullName = profile?.full_name ?? null;
-    avatarUrl = profile?.avatar_url ?? null;
-    isAdmin = profile?.role === "admin";
-  }
+  const { user, fullName, avatarUrl, isAdmin } = await getHeaderAuth();
 
   return (
     <header className="header">

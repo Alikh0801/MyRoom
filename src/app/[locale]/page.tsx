@@ -16,6 +16,8 @@ interface HomePageProps {
   searchParams: Promise<{ page?: string }>;
 }
 
+export const revalidate = 60;
+
 export default async function HomePage({ params, searchParams }: HomePageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
