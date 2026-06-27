@@ -1,17 +1,22 @@
 import type { AmenityGroup } from "@/types/database";
 import { amenityTitleClassName } from "@/lib/amenities/feature-titles";
+import { getLocalizedName } from "@/lib/i18n/localized-name";
+import type { Locale } from "@/i18n/routing";
 
 interface AmenitiesDisplayProps {
   groups: AmenityGroup[];
-  /** Otaq tipi daxilində göstərildikdə əsas başlığı gizlət */
   compact?: boolean;
   title?: string;
+  titleSlug?: string;
+  locale: Locale;
 }
 
 export function AmenitiesDisplay({
   groups,
   compact = false,
   title = "Daxildir",
+  titleSlug,
+  locale,
 }: AmenitiesDisplayProps) {
   const nonEmpty = groups.filter((g) => g.amenities.length > 0);
   if (nonEmpty.length === 0) return null;
@@ -25,26 +30,33 @@ export function AmenitiesDisplay({
       }
     >
       {!compact && (
-        <h2 className={amenityTitleClassName(title, "listing-detail__amenities-title")}>
+        <h2
+          className={amenityTitleClassName(
+            titleSlug ?? title,
+            "listing-detail__amenities-title",
+            Boolean(titleSlug)
+          )}
+        >
           {title}
         </h2>
       )}
       {nonEmpty.map((group) => (
         <div key={group.category.id} className="amenities-group">
-          {(compact || group.category.name_az !== title) && (
+          {(compact || getLocalizedName(group.category, locale) !== title) && (
             <h3
               className={amenityTitleClassName(
-                group.category.name_az,
-                "amenities-group__title"
+                group.category.slug,
+                "amenities-group__title",
+                true
               )}
             >
-              {group.category.name_az}
+              {getLocalizedName(group.category, locale)}
             </h3>
           )}
           <div className="amenities">
             {group.amenities.map((a) => (
               <span key={a.id} className="amenity-tag">
-                {a.name_az}
+                {getLocalizedName(a, locale)}
               </span>
             ))}
           </div>

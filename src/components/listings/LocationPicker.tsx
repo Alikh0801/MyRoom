@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import {
   MapContainer,
   Marker,
@@ -54,6 +55,8 @@ function MapViewSync({
 }
 
 export function LocationPicker({ lat, lng, onChange }: LocationPickerProps) {
+  const t = useTranslations("listingForm.location");
+
   useEffect(() => {
     fixLeafletIcon();
   }, []);
@@ -79,15 +82,13 @@ export function LocationPicker({ lat, lng, onChange }: LocationPickerProps) {
   return (
     <div className="location-picker">
       <div className="location-picker__toolbar">
-        <p className="location-picker__hint">
-          Xəritədə mülkün yerini klikləyin və ya pin-i sürüşdürün.
-        </p>
+        <p className="location-picker__hint">{t("hint")}</p>
         <button
           type="button"
           className="btn btn--ghost btn--sm"
           onClick={handleUseMyLocation}
         >
-          Cari mövqeyim
+          {t("useMyLocation")}
         </button>
       </div>
 
@@ -124,11 +125,11 @@ export function LocationPicker({ lat, lng, onChange }: LocationPickerProps) {
 
       {hasPin ? (
         <p className="location-picker__coords">
-          Koordinatlar: {lat.toFixed(5)}, {lng.toFixed(5)}
+          {t("coords", { lat: lat.toFixed(5), lng: lng.toFixed(5) })}
         </p>
       ) : (
         <p className="location-picker__coords location-picker__coords--empty">
-          Yer seçilməyib *
+          {t("notSelected")}
         </p>
       )}
     </div>

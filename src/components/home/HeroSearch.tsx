@@ -1,10 +1,20 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { useState, useTransition } from "react";
 import { RegionCombobox } from "@/components/ui/RegionCombobox";
+import { getLocalizedName } from "@/lib/i18n/localized-name";
+import type { Locale } from "@/i18n/routing";
+import type { Category } from "@/types/database";
 
-export function HeroSearch() {
+interface HeroSearchProps {
+  categories: Category[];
+  locale: Locale;
+}
+
+export function HeroSearch({ categories, locale }: HeroSearchProps) {
+  const t = useTranslations("home");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [region, setRegion] = useState("");
@@ -15,7 +25,7 @@ export function HeroSearch() {
     const params = new URLSearchParams();
     if (region) params.set("region", region);
     if (category) params.set("category", category);
-    const href = `/search?${params.toString()}`;
+    const href = params.toString() ? `/search?${params.toString()}` : "/search";
     startTransition(() => {
       router.push(href);
     });
@@ -26,26 +36,21 @@ export function HeroSearch() {
       <RegionCombobox
         value={region}
         onChange={setRegion}
-        placeholder="Rayon və ya şəhər seç"
+        placeholder={t("searchRegion")}
         inputClassName="hero__search-input"
         allowEmpty
-        emptyLabel="Bütün rayonlar"
+        emptyLabel={t("allRegions")}
       />
       <select value={category} onChange={(e) => setCategory(e.target.value)}>
-        <option value="">Bütün növlər</option>
-        <option value="a-frame">A-frame (Glamping)</option>
-        <option value="hostel">Hostel</option>
-        <option value="hotel">Hotel</option>
-        <option value="villa">Villa</option>
-        <option value="rayon-evi">Rayon evi</option>
+        <option value="">{t("allTypes")}</option>
+        {categories.map((cat) => (
+          <option key={cat.id} value={cat.slug}>
+            {getLocalizedName(cat, locale)}
+          </option>
+        ))}
       </select>
-      <button
-        type="submit"
-        className="btn btn--primary"
-        disabled={isPending}
-        aria-busy={isPending}
-      >
-        {isPending ? "Axtarılır..." : "Axtar"}
+      <button type="submit" className="btn btn--primary" disabled={isPending}>
+        {isPending ? "..." : t("search")}
       </button>
     </form>
   );

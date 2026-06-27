@@ -14,8 +14,8 @@ const LISTING_SELECT = `
 `;
 
 const CARD_SELECT = `
-  id, title, price_per_night, price_unit, currency, city, region, max_guests, created_at,
-  category:categories(slug, name_az),
+  id, title, title_ru, price_per_night, price_unit, currency, city, region, max_guests, created_at,
+  category:categories(slug, name_az, name_ru),
   listing_images(url, is_cover, sort_order)
 `;
 
@@ -36,6 +36,7 @@ export interface SearchListingsResult {
 type ListingRow = {
   id: string;
   title: string;
+  title_ru?: string | null;
   price_per_night: number;
   price_unit: "day" | "week" | "month";
   currency: string;
@@ -43,7 +44,7 @@ type ListingRow = {
   region: string;
   max_guests: number;
   created_at: string;
-  category: { slug: string; name_az: string } | { slug: string; name_az: string }[];
+  category: { slug: string; name_az: string; name_ru?: string | null } | { slug: string; name_az: string; name_ru?: string | null }[];
   listing_images: { url: string; is_cover: boolean; sort_order: number }[];
 };
 
@@ -61,6 +62,7 @@ function mapToListingCards(rows: ListingRow[]): ListingCardData[] {
     return {
       id: row.id,
       title: row.title,
+      title_ru: row.title_ru ?? null,
       price_per_night: row.price_per_night,
       price_unit: row.price_unit ?? "day",
       currency: row.currency,

@@ -1,4 +1,8 @@
-import Link from "next/link";
+"use client";
+
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { UserMenu } from "@/components/layout/UserMenu";
 
 interface HeaderActionsProps {
@@ -14,14 +18,17 @@ export function HeaderActions({
   avatarUrl,
   isAdmin = false,
 }: HeaderActionsProps) {
+  const t = useTranslations("nav");
+
   if (!user) {
     return (
       <div className="header__actions">
+        <LanguageSwitcher />
         <Link href="/auth/login" className="btn btn--ghost btn--header">
-          Daxil ol
+          {t("login")}
         </Link>
         <Link href="/auth/register" className="btn btn--primary btn--header">
-          Qeydiyyat
+          {t("register")}
         </Link>
       </div>
     );
@@ -29,12 +36,13 @@ export function HeaderActions({
 
   return (
     <div className="header__actions">
+      <LanguageSwitcher />
       <Link
         href="/dashboard/listings/new"
         className="btn btn--primary btn--header header__cta"
       >
-        <span className="header__cta-full">+ Elan yerləşdir</span>
-        <span className="header__cta-short">+ Elan</span>
+        <span className="header__cta-full">{t("postListing")}</span>
+        <span className="header__cta-short">{t("postListingShort")}</span>
       </Link>
       <UserMenu
         fullName={fullName}

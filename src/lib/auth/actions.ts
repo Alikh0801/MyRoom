@@ -1,8 +1,9 @@
 "use server";
 
-import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import { localizedRedirect } from "@/lib/i18n/server-redirect";
 import { checkAuthRateLimit } from "@/lib/auth/rate-limit";
-import { translateAuthError } from "@/lib/auth/errors";
+import { resolveAuthErrorKey } from "@/lib/auth/errors";
 import { verifyTurnstileToken } from "@/lib/auth/turnstile";
 import { isValidPhone, normalizePhone } from "@/lib/phone";
 import { getClientIp } from "@/lib/request";
@@ -49,13 +50,14 @@ export async function signIn(
   _prevState: AuthState | null,
   formData: FormData
 ): Promise<AuthState | null> {
+  const t = await getTranslations("auth.errors");
   const email = (formData.get("email") as string)?.trim();
   const password = formData.get("password") as string;
   const redirectTo = (formData.get("redirectTo") as string) || "/";
   const turnstileToken = formData.get("turnstileToken") as string | null;
 
   if (!email || !password) {
-    return { error: "Email və şifrə daxil edin." };
+    return { error: t("missingCredentials") };
   }
 
   const ip = await getClientIp();
@@ -73,16 +75,17 @@ export async function signIn(
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    return { error: translateAuthError(error.message) };
+    return { error: t(resolveAuthErrorKey(error.message)) };
   }
 
-  redirect(redirectTo);
+  return localizedRedirect(redirectTo || "/");
 }
 
 export async function signUp(
   _prevState: AuthState | null,
   formData: FormData
 ): Promise<AuthState | null> {
+  const t = await getTranslations("auth.errors");
   const fullName = (formData.get("fullName") as string)?.trim();
   const emailRaw = (formData.get("email") as string)?.trim();
   const password = formData.get("password") as string;
@@ -91,38 +94,36 @@ export async function signUp(
   const turnstileToken = formData.get("turnstileToken") as string | null;
 
   if (!fullName || !emailRaw || !password) {
-    return { error: "Ad, email və şifrə mütləqdir." };
+    return { error: t("missingRequired") };
   }
 
   const email = normalizeEmail(emailRaw);
 
   if (!phoneRaw) {
-    return { error: "Zəng üçün telefon nömrəsi mütləqdir." };
+    return { error: t("missingPhone") };
   }
 
   if (!whatsappRaw) {
-    return { error: "WhatsApp nömrəsi mütləqdir." };
+    return { error: t("missingWhatsapp") };
   }
 
   const phone = normalizePhone(phoneRaw);
   const whatsappPhone = normalizePhone(whatsappRaw);
 
   if (!phone || !isValidPhone(phoneRaw)) {
-    return { error: "Zəng telefonu düzgün deyil. Nümunə: +994501234567" };
+    return { error: t("invalidPhone") };
   }
 
   if (!whatsappPhone || !isValidPhone(whatsappRaw)) {
-    return { error: "WhatsApp nömrəsi düzgün deyil. Nümunə: +994501234567" };
+    return { error: t("invalidWhatsapp") };
   }
 
   if (password.length < 6) {
-    return { error: "Şifrə ən azı 6 simvol olmalıdır." };
+    return { error: t("passwordTooShort") };
   }
 
   if (!hasAcceptedLegalTerms(formData)) {
-    return {
-      error: "İstifadəçi şərtləri və Məxfilik siyasəti ilə razı olmalısınız.",
-    };
+    return { error: t("legalRequired") };
   }
 
   const ip = await getClientIp();
@@ -139,11 +140,11 @@ export async function signUp(
   const supabase = await createClient();
 
   if (await isEmailRegistered(supabase, email)) {
-    return { error: "Bu email ilə artıq qeydiyyatdan keçilib." };
+    return { error: t("emailAlreadyRegistered") };
   }
 
   if (await isPhoneRegistered(supabase, phone)) {
-    return { error: "Bu telefon nömrəsi ilə artıq qeydiyyatdan keçilib." };
+    return { error: t("phoneAlreadyRegistered") };
   }
 
   const { data, error } = await supabase.auth.signUp({
@@ -165,17 +166,19 @@ export async function signUp(
       error.message.includes("unique") ||
       error.message.includes("already registered")
     ) {
-      return { error: "Bu email ilə artıq qeydiyyatdan keçilib." };
+      return { error: t("emailAlreadyRegistered") };
     }
-    return { error: translateAuthError(error.message) };
+    return { error: t(resolveAuthErrorKey(error.message)) };
   }
 
   if (data.user && data.user.identities?.length === 0) {
-    return { error: "Bu email ilə artıq qeydiyyatdan keçilib." };
+    return { error: t("emailAlreadyRegistered") };
   }
 
   if (data.user && !data.session) {
-    redirect(`/auth/verify-email?email=${encodeURIComponent(email)}`);
+    return localizedRedirect(
+      `/auth/verify-email?email=${encodeURIComponent(email)}`
+    );
   }
 
   if (data.user && data.session) {
@@ -190,26 +193,27 @@ export async function signUp(
       .eq("id", data.user.id);
   }
 
-  redirect("/");
+  return localizedRedirect("/");
 }
 
 export async function verifyEmailOtp(
   _prevState: AuthState | null,
   formData: FormData
 ): Promise<AuthState | null> {
+  const t = await getTranslations("auth.errors");
   const email = normalizeEmail((formData.get("email") as string) ?? "");
   const token = (formData.get("token") as string)?.trim();
 
   if (!email) {
-    return { error: "Email ünvanı tapılmadı." };
+    return { error: t("emailNotFound") };
   }
 
   if (!token) {
-    return { error: "Təsdiq kodunu daxil edin." };
+    return { error: t("missingOtp") };
   }
 
   if (!new RegExp(`^\\d{${EMAIL_OTP_LENGTH}}$`).test(token)) {
-    return { error: `${EMAIL_OTP_LENGTH} rəqəmli kodu daxil edin.` };
+    return { error: t("invalidOtpLength", { length: EMAIL_OTP_LENGTH }) };
   }
 
   const ip = await getClientIp();
@@ -226,20 +230,22 @@ export async function verifyEmailOtp(
   });
 
   if (error) {
-    return { error: translateAuthError(error.message) };
+    return { error: t(resolveAuthErrorKey(error.message)) };
   }
 
-  redirect("/");
+  return localizedRedirect("/");
 }
 
 export async function resendVerificationOtp(
   _prevState: AuthState | null,
   formData: FormData
 ): Promise<AuthState | null> {
+  const tErrors = await getTranslations("auth.errors");
+  const tVerify = await getTranslations("auth.verify");
   const email = normalizeEmail((formData.get("email") as string) ?? "");
 
   if (!email) {
-    return { error: "Email ünvanı tapılmadı." };
+    return { error: tErrors("emailNotFound") };
   }
 
   const ip = await getClientIp();
@@ -255,14 +261,14 @@ export async function resendVerificationOtp(
   });
 
   if (error) {
-    return { error: translateAuthError(error.message) };
+    return { error: tErrors(resolveAuthErrorKey(error.message)) };
   }
 
-  return { success: "Yeni təsdiq kodu email ünvanınıza göndərildi." };
+  return { success: tVerify("resendSuccess") };
 }
 
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/");
+  return localizedRedirect("/");
 }

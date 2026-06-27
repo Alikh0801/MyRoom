@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { getClientIp } from "@/lib/request";
 
 export function isTurnstileEnabled(): boolean {
@@ -15,7 +16,8 @@ export async function verifyTurnstileToken(
   }
 
   if (!token?.trim()) {
-    return { ok: false, error: "Təhlükəsizlik yoxlamasını tamamlayın." };
+    const t = await getTranslations("auth.errors");
+    return { ok: false, error: t("turnstileIncomplete") };
   }
 
   const ip = await getClientIp();
@@ -35,7 +37,8 @@ export async function verifyTurnstileToken(
   const result = (await response.json()) as { success?: boolean };
 
   if (!result.success) {
-    return { ok: false, error: "Təhlükəsizlik yoxlaması uğursuz oldu. Yenidən cəhd edin." };
+    const t = await getTranslations("auth.errors");
+    return { ok: false, error: t("turnstileFailed") };
   }
 
   return { ok: true };

@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { AmenitiesPicker } from "@/components/listings/AmenitiesPicker";
 import type { AmenityGroup } from "@/types/database";
 
@@ -8,38 +11,40 @@ interface HotelRoomTypeFieldsProps {
 export function HotelRoomTypeFields({
   roomAmenityGroups,
 }: HotelRoomTypeFieldsProps) {
+  const t = useTranslations("listingForm");
+  const tListing = useTranslations("listing");
+
   return (
     <div className="hotel-room-type">
-      <p className="listing-form__hint">
-        Bu elan bir otaq tipini təmsil edir (məs: Standart). Fərqli otaq tipi
-        üçün ayrıca yeni elan yaradın.
-      </p>
+      <p className="listing-form__hint">{t("hotelRoom.hint")}</p>
 
       <div className="listing-form__row">
         <label className="listing-form__field">
-          <span className="listing-form__label">Otaq tipi adı *</span>
+          <span className="listing-form__label">{t("hotelRoom.typeName")}</span>
           <input
             type="text"
             name="roomTypeName"
             required
-            placeholder="Məs: Standart, Elit Suit, Deluxe Suit"
+            placeholder={t("placeholders.roomTypeName")}
           />
         </label>
 
         <label className="listing-form__field">
-          <span className="listing-form__label">Mərtəbə</span>
+          <span className="listing-form__label">{t("hotelRoom.floor")}</span>
           <input
             type="number"
             name="roomTypeFloor"
             min={0}
-            placeholder="Məs: 3"
+            placeholder={t("placeholders.roomTypeFloor")}
           />
         </label>
       </div>
 
       {roomAmenityGroups.some((g) => g.amenities.length > 0) && (
         <div className="hotel-room-type__amenities">
-          <p className="hotel-room-type__amenities-label">Otaq xüsusiyyətləri</p>
+          <p className="hotel-room-type__amenities-label">
+            {tListing("roomFeatures")}
+          </p>
           <AmenitiesPicker groups={roomAmenityGroups} name="roomAmenities" />
         </div>
       )}

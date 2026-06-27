@@ -1,16 +1,20 @@
+import createIntlMiddleware from "next-intl/middleware";
 import { type NextRequest } from "next/server";
+import { routing } from "@/i18n/routing";
 import { updateSession } from "@/lib/supabase/middleware";
 
+const intlMiddleware = createIntlMiddleware(routing);
+
 export async function middleware(request: NextRequest) {
-  return updateSession(request);
+  const intlResponse = intlMiddleware(request);
+
+  const supabaseResponse = await updateSession(request, intlResponse);
+
+  return supabaseResponse;
 }
 
 export const config = {
   matcher: [
-    "/dashboard",
-    "/dashboard/:path*",
-    "/admin/:path*",
-    "/auth/login",
-    "/auth/register",
+    "/((?!api|auth/callback|_next|_vercel|.*\\..*).*)",
   ],
 };

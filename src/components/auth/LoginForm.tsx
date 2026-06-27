@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useActionState, useState } from "react";
+import { Link } from "@/i18n/navigation";
 import { signIn, type AuthState } from "@/lib/auth/actions";
 import {
   TurnstileField,
@@ -13,14 +14,14 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
+  const t = useTranslations("auth.form");
   const [state, formAction, pending] = useActionState<AuthState | null, FormData>(
     signIn,
     null
   );
   const [turnstileToken, setTurnstileToken] = useState("");
   const turnstileRequired = useTurnstileRequired();
-  const submitDisabled =
-    pending || (turnstileRequired && !turnstileToken);
+  const submitDisabled = pending || (turnstileRequired && !turnstileToken);
 
   return (
     <form className="auth-form" action={formAction}>
@@ -29,24 +30,24 @@ export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
       {state?.error && <p className="auth-form__error">{state.error}</p>}
 
       <label className="auth-form__field">
-        Email
+        {t("email")}
         <input
           type="email"
           name="email"
           required
           autoComplete="email"
-          placeholder="siz@example.com"
+          placeholder={t("emailPlaceholder")}
         />
       </label>
 
       <label className="auth-form__field">
-        Şifrə
+        {t("password")}
         <input
           type="password"
           name="password"
           required
           autoComplete="current-password"
-          placeholder="••••••••"
+          placeholder={t("passwordPlaceholder")}
           minLength={6}
         />
       </label>
@@ -64,12 +65,12 @@ export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
         className="btn btn--primary auth-form__submit"
         disabled={submitDisabled}
       >
-        {pending ? "Giriş edilir..." : "Daxil ol"}
+        {pending ? t("submitLoginPending") : t("submitLogin")}
       </button>
 
       <p className="auth-form__footer">
-        Hesabınız yoxdur?{" "}
-        <Link href="/auth/register">Qeydiyyatdan keçin</Link>
+        {t("noAccount")}{" "}
+        <Link href="/auth/register">{t("registerLink")}</Link>
       </p>
     </form>
   );

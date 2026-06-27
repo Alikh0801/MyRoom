@@ -1,29 +1,40 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
 import { LEGAL_DOCUMENT_VERSION } from "@/lib/legal/constants";
 import type { LegalSection } from "@/lib/legal/types";
 
 interface LegalDocumentProps {
+  locale: Locale;
   title: string;
   intro: string;
   sections: LegalSection[];
-  relatedHref?: string;
+  relatedHref?: "/terms" | "/privacy";
   relatedLabel?: string;
 }
 
-export function LegalDocument({
+const DATE_LOCALE: Record<Locale, string> = {
+  az: "az-AZ",
+  ru: "ru-RU",
+};
+
+export async function LegalDocument({
+  locale,
   title,
   intro,
   sections,
   relatedHref,
   relatedLabel,
 }: LegalDocumentProps) {
+  const t = await getTranslations({ locale, namespace: "legal" });
+
   return (
     <article className="legal-document">
       <header className="legal-document__header">
         <h1 className="legal-document__title">{title}</h1>
         <p className="legal-document__meta">
-          Son yenilənmə:{" "}
-          {new Date(LEGAL_DOCUMENT_VERSION).toLocaleDateString("az-AZ", {
+          {t("lastUpdated")}:{" "}
+          {new Date(LEGAL_DOCUMENT_VERSION).toLocaleDateString(DATE_LOCALE[locale], {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -32,8 +43,8 @@ export function LegalDocument({
         <p className="legal-document__intro">{intro}</p>
       </header>
 
-      <nav className="legal-document__toc" aria-label="Mündəricat">
-        <h2 className="legal-document__toc-title">Mündəricat</h2>
+      <nav className="legal-document__toc" aria-label={t("toc")}>
+        <h2 className="legal-document__toc-title">{t("toc")}</h2>
         <ol className="legal-document__toc-list">
           {sections.map((section) => (
             <li key={section.id}>
@@ -70,7 +81,7 @@ export function LegalDocument({
 
       {relatedHref && relatedLabel && (
         <p className="legal-document__related">
-          Həmçinin baxın: <Link href={relatedHref}>{relatedLabel}</Link>
+          {t("seeAlso")}: <Link href={relatedHref}>{relatedLabel}</Link>
         </p>
       )}
     </article>

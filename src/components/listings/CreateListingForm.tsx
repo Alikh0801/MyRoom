@@ -2,13 +2,14 @@
 
 import { compressListingImage } from "@/lib/images/listing-images";
 import dynamic from "next/dynamic";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { CategoryPicker } from "@/components/listings/CategoryPicker";
 import { ImagePreviewSlider } from "@/components/listings/ImagePreviewSlider";
 import { HotelRoomTypeFields } from "@/components/listings/HotelRoomTypeFields";
 import { ListingFormSection } from "@/components/listings/ListingFormSection";
-import { PRICE_UNIT_OPTIONS } from "@/lib/price";
+import { getPriceUnitOptions } from "@/lib/price";
 import { AmenitiesPicker } from "@/components/listings/AmenitiesPicker";
 import { RegionCombobox } from "@/components/ui/RegionCombobox";
 import { filterAmenityGroupsBySlug } from "@/lib/amenities/helpers";
@@ -17,7 +18,15 @@ import { createListing } from "@/lib/listings/actions";
 import { isValidCoordinates } from "@/lib/map";
 import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
 import { LegalAcceptanceField } from "@/components/legal/LegalAcceptanceField";
+import type { Locale } from "@/i18n/routing";
 import type { AmenityGroup, Category } from "@/types/database";
+
+function MapLoadingFallback() {
+  const t = useTranslations("listingForm");
+  return (
+    <div className="location-picker__loading">{t("mapLoading")}</div>
+  );
+}
 
 const LocationPicker = dynamic(
   () =>
@@ -26,9 +35,7 @@ const LocationPicker = dynamic(
     ),
   {
     ssr: false,
-    loading: () => (
-      <div className="location-picker__loading">Xəritə yüklənir...</div>
-    ),
+    loading: () => <MapLoadingFallback />,
   }
 );
 
@@ -40,7 +47,11 @@ interface CreateListingFormProps {
 
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
-async function uploadImages(listingId: string, files: File[]) {
+async function uploadImages(
+  listingId: string,
+  files: File[],
+  tErrors: (key: string) => string
+) {
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const previewId = crypto.randomUUID();
@@ -59,7 +70,7 @@ async function uploadImages(listingId: string, files: File[]) {
 
     if (!presignRes.ok) {
       const err = await presignRes.json();
-      throw new Error(err.error ?? "Şəkil yükləmə xətası");
+      throw new Error(err.error ?? tErrors("uploadFailed"));
     }
 
     const { uploadUrl, storagePath } = await presignRes.json();
@@ -70,7 +81,7 @@ async function uploadImages(listingId: string, files: File[]) {
       body: compressed,
     });
 
-    if (!uploadRes.ok) throw new Error("Şəkil serverə yüklənmədi");
+    if (!uploadRes.ok) throw new Error(tErrors("uploadServerFailed"));
 
     const confirmRes = await fetch("/api/upload/confirm", {
       method: "POST",
@@ -85,7 +96,7 @@ async function uploadImages(listingId: string, files: File[]) {
 
     if (!confirmRes.ok) {
       const err = await confirmRes.json();
-      throw new Error(err.error ?? "Şəkil təsdiqi xətası");
+      throw new Error(err.error ?? tErrors("uploadConfirmFailed"));
     }
   }
 }
@@ -95,7 +106,16 @@ export function CreateListingForm({
   amenityGroups,
   defaultWhatsapp = "",
 }: CreateListingFormProps) {
+  const t = useTranslations("listingForm");
+  const tListing = useTranslations("listing");
+  const tErrors = useTranslations("listingForm.errors");
+  const locale = useLocale() as Locale;
   const router = useRouter();
+  const priceUnitOptions = useMemo(
+    () => getPriceUnitOptions(locale),
+    [locale]
+  );
+
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [categoryId, setCategoryId] = useState("");
   const [region, setRegion] = useState("");
@@ -124,11 +144,11 @@ export function CreateListingForm({
     const images = files.filter((file) => ACCEPTED_IMAGE_TYPES.includes(file.type));
 
     if (images.length === 0) {
-      setError("Yalnız JPEG, PNG və ya WebP şəkilləri seçə bilərsiniz.");
+      setError(tErrors("invalidImageType"));
       return;
     }
     if (images.length > 15) {
-      setError("Maksimum 15 şəkil seçə bilərsiniz.");
+      setError(tErrors("tooManyImages"));
       return;
     }
     setError(null);
@@ -150,28 +170,28 @@ export function CreateListingForm({
     setError(null);
 
     if (selectedFiles.length === 0) {
-      setError("Ən azı 1 şəkil seçin.");
+      setError(tErrors("minOneImage"));
       return;
     }
 
     if (!categoryId) {
-      setError("Kateqoriya seçin.");
+      setError(tErrors("selectCategory"));
       return;
     }
 
     if (!isValidRegion(region)) {
-      setError("Rayon siyahıdan seçin.");
+      setError(tErrors("selectRegion"));
       return;
     }
 
     if (lat == null || lng == null || !isValidCoordinates(lat, lng)) {
-      setError("Xəritədə mülkün yerini göstərin.");
+      setError(tErrors("selectMapLocation"));
       return;
     }
 
     const formData = new FormData(e.currentTarget);
     if (!hasAcceptedLegalTerms(formData)) {
-      setError("İstifadəçi şərtləri və Məxfilik siyasəti ilə razı olmalısınız.");
+      setError(tErrors("legalRequired"));
       return;
     }
 
@@ -179,19 +199,19 @@ export function CreateListingForm({
     const result = await createListing(null, formData);
 
     if (result.error || !result.listingId) {
-      setError(result.error ?? "Elan yaradıla bilmədi.");
+      setError(result.error ?? tErrors("createFailed"));
       setSubmitting(false);
       return;
     }
 
     try {
-      await uploadImages(result.listingId, selectedFiles);
+      await uploadImages(result.listingId, selectedFiles, tErrors);
       router.push("/dashboard/listings?created=1");
     } catch (err) {
       setError(
         err instanceof Error
-          ? `Elan yaradıldı, amma şəkil xətası: ${err.message}`
-          : "Elan yaradıldı, şəkillər yüklənmədi."
+          ? tErrors("createdUploadError", { message: err.message })
+          : tErrors("createdNoImages")
       );
       setSubmitting(false);
     }
@@ -207,8 +227,8 @@ export function CreateListingForm({
 
       <ListingFormSection
         step={step++}
-        title="Şəkillər"
-        description="İlk şəkil əsas şəkil olacaq. Minimum 1, maksimum 15 şəkil."
+        title={t("sections.photosTitle")}
+        description={t("sections.photosDesc")}
       >
         <label
           className={`listing-form__dropzone${dragOver ? " listing-form__dropzone--active" : ""}${selectedFiles.length > 0 ? " listing-form__dropzone--filled" : ""}`}
@@ -239,11 +259,11 @@ export function CreateListingForm({
           </span>
           <span className="listing-form__dropzone-title">
             {selectedFiles.length > 0
-              ? `${selectedFiles.length} şəkil seçildi`
-              : "Şəkilləri buraya sürüşdürün"}
+              ? t("dropzone.selected", { count: selectedFiles.length })
+              : t("dropzone.dragHere")}
           </span>
           <span className="listing-form__dropzone-text">
-            və ya cihazdan seçin
+            {t("dropzone.orSelect")}
           </span>
         </label>
 
@@ -254,33 +274,55 @@ export function CreateListingForm({
 
       <ListingFormSection
         step={step++}
-        title="Əsas məlumat"
-        description="Elanınızı qonaqlar üçün cəlbedici edin."
+        title={t("sections.basicsTitle")}
+        description={t("sections.basicsDesc")}
       >
         <label className="listing-form__field">
-          <span className="listing-form__label">Elan başlığı *</span>
+          <span className="listing-form__label">{t("fields.title")}</span>
           <input
             type="text"
             name="title"
             required
             minLength={5}
-            placeholder="Məs: Quba dağ mənzərəli A-frame ev"
+            placeholder={t("placeholders.title")}
           />
         </label>
 
         <label className="listing-form__field">
-          <span className="listing-form__label">Təsvir *</span>
+          <span className="listing-form__label">{t("fields.description")}</span>
           <textarea
             name="description"
             required
             minLength={20}
             rows={5}
-            placeholder="Eviniz, imkanlar və ətraf mühit haqqında yazın..."
+            placeholder={t("placeholders.description")}
+          />
+        </label>
+
+        <p className="listing-form__hint">{t("fields.ruOptionalHint")}</p>
+
+        <label className="listing-form__field">
+          <span className="listing-form__label">{t("fields.titleRu")}</span>
+          <input
+            type="text"
+            name="titleRu"
+            minLength={5}
+            placeholder={t("placeholders.titleRu")}
+          />
+        </label>
+
+        <label className="listing-form__field">
+          <span className="listing-form__label">{t("fields.descriptionRu")}</span>
+          <textarea
+            name="descriptionRu"
+            minLength={20}
+            rows={5}
+            placeholder={t("placeholders.descriptionRu")}
           />
         </label>
 
         <div className="listing-form__field">
-          <span className="listing-form__label">Kateqoriya *</span>
+          <span className="listing-form__label">{t("fields.category")}</span>
           <CategoryPicker
             categories={categories}
             value={categoryId}
@@ -291,34 +333,43 @@ export function CreateListingForm({
 
       <ListingFormSection
         step={step++}
-        title="Məkan məlumatları"
-        description="Qonaqlar harada qalacaqlarını və neçə nəfər qəbul edə biləcəyinizi bilsin."
+        title={t("sections.locationTitle")}
+        description={t("sections.locationDesc")}
       >
         <div className="listing-form__row">
           <label className="listing-form__field">
-            <span className="listing-form__label">Rayon *</span>
+            <span className="listing-form__label">{t("fields.region")}</span>
             <RegionCombobox
               name="region"
               value={region}
               onChange={setRegion}
               required
-              placeholder="Rayon və ya şəhər seç"
+              placeholder={t("placeholders.region")}
             />
           </label>
 
           <label className="listing-form__field">
-            <span className="listing-form__label">Şəhər / kənd *</span>
-            <input type="text" name="city" required placeholder="Qəçrəş" />
+            <span className="listing-form__label">{t("fields.city")}</span>
+            <input
+              type="text"
+              name="city"
+              required
+              placeholder={t("placeholders.city")}
+            />
           </label>
         </div>
 
         <label className="listing-form__field">
-          <span className="listing-form__label">Ünvan (ixtiyari)</span>
-          <input type="text" name="address" placeholder="Tam ünvan" />
+          <span className="listing-form__label">{t("fields.address")}</span>
+          <input
+            type="text"
+            name="address"
+            placeholder={t("placeholders.address")}
+          />
         </label>
 
         <div className="listing-form__field">
-          <span className="listing-form__label">Xəritədə yer *</span>
+          <span className="listing-form__label">{t("fields.mapLocation")}</span>
           <LocationPicker
             lat={lat}
             lng={lng}
@@ -331,7 +382,7 @@ export function CreateListingForm({
 
         <div className="listing-form__row">
           <label className="listing-form__field">
-            <span className="listing-form__label">Qonaq *</span>
+            <span className="listing-form__label">{t("fields.guests")}</span>
             <input
               type="number"
               name="maxGuests"
@@ -342,7 +393,7 @@ export function CreateListingForm({
           </label>
 
           <label className="listing-form__field">
-            <span className="listing-form__label">Yataq otağı</span>
+            <span className="listing-form__label">{t("fields.bedrooms")}</span>
             <input
               type="number"
               name="bedrooms"
@@ -355,26 +406,26 @@ export function CreateListingForm({
 
       <ListingFormSection
         step={step++}
-        title="Qiymət və əlaqə"
-        description="Qonaqlar sizinlə asanlıqla əlaqə saxlaya bilsin."
+        title={t("sections.priceTitle")}
+        description={t("sections.priceDesc")}
       >
         <div className="listing-form__row">
           <label className="listing-form__field">
-            <span className="listing-form__label">Qiymət (AZN) *</span>
+            <span className="listing-form__label">{t("fields.price")}</span>
             <input
               type="number"
               name="pricePerNight"
               required
               min={1}
               step={1}
-              placeholder="150"
+              placeholder={t("placeholders.price")}
             />
           </label>
 
           <label className="listing-form__field">
-            <span className="listing-form__label">Vahid *</span>
+            <span className="listing-form__label">{t("fields.priceUnit")}</span>
             <select name="priceUnit" required defaultValue="day">
-              {PRICE_UNIT_OPTIONS.map((opt) => (
+              {priceUnitOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   /{opt.label.toLowerCase()}
                 </option>
@@ -384,19 +435,19 @@ export function CreateListingForm({
         </div>
 
         <label className="listing-form__field">
-          <span className="listing-form__label">WhatsApp nömrəsi *</span>
+          <span className="listing-form__label">{t("fields.whatsapp")}</span>
           <input
             type="tel"
             name="whatsappPhone"
             required
             defaultValue={defaultWhatsapp}
-            placeholder="+994501234567"
+            placeholder={t("placeholders.whatsapp")}
           />
         </label>
       </ListingFormSection>
 
       {isHotel && (
-        <ListingFormSection step={step++} title="Otaq tipi">
+        <ListingFormSection step={step++} title={t("sections.roomTypeTitle")}>
           <HotelRoomTypeFields roomAmenityGroups={roomAmenityGroups} />
         </ListingFormSection>
       )}
@@ -404,8 +455,10 @@ export function CreateListingForm({
       {listingAmenityGroups.some((g) => g.amenities.length > 0) && (
         <ListingFormSection
           step={step++}
-          title={isHotel ? "Müəssisə xüsusiyyətləri" : "Daxildir"}
-          description="Mülkünüzdə nələrin olduğunu seçin."
+          title={
+            isHotel ? tListing("propertyFeatures") : tListing("included")
+          }
+          description={t("sections.amenitiesDesc")}
         >
           <AmenitiesPicker groups={listingAmenityGroups} />
         </ListingFormSection>
@@ -413,15 +466,13 @@ export function CreateListingForm({
 
       <div className="listing-form__footer">
         <LegalAcceptanceField className="listing-form__legal" />
-        <p className="listing-form__note">
-          Göndərdikdən sonra elanınız admin tərəfindən yoxlanılacaq.
-        </p>
+        <p className="listing-form__note">{t("footer.note")}</p>
         <button
           type="submit"
           className="btn btn--primary listing-form__submit"
           disabled={submitting}
         >
-          {submitting ? "Göndərilir..." : "Elanı göndər"}
+          {submitting ? t("footer.submitting") : t("footer.submit")}
         </button>
       </div>
     </form>

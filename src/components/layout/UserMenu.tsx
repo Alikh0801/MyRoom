@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { useEffect, useRef, useState } from "react";
 import { signOut } from "@/lib/auth/actions";
 
@@ -30,6 +31,7 @@ export function UserMenu({
   avatarUrl,
   isAdmin = false,
 }: UserMenuProps) {
+  const t = useTranslations("nav");
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const initials = getInitials(fullName, email);
@@ -61,7 +63,7 @@ export function UserMenu({
         onClick={() => setOpen((prev) => !prev)}
         aria-expanded={open}
         aria-haspopup="menu"
-        aria-label="Hesab menyusu"
+        aria-label={t("accountMenu")}
       >
         <span className="user-menu__avatar">
           {avatarUrl ? (
@@ -97,7 +99,7 @@ export function UserMenu({
       {open && (
         <div className="user-menu__dropdown" role="menu">
           <div className="user-menu__profile">
-            <p className="user-menu__name">{fullName ?? "Hesabım"}</p>
+            <p className="user-menu__name">{fullName ?? t("myAccount")}</p>
             {email && <p className="user-menu__email">{email}</p>}
           </div>
 
@@ -108,7 +110,7 @@ export function UserMenu({
               role="menuitem"
               onClick={() => setOpen(false)}
             >
-              Mənim elanlarım
+              {t("myListings")}
             </Link>
             {isAdmin && (
               <Link
@@ -117,14 +119,14 @@ export function UserMenu({
                 role="menuitem"
                 onClick={() => setOpen(false)}
               >
-                Admin
+                {t("admin")}
               </Link>
             )}
           </div>
 
           <form action={signOut} className="user-menu__signout">
             <button type="submit" className="user-menu__item user-menu__item--danger">
-              Çıxış
+              {t("signOut")}
             </button>
           </form>
         </div>

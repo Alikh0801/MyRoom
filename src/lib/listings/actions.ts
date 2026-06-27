@@ -1,7 +1,8 @@
 "use server";
 
+import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { localizedRedirect } from "@/lib/i18n/server-redirect";
 import { isValidRegion } from "@/lib/regions";
 import { isValidCoordinates } from "@/lib/map";
 import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
@@ -16,17 +17,22 @@ export async function createListing(
   _prevState: CreateListingState | null,
   formData: FormData
 ): Promise<CreateListingState> {
+  const t = await getTranslations("listingForm.errors");
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Giriş tələb olunur." };
+    return { error: t("authRequired") };
   }
 
   const title = (formData.get("title") as string)?.trim();
   const description = (formData.get("description") as string)?.trim();
+  const titleRuRaw = (formData.get("titleRu") as string)?.trim();
+  const descriptionRuRaw = (formData.get("descriptionRu") as string)?.trim();
+  const titleRu = titleRuRaw || null;
+  const descriptionRu = descriptionRuRaw || null;
   const categoryId = formData.get("categoryId") as string;
   const pricePerNight = Number(formData.get("pricePerNight"));
   const priceUnit = (formData.get("priceUnit") as string) || "day";
@@ -44,39 +50,43 @@ export async function createListing(
   const roomAmenityIds = formData.getAll("roomAmenities") as string[];
 
   if (!title || title.length < 5) {
-    return { error: "Başlıq ən azı 5 simvol olmalıdır." };
+    return { error: t("titleTooShort") };
   }
   if (!description || description.length < 20) {
-    return { error: "Təsvir ən azı 20 simvol olmalıdır." };
+    return { error: t("descriptionTooShort") };
+  }
+  if (titleRu && titleRu.length < 5) {
+    return { error: t("titleRuTooShort") };
+  }
+  if (descriptionRu && descriptionRu.length < 20) {
+    return { error: t("descriptionRuTooShort") };
   }
   if (!categoryId) {
-    return { error: "Kateqoriya seçin." };
+    return { error: t("selectCategory") };
   }
   if (!pricePerNight || pricePerNight <= 0) {
-    return { error: "Düzgün qiymət daxil edin." };
+    return { error: t("invalidPrice") };
   }
   if (!["day", "week", "month"].includes(priceUnit)) {
-    return { error: "Qiymət vahidi seçin." };
+    return { error: t("invalidPriceUnit") };
   }
   if (!city || !region) {
-    return { error: "Şəhər və rayon mütləqdir." };
+    return { error: t("cityRegionRequired") };
   }
   if (!isValidRegion(region)) {
-    return { error: "Rayon siyahıdan seçin." };
+    return { error: t("selectRegion") };
   }
   if (!isValidCoordinates(lat, lng)) {
-    return { error: "Xəritədə düzgün yer seçin." };
+    return { error: t("invalidMapLocation") };
   }
   if (!hasAcceptedLegalTerms(formData)) {
-    return {
-      error: "İstifadəçi şərtləri və Məxfilik siyasəti ilə razı olmalısınız.",
-    };
+    return { error: t("legalRequired") };
   }
   if (!maxGuests || maxGuests < 1) {
-    return { error: "Qonaq sayı ən azı 1 olmalıdır." };
+    return { error: t("minGuests") };
   }
   if (!whatsappPhone) {
-    return { error: "WhatsApp nömrəsi mütləqdir." };
+    return { error: t("whatsappRequired") };
   }
 
   const { data: category } = await supabase
@@ -89,7 +99,7 @@ export async function createListing(
 
   if (isHotel) {
     if (!roomTypeName || roomTypeName.length < 2) {
-      return { error: "Otaq tipi adı ən azı 2 simvol olmalıdır." };
+      return { error: t("roomTypeNameTooShort") };
     }
   }
 
@@ -106,6 +116,8 @@ export async function createListing(
       category_id: categoryId,
       title,
       description,
+      title_ru: titleRu,
+      description_ru: descriptionRu,
       price_per_night: pricePerNight,
       price_unit: priceUnit,
       city,
@@ -123,7 +135,7 @@ export async function createListing(
     .single();
 
   if (error || !listing) {
-    return { error: error?.message ?? "Elan yaradıla bilmədi." };
+    return { error: error?.message ?? t("createFailed") };
   }
 
   const listingId = listing.id;
@@ -143,7 +155,7 @@ export async function createListing(
 
     if (amenityError) {
       await rollbackListing();
-      return { error: "Daxildir bölməsi saxlanıla bilmədi." };
+      return { error: t("amenitiesSaveFailed") };
     }
   }
 
@@ -161,7 +173,7 @@ export async function createListing(
 
     if (roomTypeError || !roomType) {
       await rollbackListing();
-      return { error: "Otaq tipi saxlanıla bilmədi." };
+      return { error: t("roomTypeSaveFailed") };
     }
 
     if (roomAmenityIds.length > 0) {
@@ -175,7 +187,7 @@ export async function createListing(
 
       if (rtAmenityError) {
         await rollbackListing();
-        return { error: "Otaq xüsusiyyətləri saxlanıla bilmədi." };
+        return { error: t("roomAmenitiesSaveFailed") };
       }
     }
   }
@@ -190,7 +202,7 @@ export async function deleteMyListing(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/auth/login?redirectTo=/dashboard/listings");
+    return localizedRedirect("/auth/login?redirectTo=/dashboard/listings");
   }
 
   const listingId = formData.get("listingId") as string;
@@ -208,7 +220,7 @@ export async function deleteMyListing(formData: FormData) {
   }
 
   revalidatePath("/dashboard/listings");
-  redirect("/dashboard/listings");
+  return localizedRedirect("/dashboard/listings");
 }
 
 export async function requireAuth() {
@@ -217,12 +229,16 @@ export async function requireAuth() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/auth/login?redirectTo=/dashboard/listings/new");
+  if (!user) {
+    return localizedRedirect("/auth/login?redirectTo=/dashboard/listings/new");
+  }
+
   if (!user.email_confirmed_at) {
     const email = user.email
       ? `?email=${encodeURIComponent(user.email)}&reason=unconfirmed`
       : "?reason=unconfirmed";
-    redirect(`/auth/verify-email${email}`);
+    return localizedRedirect(`/auth/verify-email${email}`);
   }
+
   return user;
 }

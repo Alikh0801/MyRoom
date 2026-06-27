@@ -1,17 +1,21 @@
-const PROMINENT_AMENITY_TITLES = new Set([
-  "Otaq xüsusiyyətləri",
-  "Müəssisə xüsusiyyətləri",
-]);
+const PROMINENT_AMENITY_SLUGS = new Set(["room", "property"]);
+
+export function isProminentAmenitySlug(slug: string): boolean {
+  return PROMINENT_AMENITY_SLUGS.has(slug);
+}
 
 export function isProminentAmenityTitle(title: string): boolean {
-  return PROMINENT_AMENITY_TITLES.has(title);
+  return title === "Otaq xüsusiyyətləri" || title === "Müəssisə xüsusiyyətləri";
 }
 
 export function amenityTitleClassName(
-  title: string,
-  fallbackClassName: string
+  slugOrTitle: string,
+  fallbackClassName: string,
+  useSlug = false
 ): string {
-  return isProminentAmenityTitle(title)
-    ? "amenities-feature-title"
-    : fallbackClassName;
+  const isProminent = useSlug
+    ? isProminentAmenitySlug(slugOrTitle)
+    : isProminentAmenityTitle(slugOrTitle);
+
+  return isProminent ? "amenities-feature-title" : fallbackClassName;
 }

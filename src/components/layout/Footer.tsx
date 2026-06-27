@@ -1,6 +1,9 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 
-export function Footer() {
+export async function Footer() {
+  const t = await getTranslations("footer");
+
   return (
     <footer className="footer">
       <div className="container footer__inner">
@@ -9,31 +12,29 @@ export function Footer() {
             <p className="footer__logo">
               My<span>Room</span>
             </p>
-            <p className="footer__tagline">
-              Azərbaycan üzrə qısamüddətli istirahət və günlük icarə elanları
-            </p>
+            <p className="footer__tagline">{t("tagline")}</p>
           </div>
 
           <div className="footer__col">
-            <h3 className="footer__col-title">Elanlar</h3>
+            <h3 className="footer__col-title">{t("listingsTitle")}</h3>
             <div className="footer__links">
-              <Link href="/search">Bütün elanlar</Link>
+              <Link href="/search">{t("allListings")}</Link>
               <Link href="/search?category=a-frame">A-frame (Glamping)</Link>
-              <Link href="/search?category=rayon-evi">Rayon evləri</Link>
+              <Link href="/search?category=rayon-evi">{t("rayonHomes")}</Link>
             </div>
           </div>
 
           <div className="footer__col">
-            <h3 className="footer__col-title">Hüquqi</h3>
+            <h3 className="footer__col-title">{t("legalTitle")}</h3>
             <div className="footer__links">
-              <Link href="/terms">Şərtlər və qaydalar</Link>
-              <Link href="/privacy">Məxfilik siyasəti</Link>
+              <Link href="/terms">{t("terms")}</Link>
+              <Link href="/privacy">{t("privacy")}</Link>
             </div>
           </div>
         </div>
 
         <p className="footer__copy">
-          © {new Date().getFullYear()} MyRoom. Bütün hüquqlar qorunur.
+          {t("copyright", { year: new Date().getFullYear() })}
         </p>
       </div>
     </footer>

@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useActionState, useState } from "react";
+import { Link } from "@/i18n/navigation";
 import { signUp, type AuthState } from "@/lib/auth/actions";
 import {
   TurnstileField,
@@ -10,6 +11,7 @@ import {
 import { LegalAcceptanceField } from "@/components/legal/LegalAcceptanceField";
 
 export function RegisterForm() {
+  const t = useTranslations("auth.form");
   const [state, formAction, pending] = useActionState<AuthState | null, FormData>(
     signUp,
     null
@@ -34,37 +36,36 @@ export function RegisterForm() {
     }
   }
 
-  const submitDisabled =
-    pending || (turnstileRequired && !turnstileToken);
+  const submitDisabled = pending || (turnstileRequired && !turnstileToken);
 
   return (
     <form className="auth-form" action={formAction}>
       {state?.error && <p className="auth-form__error">{state.error}</p>}
 
       <label className="auth-form__field">
-        Ad, soyad
+        {t("fullName")}
         <input
           type="text"
           name="fullName"
           required
           autoComplete="name"
-          placeholder="Ad Soyad"
+          placeholder={t("fullNamePlaceholder")}
         />
       </label>
 
       <label className="auth-form__field">
-        Email
+        {t("email")}
         <input
           type="email"
           name="email"
           required
           autoComplete="email"
-          placeholder="siz@example.com"
+          placeholder={t("emailPlaceholder")}
         />
       </label>
 
       <label className="auth-form__field">
-        Zəng üçün telefon *
+        {t("phone")}
         <input
           type="tel"
           name="phone"
@@ -72,7 +73,7 @@ export function RegisterForm() {
           autoComplete="tel"
           value={phone}
           onChange={(e) => handlePhoneChange(e.target.value)}
-          placeholder="+994 50 123 45 67"
+          placeholder={t("phonePlaceholder")}
         />
       </label>
 
@@ -82,14 +83,14 @@ export function RegisterForm() {
           checked={sameAsPhone}
           onChange={(e) => handleSameAsPhoneChange(e.target.checked)}
         />
-        WhatsApp nömrəsi telefon ilə eynidir
+        {t("whatsappSameAsPhone")}
       </label>
 
       {sameAsPhone ? (
         <input type="hidden" name="whatsappPhone" value={phone} />
       ) : (
         <label className="auth-form__field">
-          WhatsApp nömrəsi *
+          {t("whatsapp")}
           <input
             type="tel"
             name="whatsappPhone"
@@ -97,19 +98,19 @@ export function RegisterForm() {
             autoComplete="tel"
             value={whatsappPhone}
             onChange={(e) => setWhatsappPhone(e.target.value)}
-            placeholder="+994 50 123 45 67"
+            placeholder={t("phonePlaceholder")}
           />
         </label>
       )}
 
       <label className="auth-form__field">
-        Şifrə
+        {t("password")}
         <input
           type="password"
           name="password"
           required
           autoComplete="new-password"
-          placeholder="Ən azı 6 simvol"
+          placeholder={t("passwordMinPlaceholder")}
           minLength={6}
         />
       </label>
@@ -129,11 +130,11 @@ export function RegisterForm() {
         className="btn btn--primary auth-form__submit"
         disabled={submitDisabled}
       >
-        {pending ? "Qeydiyyat..." : "Qeydiyyatdan keç"}
+        {pending ? t("submitRegisterPending") : t("submitRegister")}
       </button>
 
       <p className="auth-form__footer">
-        Artıq hesabınız var? <Link href="/auth/login">Daxil olun</Link>
+        {t("hasAccount")} <Link href="/auth/login">{t("loginLink")}</Link>
       </p>
     </form>
   );

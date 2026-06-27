@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
@@ -74,14 +75,17 @@ export async function checkAuthRateLimit(
     Math.ceil((resetDate.getTime() - Date.now()) / 60000)
   );
 
-  const messages: Record<AuthRateLimitAction, string> = {
-    signup: `Çox sayda qeydiyyat cəhdi. ${minutesLeft} dəqiqə sonra yenidən cəhd edin.`,
-    signin: `Çox sayda giriş cəhdi. ${minutesLeft} dəqiqə sonra yenidən cəhd edin.`,
-    "verify-otp": `Çox sayda təsdiq cəhdi. ${minutesLeft} dəqiqə sonra yenidən cəhd edin.`,
-    "resend-otp": `Çox sayda kod göndərmə cəhdi. ${minutesLeft} dəqiqə sonra yenidən cəhd edin.`,
+  const t = await getTranslations("auth.errors");
+
+  const keys: Record<AuthRateLimitAction, "rateLimitSignup" | "rateLimitSignin" | "rateLimitVerifyOtp" | "rateLimitResendOtp"> = {
+    signup: "rateLimitSignup",
+    signin: "rateLimitSignin",
+    "verify-otp": "rateLimitVerifyOtp",
+    "resend-otp": "rateLimitResendOtp",
   };
 
-  const message = messages[action];
-
-  return { ok: false, error: message };
+  return {
+    ok: false,
+    error: t(keys[action], { minutes: minutesLeft }),
+  };
 }

@@ -1,29 +1,40 @@
 import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AmenitiesDisplay } from "@/components/listings/AmenitiesDisplay";
 import { HotelRoomTypeDisplay } from "@/components/listings/HotelRoomTypeDisplay";
 import { ListingContactCard } from "@/components/listings/ListingContactCard";
 import { ListingGallery } from "@/components/listings/ListingGallery";
 import { ListingMapSection } from "@/components/listings/ListingMapSection";
 import { SimilarListings } from "@/components/listings/SimilarListings";
+import type { Locale } from "@/i18n/routing";
+import { getLocalizedName } from "@/lib/i18n/localized-name";
+import {
+  getLocalizedListingDescription,
+  getLocalizedListingTitle,
+} from "@/lib/i18n/localized-listing";
 import { groupAmenitiesByCategory } from "@/lib/queries/amenities";
 import { getListingById, getSimilarListings } from "@/lib/queries/listings";
 import type { Amenity, AmenityCategory } from "@/types/database";
 
 interface ListingPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ locale: string; id: string }>;
 }
 
 export async function generateMetadata({ params }: ListingPageProps) {
-  const { id } = await params;
+  const { id, locale } = await params;
   const listing = await getListingById(id);
-  if (!listing) return { title: "Elan tapılmadı" };
+  const t = await getTranslations({ locale, namespace: "listing" });
+  if (!listing) return { title: t("notFound") };
+
+  const pageTitle = getLocalizedListingTitle(listing, locale);
+  const pageDescription = getLocalizedListingDescription(listing, locale);
 
   return {
-    title: listing.title,
-    description: listing.description.slice(0, 160),
+    title: pageTitle,
+    description: pageDescription.slice(0, 160),
     openGraph: {
-      title: listing.title,
-      description: listing.description.slice(0, 160),
+      title: pageTitle,
+      description: pageDescription.slice(0, 160),
       images: listing.listing_images[0]?.url
         ? [listing.listing_images[0].url]
         : [],
@@ -32,7 +43,11 @@ export async function generateMetadata({ params }: ListingPageProps) {
 }
 
 export default async function ListingPage({ params }: ListingPageProps) {
-  const { id } = await params;
+  const { id, locale: localeParam } = await params;
+  const locale = localeParam as Locale;
+  setRequestLocale(locale);
+
+  const t = await getTranslations("listing");
   const listing = await getListingById(id);
 
   if (!listing) notFound();
@@ -63,12 +78,14 @@ export default async function ListingPage({ params }: ListingPageProps) {
 
   const amenityGroups = groupAmenitiesByCategory(selectedAmenities);
   const roomType = listing.listing_room_types?.[0] ?? null;
+  const displayTitle = getLocalizedListingTitle(listing, locale);
+  const displayDescription = getLocalizedListingDescription(listing, locale);
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "LodgingBusiness",
-    name: listing.title,
-    description: listing.description,
+    name: displayTitle,
+    description: displayDescription,
     address: {
       "@type": "PostalAddress",
       addressLocality: listing.city,
@@ -92,31 +109,35 @@ export default async function ListingPage({ params }: ListingPageProps) {
         <div className="listing-detail__top">
           <div className="listing-detail__gallery-col">
             {images.length > 0 ? (
-              <ListingGallery images={images} title={listing.title} />
+              <ListingGallery images={images} title={displayTitle} />
             ) : (
-              <div className="listing-detail__no-image">Şəkil yoxdur</div>
+              <div className="listing-detail__no-image">{t("noPhoto")}</div>
             )}
 
             <div className="listing-detail__content">
-              <span className="listing-card__badge">{listing.category.name_az}</span>
-              <h1 className="listing-detail__title">{listing.title}</h1>
-              <p className="listing-detail__description">{listing.description}</p>
+              <span className="listing-card__badge">
+                {getLocalizedName(listing.category, locale)}
+              </span>
+              <h1 className="listing-detail__title">{displayTitle}</h1>
+              <p className="listing-detail__description">{displayDescription}</p>
             </div>
 
             {isHotel && roomType && (
-              <HotelRoomTypeDisplay roomType={roomType} />
+              <HotelRoomTypeDisplay roomType={roomType} locale={locale} />
             )}
 
             <AmenitiesDisplay
               groups={amenityGroups}
-              title={isHotel ? "Müəssisə xüsusiyyətləri" : "Daxildir"}
+              title={isHotel ? t("propertyFeatures") : t("included")}
+              titleSlug={isHotel ? "property" : undefined}
+              locale={locale}
             />
 
             {listing.lat != null && listing.lng != null && (
               <ListingMapSection
                 lat={listing.lat}
                 lng={listing.lng}
-                title={listing.title}
+                title={displayTitle}
               />
             )}
           </div>
@@ -125,7 +146,7 @@ export default async function ListingPage({ params }: ListingPageProps) {
             ownerName={owner?.full_name ?? null}
             phone={owner?.phone ?? null}
             whatsappPhone={listing.whatsapp_phone}
-            listingTitle={listing.title}
+            listingTitle={displayTitle}
             pricePerNight={listing.price_per_night}
             priceUnit={listing.price_unit ?? "day"}
             currency={listing.currency}

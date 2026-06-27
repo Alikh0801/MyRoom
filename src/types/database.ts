@@ -6,6 +6,7 @@ export interface Category {
   id: string;
   slug: string;
   name_az: string;
+  name_ru?: string | null;
   icon: string | null;
   sort_order: number;
 }
@@ -14,6 +15,7 @@ export interface AmenityCategory {
   id: string;
   slug: string;
   name_az: string;
+  name_ru?: string | null;
   sort_order: number;
 }
 
@@ -21,6 +23,7 @@ export interface Amenity {
   id: string;
   slug: string;
   name_az: string;
+  name_ru?: string | null;
   category_id: string;
   icon: string | null;
   sort_order: number;
@@ -49,6 +52,8 @@ export interface Listing {
   category_id: string;
   title: string;
   description: string;
+  title_ru?: string | null;
+  description_ru?: string | null;
   price_per_night: number;
   price_unit: PriceUnit;
   currency: string;
@@ -103,6 +108,7 @@ export interface ListingWithRelations extends Listing {
 export interface ListingCardData {
   id: string;
   title: string;
+  title_ru?: string | null;
   price_per_night: number;
   price_unit: PriceUnit;
   currency: string;
@@ -110,6 +116,6 @@ export interface ListingCardData {
   region: string;
   max_guests: number;
   created_at: string;
-  category: Pick<Category, "slug" | "name_az">;
+  category: Pick<Category, "slug" | "name_az" | "name_ru">;
   cover_image: string | null;
 }
