@@ -112,6 +112,14 @@ export function UserMenu({
             >
               {t("myListings")}
             </Link>
+            <Link
+              href="/dashboard/favorites"
+              className="user-menu__item"
+              role="menuitem"
+              onClick={() => setOpen(false)}
+            >
+              {t("myFavorites")}
+            </Link>
             {isAdmin && (
               <Link
                 href="/admin"

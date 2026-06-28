@@ -39,7 +39,7 @@ export interface SearchListingsResult {
   total: number;
 }
 
-type ListingRow = {
+export type ListingRow = {
   id: string;
   title: string;
   title_ru?: string | null;
@@ -54,7 +54,7 @@ type ListingRow = {
   listing_images: { url: string; is_cover: boolean; sort_order: number }[];
 };
 
-function mapToListingCards(rows: ListingRow[]): ListingCardData[] {
+export function mapToListingCards(rows: ListingRow[]): ListingCardData[] {
   return rows.map((row) => {
     const images = row.listing_images ?? [];
     const sorted = [...images].sort((a, b) => {

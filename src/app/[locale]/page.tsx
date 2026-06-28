@@ -3,6 +3,7 @@ import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { ListingCard } from "@/components/listings/ListingCard";
 import { Pagination } from "@/components/ui/Pagination";
+import { getFavoritePageContext } from "@/lib/favorites/page-context";
 import type { Locale } from "@/i18n/routing";
 import {
   getCategories,
@@ -26,11 +27,13 @@ export default async function HomePage({ params, searchParams }: HomePageProps) 
   const pageParams = await searchParams;
   const requestedPage = Math.max(1, parseInt(pageParams.page ?? "1", 10) || 1);
 
-  const [vipListings, categories, homeListings] = await Promise.all([
-    getVipListings(6),
-    getCategories(),
-    getHomeListingsPaginated(requestedPage, HOME_LISTINGS_PAGE_SIZE),
-  ]);
+  const [vipListings, categories, homeListings, favoriteContext] =
+    await Promise.all([
+      getVipListings(6),
+      getCategories(),
+      getHomeListingsPaginated(requestedPage, HOME_LISTINGS_PAGE_SIZE),
+      getFavoritePageContext(),
+    ]);
 
   const { listings, page, total, totalPages } = homeListings;
 
@@ -59,7 +62,13 @@ export default async function HomePage({ params, searchParams }: HomePageProps) 
           {vipListings.length > 0 ? (
             <div className="listing-grid listing-grid--featured">
               {vipListings.map((listing) => (
-                <ListingCard key={listing.id} listing={listing} vip />
+                <ListingCard
+                  key={listing.id}
+                  listing={listing}
+                  vip
+                  isLoggedIn={favoriteContext.isLoggedIn}
+                  isFavorited={favoriteContext.favoriteIds.has(listing.id)}
+                />
               ))}
             </div>
           ) : (
@@ -86,7 +95,12 @@ export default async function HomePage({ params, searchParams }: HomePageProps) 
             <>
               <div className="listing-grid">
                 {listings.map((listing) => (
-                  <ListingCard key={listing.id} listing={listing} />
+                  <ListingCard
+                    key={listing.id}
+                    listing={listing}
+                    isLoggedIn={favoriteContext.isLoggedIn}
+                    isFavorited={favoriteContext.favoriteIds.has(listing.id)}
+                  />
                 ))}
               </div>
               <Pagination

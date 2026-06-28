@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useLinkStatus } from "next/link";
+import { FavoriteButton } from "@/components/listings/FavoriteButton";
 import { formatListingCardDate } from "@/lib/date";
 import { getLocalizedListingTitle } from "@/lib/i18n/localized-listing";
 import { getLocalizedName } from "@/lib/i18n/localized-name";
@@ -15,9 +16,16 @@ import type { ListingCardData } from "@/types/database";
 interface ListingCardProps {
   listing: ListingCardData;
   vip?: boolean;
+  isFavorited?: boolean;
+  isLoggedIn?: boolean;
 }
 
-function ListingCardContent({ listing, vip = false }: ListingCardProps) {
+function ListingCardContent({
+  listing,
+  vip = false,
+  isFavorited = false,
+  isLoggedIn = false,
+}: ListingCardProps) {
   const t = useTranslations("listing");
   const locale = useLocale() as Locale;
   const { pending } = useLinkStatus();
@@ -45,9 +53,18 @@ function ListingCardContent({ listing, vip = false }: ListingCardProps) {
           {getLocalizedName(listing.category, locale)}
         </span>
       </div>
-      <time className="listing-card__date" dateTime={listing.created_at}>
-        {formatListingCardDate(listing.created_at)}
-      </time>
+      <div className="listing-card__meta-row">
+        <time className="listing-card__date" dateTime={listing.created_at}>
+          {formatListingCardDate(listing.created_at)}
+        </time>
+        <FavoriteButton
+          listingId={listing.id}
+          initialFavorited={isFavorited}
+          isLoggedIn={isLoggedIn}
+          variant="card"
+          className="listing-card__favorite"
+        />
+      </div>
       <div className="listing-card__body">
         <h3 className="listing-card__title">
           {getLocalizedListingTitle(listing, locale)}
@@ -87,10 +104,20 @@ function ListingCardContent({ listing, vip = false }: ListingCardProps) {
   );
 }
 
-export function ListingCard({ listing, vip = false }: ListingCardProps) {
+export function ListingCard({
+  listing,
+  vip = false,
+  isFavorited = false,
+  isLoggedIn = false,
+}: ListingCardProps) {
   return (
     <Link href={`/listings/${listing.id}`} className="listing-card-link">
-      <ListingCardContent listing={listing} vip={vip} />
+      <ListingCardContent
+        listing={listing}
+        vip={vip}
+        isFavorited={isFavorited}
+        isLoggedIn={isLoggedIn}
+      />
     </Link>
   );
 }

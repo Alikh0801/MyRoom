@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AmenitiesDisplay } from "@/components/listings/AmenitiesDisplay";
+import { FavoriteButton } from "@/components/listings/FavoriteButton";
 import { HotelRoomTypeDisplay } from "@/components/listings/HotelRoomTypeDisplay";
 import { ListingContactCard } from "@/components/listings/ListingContactCard";
 import { ListingGallery } from "@/components/listings/ListingGallery";
@@ -12,6 +13,7 @@ import {
   getLocalizedListingDescription,
   getLocalizedListingTitle,
 } from "@/lib/i18n/localized-listing";
+import { getFavoritePageContext } from "@/lib/favorites/page-context";
 import { groupAmenitiesByCategory } from "@/lib/queries/amenities";
 import { getListingById, getSimilarListings } from "@/lib/queries/listings";
 import type { Amenity, AmenityCategory } from "@/types/database";
@@ -48,9 +50,14 @@ export default async function ListingPage({ params }: ListingPageProps) {
   setRequestLocale(locale);
 
   const t = await getTranslations("listing");
-  const listing = await getListingById(id);
+  const [listing, favoriteContext] = await Promise.all([
+    getListingById(id),
+    getFavoritePageContext(),
+  ]);
 
   if (!listing) notFound();
+
+  const isFavorited = favoriteContext.favoriteIds.has(listing.id);
 
   const similarListings = await getSimilarListings(
     listing.id,
@@ -118,7 +125,17 @@ export default async function ListingPage({ params }: ListingPageProps) {
               <span className="listing-card__badge">
                 {getLocalizedName(listing.category, locale)}
               </span>
-              <h1 className="listing-detail__title">{displayTitle}</h1>
+              <div className="listing-detail__title-row">
+                <h1 className="listing-detail__title">{displayTitle}</h1>
+                {listing.status === "approved" && (
+                  <FavoriteButton
+                    listingId={listing.id}
+                    initialFavorited={isFavorited}
+                    isLoggedIn={favoriteContext.isLoggedIn}
+                    variant="detail"
+                  />
+                )}
+              </div>
               <p className="listing-detail__description">{displayDescription}</p>
             </div>
 
@@ -163,7 +180,11 @@ export default async function ListingPage({ params }: ListingPageProps) {
         </div>
       </div>
 
-      <SimilarListings listings={similarListings} />
+      <SimilarListings
+        listings={similarListings}
+        isLoggedIn={favoriteContext.isLoggedIn}
+        favoriteIds={favoriteContext.favoriteIds}
+      />
     </article>
   );
 }

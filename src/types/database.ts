@@ -119,3 +119,9 @@ export interface ListingCardData {
   category: Pick<Category, "slug" | "name_az" | "name_ru">;
   cover_image: string | null;
 }
+
+export interface ListingFavorite {
+  user_id: string;
+  listing_id: string;
+  created_at: string;
+}

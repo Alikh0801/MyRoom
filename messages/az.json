@@ -12,6 +12,7 @@
     "postListing": "+ Elan yerləşdir",
     "postListingShort": "+ Elan",
     "myListings": "Mənim elanlarım",
+    "myFavorites": "Sevimlilər",
     "admin": "Admin",
     "signOut": "Çıxış",
     "accountMenu": "Hesab menyusu",
@@ -59,6 +60,23 @@
     "directions": "Marşrut təyin et",
     "similar": "Oxşar elanlar",
     "notFound": "Elan tapılmadı"
+  },
+  "favorites": {
+    "add": "Sevimlilərə əlavə et",
+    "remove": "Sevimlilərdən çıxar",
+    "metaTitle": "Sevimlilər",
+    "pageTitle": "Sevimlilər",
+    "subtitle": "Bəyəndiyiniz elanları burada saxlayın.",
+    "empty": {
+      "title": "Hələ sevimli elanınız yoxdur",
+      "desc": "Bəyəndiyiniz elanların üzərindəki ürək işarəsinə klikləyin.",
+      "browseCta": "Elanlara bax"
+    },
+    "errors": {
+      "authRequired": "Sevimlilərə əlavə etmək üçün daxil olun.",
+      "invalidListing": "Elan tapılmadı.",
+      "updateFailed": "Sevimlilər yenilənə bilmədi."
+    }
   },
   "common": {
     "search": "Axtarış",

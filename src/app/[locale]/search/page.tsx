@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { ListingCard } from "@/components/listings/ListingCard";
 import { SearchFilters } from "@/components/search/SearchFilters";
+import { getFavoritePageContext } from "@/lib/favorites/page-context";
 import {
   getCategories,
   getSearchListings,
@@ -35,9 +36,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined,
   };
 
-  const [searchResult, categories] = await Promise.all([
+  const [searchResult, categories, favoriteContext] = await Promise.all([
     getSearchListings(filters),
     getCategories(),
+    getFavoritePageContext(),
   ]);
 
   const { vipListings, regularListings, total } = searchResult;
@@ -67,7 +69,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     <h2 className="search-results__heading">Premium elanlar</h2>
                     <div className="listing-grid">
                       {vipListings.map((listing) => (
-                        <ListingCard key={listing.id} listing={listing} vip />
+                        <ListingCard
+                          key={listing.id}
+                          listing={listing}
+                          vip
+                          isLoggedIn={favoriteContext.isLoggedIn}
+                          isFavorited={favoriteContext.favoriteIds.has(listing.id)}
+                        />
                       ))}
                     </div>
                   </section>
@@ -78,7 +86,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     <h2 className="search-results__heading">Elanlar</h2>
                     <div className="listing-grid">
                       {regularListings.map((listing) => (
-                        <ListingCard key={listing.id} listing={listing} />
+                        <ListingCard
+                          key={listing.id}
+                          listing={listing}
+                          isLoggedIn={favoriteContext.isLoggedIn}
+                          isFavorited={favoriteContext.favoriteIds.has(listing.id)}
+                        />
                       ))}
                     </div>
                   </section>
