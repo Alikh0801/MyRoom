@@ -1,11 +1,16 @@
 import Image from "next/image";
-import Link from "next/link";
-import { approveListing, rejectListing } from "@/lib/admin/actions";
+import { Link } from "@/i18n/navigation";
+import { approveListing } from "@/lib/admin/actions";
+import { DeleteListingForm } from "@/components/admin/DeleteListingForm";
+import {
+  hasPaidVipPayment,
+  vipPlanLabel,
+} from "@/lib/listings/vip-payment";
 import { formatPriceSuffix } from "@/lib/price";
-import type { PendingListing } from "@/lib/queries/admin";
+import type { AdminListingItem } from "@/lib/queries/admin";
 
 interface PendingListingCardProps {
-  listing: PendingListing;
+  listing: AdminListingItem;
 }
 
 export function PendingListingCard({ listing }: PendingListingCardProps) {
@@ -15,8 +20,12 @@ export function PendingListingCard({ listing }: PendingListingCardProps) {
     year: "numeric",
   });
 
+  const vipPaid = hasPaidVipPayment(listing.vip_payment_status);
+  const vipPending =
+    listing.vip_payment_status === "pending" && listing.requested_vip_plan;
+
   return (
-    <article className="admin-card">
+    <article className={`admin-card${vipPaid ? " admin-card--vip-paid" : ""}`}>
       <div className="admin-card__image">
         {listing.cover_image ? (
           <Image
@@ -29,6 +38,7 @@ export function PendingListingCard({ listing }: PendingListingCardProps) {
         ) : (
           <span className="admin-card__no-image">Şəkil yoxdur</span>
         )}
+        {vipPaid && <span className="admin-card__vip-badge">VIP ödənişi</span>}
       </div>
 
       <div className="admin-card__body">
@@ -45,28 +55,37 @@ export function PendingListingCard({ listing }: PendingListingCardProps) {
           Sahib: {listing.owner?.full_name ?? "—"} · {listing.whatsapp_phone}
         </p>
         <p className="admin-card__date">Göndərildi: {date}</p>
+
+        {vipPaid && listing.requested_vip_plan && (
+          <p className="admin-card__vip-notice admin-card__vip-notice--paid">
+            Sahib{" "}
+            <strong>{vipPlanLabel(listing.requested_vip_plan)}</strong> üçün
+            ödəniş edib. Təsdiq zamanı elan avtomatik VIP olacaq.
+          </p>
+        )}
+
+        {vipPending && listing.requested_vip_plan && (
+          <p className="admin-card__vip-notice admin-card__vip-notice--pending">
+            {vipPlanLabel(listing.requested_vip_plan)} seçilib — ödəniş
+            gözlənilir.
+          </p>
+        )}
       </div>
 
       <div className="admin-card__actions">
         <form action={approveListing} className="admin-card__approve-form">
           <input type="hidden" name="listingId" value={listing.id} />
-          <label className="admin-card__vip-check">
-            <input type="checkbox" name="markVip" />
-            VIP et
-          </label>
           <button type="submit" className="btn btn--primary">
-            Təsdiq et
+            {vipPaid ? "VIP ilə təsdiq et" : "Təsdiq et"}
           </button>
         </form>
 
-        <form action={rejectListing}>
-          <input type="hidden" name="listingId" value={listing.id} />
-          <button type="submit" className="btn btn--ghost admin-card__reject">
-            Rədd et
-          </button>
-        </form>
+        <DeleteListingForm listingId={listing.id} />
 
-        <Link href={`/listings/${listing.id}`} className="admin-card__preview">
+        <Link
+          href={`/admin/pending/${listing.id}/preview`}
+          className="admin-card__preview"
+        >
           Önizləmə →
         </Link>
       </div>

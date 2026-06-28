@@ -1,43 +1,53 @@
-import Link from "next/link";
+import { AdminListingsList } from "@/components/admin/AdminListingsList";
+import { AdminPanelTabs } from "@/components/admin/AdminPanelTabs";
 import { requireAdmin } from "@/lib/admin/auth";
-import { getAdminStats } from "@/lib/queries/admin";
+import { parseAdminTab } from "@/lib/admin/tabs";
+import {
+  getAdminListingsForTab,
+  getAdminTabCounts,
+} from "@/lib/queries/admin";
 
 export const metadata = {
   title: "Admin panel",
 };
 
-export default async function AdminPage() {
+export const dynamic = "force-dynamic";
+
+const TAB_SUBTITLES = {
+  pending: "Təsdiq gözləyən elanlar",
+  active: "Saytda aktiv olan elanlar",
+  deleted: "Admin tərəfindən silinmiş elanlar",
+} as const;
+
+type AdminPageProps = {
+  searchParams: Promise<{ tab?: string }>;
+};
+
+export default async function AdminPage({ searchParams }: AdminPageProps) {
   await requireAdmin();
-  const stats = await getAdminStats();
+
+  const { tab: tabParam } = await searchParams;
+  const tab = parseAdminTab(tabParam);
+
+  const [counts, listings] = await Promise.all([
+    getAdminTabCounts(),
+    getAdminListingsForTab(tab),
+  ]);
 
   return (
-    <div className="container dashboard">
-      <h1 className="section__title">Admin panel</h1>
-      <p className="section__subtitle">Elanları idarə edin</p>
+    <div className="container dashboard admin-panel-page">
+      <header className="admin-panel-page__header">
+        <h1 className="section__title">Admin panel</h1>
+        <p className="section__subtitle">{TAB_SUBTITLES[tab]}</p>
+      </header>
 
-      <div className="admin-stats">
-        <div className="admin-stat admin-stat--pending">
-          <span className="admin-stat__num">{stats.pending}</span>
-          <span className="admin-stat__label">Gözləyən</span>
-        </div>
-        <div className="admin-stat">
-          <span className="admin-stat__num">{stats.approved}</span>
-          <span className="admin-stat__label">Təsdiqlənmiş</span>
-        </div>
-        <div className="admin-stat">
-          <span className="admin-stat__num">{stats.rejected}</span>
-          <span className="admin-stat__label">Rədd edilmiş</span>
-        </div>
+      <div className="admin-panel">
+        <AdminPanelTabs counts={counts} activeTab={tab} />
+
+        <section className="admin-panel__content" role="tabpanel">
+          <AdminListingsList tab={tab} listings={listings} />
+        </section>
       </div>
-
-      <Link href="/admin/pending" className="dashboard__card admin-link-card">
-        <h2>Gözləyən elanlar</h2>
-        <p>
-          {stats.pending > 0
-            ? `${stats.pending} elan təsdiq gözləyir`
-            : "Gözləyən elan yoxdur"}
-        </p>
-      </Link>
     </div>
   );
 }

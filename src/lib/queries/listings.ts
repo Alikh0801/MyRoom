@@ -16,8 +16,27 @@ const LISTING_SELECT = `
   listing_images(*),
   listing_amenities(amenity:amenities(*, category:amenity_categories(*))),
   listing_room_types(*, listing_room_type_amenities(amenity:amenities(*, category:amenity_categories(*)))),
-  owner:profiles(full_name, phone, whatsapp_phone, avatar_url)
+  owner:profiles!listings_owner_id_fkey(full_name, phone, whatsapp_phone, avatar_url)
 `;
+
+export { LISTING_SELECT };
+
+function normalizeListingWithRelations(
+  data: unknown
+): ListingWithRelations | null {
+  if (!data) return null;
+
+  const listing = data as ListingWithRelations;
+  listing.listing_images = [...(listing.listing_images ?? [])].sort(
+    (a, b) => a.sort_order - b.sort_order
+  );
+
+  if (Array.isArray(listing.owner)) {
+    listing.owner = listing.owner[0] ?? null;
+  }
+
+  return listing;
+}
 
 const CARD_SELECT = `
   id, title, title_ru, price_per_night, price_unit, currency, city, region, max_guests, created_at,
@@ -330,9 +349,8 @@ export const getListingById = cache(async function getListingById(
 ): Promise<ListingWithRelations | null> {
   const supabase = await createClient();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+    data: { user },
+  } = await supabase.auth.getUser();
 
   let query = supabase.from("listings").select(LISTING_SELECT).eq("id", id);
 
@@ -345,21 +363,33 @@ export const getListingById = cache(async function getListingById(
     }
   }
 
-  const { data, error } = await query.single();
+  const { data, error } = await query.maybeSingle();
 
-  if (error || !data) return null;
-
-  const listing = data as unknown as ListingWithRelations;
-  listing.listing_images = [...(listing.listing_images ?? [])].sort(
-    (a, b) => a.sort_order - b.sort_order
-  );
-
-  if (Array.isArray(listing.owner)) {
-    listing.owner = listing.owner[0] ?? null;
+  if (error) {
+    console.error("getListingById:", error.message);
+    return null;
   }
 
-  return listing;
+  return normalizeListingWithRelations(data);
 });
+
+export async function getListingByIdForAdmin(
+  id: string
+): Promise<ListingWithRelations | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("listings")
+    .select(LISTING_SELECT)
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    console.error("getListingByIdForAdmin:", error.message);
+    return null;
+  }
+
+  return normalizeListingWithRelations(data);
+}
 
 export const getCategories = unstable_cache(
   async () => {

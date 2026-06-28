@@ -1,5 +1,7 @@
 export type UserRole = "guest" | "host" | "admin";
 export type ListingStatus = "draft" | "pending" | "approved" | "rejected";
+export type VipPlan = "day" | "week";
+export type VipPaymentStatus = "none" | "pending" | "paid";
 export type PriceUnit = "day" | "week" | "month";
 
 export interface Category {
@@ -68,6 +70,9 @@ export interface Listing {
   whatsapp_phone: string;
   status: ListingStatus;
   is_vip: boolean;
+  requested_vip_plan?: VipPlan | null;
+  vip_payment_status?: VipPaymentStatus;
+  rejection_reason?: string | null;
   view_count: number;
   created_at: string;
   updated_at: string;

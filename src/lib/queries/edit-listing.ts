@@ -31,7 +31,7 @@ export interface EditListingData {
   images: Pick<ListingImage, "id" | "url" | "is_cover" | "sort_order" | "storage_path">[];
 }
 
-type EditListingRow = {
+export type EditListingRow = {
   id: string;
   title: string;
   description: string;

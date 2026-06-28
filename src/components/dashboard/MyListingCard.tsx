@@ -66,6 +66,12 @@ export function MyListingCard({ listing }: MyListingCardProps) {
         <p className="my-listing-card__hint">
           {t(`statusHints.${listing.status}`)}
         </p>
+        {listing.status === "rejected" && listing.rejection_reason && (
+          <p className="my-listing-card__rejection">
+            <strong>{t("card.rejectionReason")}:</strong>{" "}
+            {listing.rejection_reason}
+          </p>
+        )}
       </div>
 
       <div className="my-listing-card__actions">
@@ -82,15 +88,6 @@ export function MyListingCard({ listing }: MyListingCardProps) {
         >
           {canViewPublic ? t("card.viewPublic") : t("card.preview")}
         </Link>
-
-        {listing.status === "rejected" && (
-          <Link
-            href="/dashboard/listings/new"
-            className="btn btn--primary"
-          >
-            {t("card.newListing")}
-          </Link>
-        )}
 
         <DeleteListingButton
           listingId={listing.id}

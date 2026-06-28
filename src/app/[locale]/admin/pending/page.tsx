@@ -1,39 +1,27 @@
-import Link from "next/link";
-import { PendingListingCard } from "@/components/admin/PendingListingCard";
-import { requireAdmin } from "@/lib/admin/auth";
-import { getPendingListings } from "@/lib/queries/admin";
+import { redirect } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Gözləyən elanlar",
+export const dynamic = "force-dynamic";
+
+type AdminPendingRedirectProps = {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
 };
 
-export default async function AdminPendingPage() {
-  await requireAdmin();
-  const listings = await getPendingListings();
+export default async function AdminPendingRedirect({
+  params,
+  searchParams,
+}: AdminPendingRedirectProps) {
+  const { locale } = await params;
+  const queryParams = await searchParams;
+  const query = new URLSearchParams();
+  query.set("tab", "pending");
 
-  return (
-    <div className="container dashboard">
-      <Link href="/admin" className="admin-back">
-        ← Admin panel
-      </Link>
+  for (const [key, value] of Object.entries(queryParams)) {
+    if (key !== "tab" && value) {
+      query.set(key, value);
+    }
+  }
 
-      <h1 className="section__title">Gözləyən elanlar</h1>
-      <p className="section__subtitle">
-        {listings.length} elan təsdiq gözləyir
-      </p>
-
-      {listings.length > 0 ? (
-        <div className="admin-list">
-          {listings.map((listing) => (
-            <PendingListingCard key={listing.id} listing={listing} />
-          ))}
-        </div>
-      ) : (
-        <div className="empty-state">
-          <h3>Gözləyən elan yoxdur</h3>
-          <p>Yeni elan göndərildikdə burada görünəcək.</p>
-        </div>
-      )}
-    </div>
-  );
+  redirect({ href: `/admin?${query.toString()}`, locale: locale as Locale });
 }

@@ -9,6 +9,7 @@ import { isValidCoordinates } from "@/lib/map";
 import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
 import { createClient } from "@/lib/supabase/server";
 import { syncListingImages } from "@/lib/listings/sync-images";
+import { parseRequestedVipPlan } from "@/lib/listings/vip-payment";
 
 export interface CreateListingState {
   error?: string;
@@ -111,9 +112,11 @@ export async function createListing(
     if (!Number.isNaN(n) && n >= 0) roomTypeFloor = Math.floor(n);
   }
 
-  const { data: listing, error } = await supabase
-    .from("listings")
-    .insert({
+  const requestedVipPlan = parseRequestedVipPlan(
+    formData.get("premiumPlan") as string
+  );
+
+  const insertPayload: Record<string, unknown> = {
       owner_id: user.id,
       category_id: categoryId,
       title,
@@ -132,7 +135,16 @@ export async function createListing(
       bathrooms: 1,
       whatsapp_phone: whatsappPhone,
       status: "pending",
-    })
+    };
+
+  if (requestedVipPlan) {
+    insertPayload.requested_vip_plan = requestedVipPlan;
+    insertPayload.vip_payment_status = "pending";
+  }
+
+  const { data: listing, error } = await supabase
+    .from("listings")
+    .insert(insertPayload)
     .select("id")
     .single();
 
@@ -330,6 +342,7 @@ export async function updateListing(
       bedrooms: bedrooms >= 0 ? bedrooms : 1,
       whatsapp_phone: whatsappPhone,
       status: nextStatus,
+      ...(needsReview ? { rejection_reason: null } : {}),
     })
     .eq("id", listingId)
     .eq("owner_id", user.id);
