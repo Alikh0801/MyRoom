@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { AuthMenu } from "@/components/layout/AuthMenu";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -26,14 +27,15 @@ export function HeaderActions({
       <div className="header__actions">
         <ThemeToggle />
         <LanguageSwitcher variant="desktop" />
-        <Link href="/auth/login" className="btn btn--ghost btn--header">
-          <span className="header__auth-full">{t("login")}</span>
-          <span className="header__auth-short">{t("loginShort")}</span>
-        </Link>
-        <Link href="/auth/register" className="btn btn--primary btn--header">
-          <span className="header__auth-full">{t("register")}</span>
-          <span className="header__auth-short">{t("registerShort")}</span>
-        </Link>
+        <div className="header__auth-desktop">
+          <Link href="/auth/login" className="btn btn--ghost btn--header">
+            {t("login")}
+          </Link>
+          <Link href="/auth/register" className="btn btn--primary btn--header">
+            {t("register")}
+          </Link>
+        </div>
+        <AuthMenu />
       </div>
     );
   }

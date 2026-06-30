@@ -17,7 +17,8 @@
     "signOut": "Выйти",
     "accountMenu": "Меню аккаунта",
     "myAccount": "Мой аккаунт",
-    "language": "Язык"
+    "language": "Язык",
+    "authMenu": "Вход и регистрация"
   },
   "theme": {
     "switchToLight": "Светлая тема",

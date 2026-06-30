@@ -8,7 +8,7 @@
     "login": "Daxil ol",
     "loginShort": "Giriş",
     "register": "Qeydiyyat",
-    "registerShort": "Qeydiyyat",
+    "registerShort": "Qeyd.",
     "postListing": "+ Elan yerləşdir",
     "postListingShort": "+ Elan",
     "myListings": "Mənim elanlarım",
@@ -17,7 +17,8 @@
     "signOut": "Çıxış",
     "accountMenu": "Hesab menyusu",
     "myAccount": "Hesabım",
-    "language": "Dil"
+    "language": "Dil",
+    "authMenu": "Giriş və qeydiyyat"
   },
   "theme": {
     "switchToLight": "Açıq rejim",
