@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { HeaderShell } from "@/components/layout/HeaderShell";
+import { ThemeScript } from "@/components/theme/ThemeScript";
 import { routing, type Locale } from "@/i18n/routing";
 import "../globals.css";
 
@@ -59,8 +60,9 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <body>
+        <ThemeScript />
         <NextIntlClientProvider messages={messages}>
           <div className="page-wrapper">
             <Suspense fallback={<HeaderShell />}>

@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { UserMenu } from "@/components/layout/UserMenu";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 interface HeaderActionsProps {
   user: { email?: string } | null;
@@ -23,6 +24,7 @@ export function HeaderActions({
   if (!user) {
     return (
       <div className="header__actions">
+        <ThemeToggle />
         <LanguageSwitcher variant="desktop" />
         <Link href="/auth/login" className="btn btn--ghost btn--header">
           <span className="header__auth-full">{t("login")}</span>
@@ -38,6 +40,7 @@ export function HeaderActions({
 
   return (
     <div className="header__actions">
+      <ThemeToggle />
       <LanguageSwitcher variant="desktop" />
       <Link
         href="/dashboard/listings/new"
