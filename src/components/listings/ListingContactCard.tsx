@@ -1,9 +1,12 @@
+import { getTranslations } from "next-intl/server";
 import { WhatsAppButton } from "@/components/listings/WhatsAppButton";
+import type { Locale } from "@/i18n/routing";
 import { formatPriceSuffix } from "@/lib/price";
 import { buildDirectionsUrl } from "@/lib/map";
 import type { PriceUnit } from "@/types/database";
 
 interface ListingContactCardProps {
+  locale: Locale;
   ownerName: string | null;
   phone: string | null;
   whatsappPhone: string;
@@ -27,7 +30,8 @@ function formatAddress(region: string, city: string, address: string | null) {
   return parts.join(", ");
 }
 
-export function ListingContactCard({
+export async function ListingContactCard({
+  locale,
   ownerName,
   phone,
   whatsappPhone,
@@ -45,6 +49,7 @@ export function ListingContactCard({
   roomTypeName,
   roomTypeFloor,
 }: ListingContactCardProps) {
+  const t = await getTranslations("listing");
   const callPhone = phone ?? whatsappPhone;
   const callHref = callPhone
     ? `tel:${callPhone.replace(/[\s()-]/g, "")}`
@@ -57,25 +62,25 @@ export function ListingContactCard({
       <p className="listing-detail__price">
         {pricePerNight} {currency}
         <span className="listing-detail__price-unit">
-          {formatPriceSuffix(priceUnit)}
+          {formatPriceSuffix(priceUnit, locale)}
         </span>
       </p>
 
       <dl className="listing-detail__facts">
         <div className="listing-detail__fact">
-          <dt>Müəssisə adı</dt>
+          <dt>{t("establishmentName")}</dt>
           <dd>{listingTitle}</dd>
         </div>
 
         {roomTypeName && (
           <div className="listing-detail__fact">
-            <dt>Otaq tipi</dt>
+            <dt>{t("roomType")}</dt>
             <dd>
               {roomTypeName}
               {roomTypeFloor != null && (
                 <span className="listing-detail__fact-note">
                   {" "}
-                  · {roomTypeFloor}. mərtəbə
+                  · {t("floor", { floor: roomTypeFloor })}
                 </span>
               )}
             </dd>
@@ -83,7 +88,7 @@ export function ListingContactCard({
         )}
 
         <div className="listing-detail__fact">
-          <dt>Ünvan</dt>
+          <dt>{t("address")}</dt>
           <dd>
             {formatAddress(region, city, address)}
             {directionsUrl && (
@@ -95,7 +100,7 @@ export function ListingContactCard({
                   rel="noopener noreferrer"
                   className="listing-detail__directions"
                 >
-                  Marşrut təyin et
+                  {t("directions")}
                 </a>
               </>
             )}
@@ -103,20 +108,20 @@ export function ListingContactCard({
         </div>
 
         <div className="listing-detail__fact">
-          <dt>Qonaq</dt>
-          <dd>{maxGuests} nəfər</dd>
+          <dt>{t("guest")}</dt>
+          <dd>{t("guestCount", { count: maxGuests })}</dd>
         </div>
 
         <div className="listing-detail__fact">
-          <dt>Yataq otağı</dt>
+          <dt>{t("bedroom")}</dt>
           <dd>{bedrooms}</dd>
         </div>
       </dl>
 
       <div className="listing-detail__owner">
-        <h2 className="listing-detail__owner-title">Elan sahibi</h2>
+        <h2 className="listing-detail__owner-title">{t("ownerTitle")}</h2>
         <p className="listing-detail__owner-name">
-          {ownerName ?? "Mülk sahibi"}
+          {ownerName ?? t("ownerFallback")}
         </p>
       </div>
 
@@ -142,7 +147,7 @@ export function ListingContactCard({
                 strokeLinejoin="round"
               />
             </svg>
-            Zəng et
+            {t("call")}
           </a>
         )}
       </div>

@@ -64,7 +64,18 @@
     "morePhotos": "+{count} foto",
     "directions": "Marşrut təyin et",
     "similar": "Oxşar elanlar",
-    "notFound": "Elan tapılmadı"
+    "notFound": "Elan tapılmadı",
+    "establishmentName": "Müəssisə adı",
+    "roomType": "Otaq tipi",
+    "floor": "{floor}. mərtəbə",
+    "address": "Ünvan",
+    "guest": "Qonaq",
+    "guestCount": "{count} nəfər",
+    "bedroom": "Yataq otağı",
+    "ownerTitle": "Elan sahibi",
+    "ownerFallback": "Mülk sahibi",
+    "call": "Zəng et",
+    "whatsappContact": "WhatsApp ilə əlaqə"
   },
   "favorites": {
     "add": "Sevimlilərə əlavə et",

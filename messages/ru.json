@@ -64,7 +64,18 @@
     "morePhotos": "+{count} фото",
     "directions": "Построить маршрут",
     "similar": "Похожие объявления",
-    "notFound": "Объявление не найдено"
+    "notFound": "Объявление не найдено",
+    "establishmentName": "Название заведения",
+    "roomType": "Тип номера",
+    "floor": "{floor} этаж",
+    "address": "Адрес",
+    "guest": "Гости",
+    "guestCount": "{count} чел.",
+    "bedroom": "Спальни",
+    "ownerTitle": "Владелец объявления",
+    "ownerFallback": "Владелец",
+    "call": "Позвонить",
+    "whatsappContact": "Связаться в WhatsApp"
   },
   "favorites": {
     "add": "Добавить в избранное",
