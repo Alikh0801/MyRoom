@@ -107,7 +107,7 @@ img {
   top: 0;
   z-index: 100;
   max-width: 100%;
-  overflow-x: clip;
+  overflow: visible;
 }
 
 .header__inner {
@@ -118,6 +118,7 @@ img {
   gap: 0.75rem;
   min-width: 0;
   max-width: 100%;
+  overflow: visible;
 }
 
 .header__start {
@@ -150,6 +151,7 @@ img {
   min-width: 0;
   justify-content: flex-end;
   padding-right: 0.125rem;
+  overflow: visible;
 }
 
 .lang-switcher--desktop {
@@ -786,6 +788,7 @@ img {
 
 .auth-menu__dropdown {
   min-width: 188px;
+  z-index: 200;
 }
 
 .auth-menu__item--primary {
@@ -984,7 +987,7 @@ img {
   border-radius: 14px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
   padding: 0.5rem;
-  z-index: 120;
+  z-index: 200;
 }
 
 .user-menu__profile {
