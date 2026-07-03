@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import { getResolvedTheme, setTheme, type Theme } from "@/lib/theme";
+import { useLocale, useTranslations } from "next-intl";
+import { usePathname } from "@/i18n/navigation";
+import { applyTheme, getStoredTheme, setTheme, type Theme } from "@/lib/theme";
 
 function SunIcon() {
   return (
@@ -41,13 +42,17 @@ function MoonIcon() {
 
 export function ThemeToggle() {
   const t = useTranslations("theme");
+  const locale = useLocale();
+  const pathname = usePathname();
   const [theme, setThemeState] = useState<Theme>("light");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setThemeState(getResolvedTheme());
+    const storedTheme = getStoredTheme();
+    applyTheme(storedTheme);
+    setThemeState(storedTheme);
     setMounted(true);
-  }, []);
+  }, [locale, pathname]);
 
   function toggle() {
     const next: Theme = theme === "dark" ? "light" : "dark";
