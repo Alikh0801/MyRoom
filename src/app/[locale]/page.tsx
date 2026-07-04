@@ -5,6 +5,7 @@ import { ListingCard } from "@/components/listings/ListingCard";
 import { Pagination } from "@/components/ui/Pagination";
 import { getFavoritePageContext } from "@/lib/favorites/page-context";
 import type { Locale } from "@/i18n/routing";
+import { buildCanonicalAlternates, getAbsoluteUrl } from "@/lib/seo";
 import {
   getCategories,
   getHomeListingsPaginated,
@@ -18,6 +19,27 @@ interface HomePageProps {
 }
 
 export const revalidate = 60;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const typedLocale = locale as Locale;
+  const t = await getTranslations({ locale, namespace: "metadata" });
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    alternates: buildCanonicalAlternates("/", typedLocale),
+    openGraph: {
+      title: t("title"),
+      description: t("description"),
+      url: getAbsoluteUrl("/", typedLocale),
+    },
+  };
+}
 
 export default async function HomePage({ params, searchParams }: HomePageProps) {
   const { locale } = await params;

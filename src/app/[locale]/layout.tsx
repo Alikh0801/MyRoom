@@ -8,6 +8,7 @@ import { Header } from "@/components/layout/Header";
 import { HeaderShell } from "@/components/layout/HeaderShell";
 import { ThemeScript } from "@/components/theme/ThemeScript";
 import { routing, type Locale } from "@/i18n/routing";
+import { getSiteUrl, SITE_NAME } from "@/lib/seo";
 import "../globals.css";
 
 type LocaleLayoutProps = {
@@ -28,6 +29,8 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "metadata" });
 
   return {
+    metadataBase: new URL(getSiteUrl()),
+    applicationName: SITE_NAME,
     title: {
       default: t("title"),
       template: t("titleTemplate"),
@@ -43,6 +46,18 @@ export async function generateMetadata({
       "Azərbaycan",
       "istirahət",
     ],
+    openGraph: {
+      siteName: SITE_NAME,
+      title: t("title"),
+      description: t("description"),
+      locale: locale === "ru" ? "ru_RU" : "az_AZ",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("description"),
+    },
   };
 }
 

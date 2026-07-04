@@ -8,6 +8,7 @@ import {
 } from "@/lib/i18n/localized-listing";
 import { getFavoritePageContext } from "@/lib/favorites/page-context";
 import { getListingById, getSimilarListings } from "@/lib/queries/listings";
+import { buildCanonicalAlternates, getAbsoluteUrl } from "@/lib/seo";
 
 interface ListingPageProps {
   params: Promise<{ locale: string; id: string }>;
@@ -21,16 +22,34 @@ export async function generateMetadata({ params }: ListingPageProps) {
 
   const pageTitle = getLocalizedListingTitle(listing, locale);
   const pageDescription = getLocalizedListingDescription(listing, locale);
+  const description = pageDescription.slice(0, 160);
+  const path = `/listings/${id}`;
+  const coverImage = listing.listing_images[0]?.url;
 
   return {
     title: pageTitle,
-    description: pageDescription.slice(0, 160),
+    description,
+    alternates: buildCanonicalAlternates(path, locale as Locale),
     openGraph: {
       title: pageTitle,
-      description: pageDescription.slice(0, 160),
-      images: listing.listing_images[0]?.url
-        ? [listing.listing_images[0].url]
+      description,
+      url: getAbsoluteUrl(path, locale as Locale),
+      type: "article",
+      locale: locale === "ru" ? "ru_RU" : "az_AZ",
+      images: coverImage
+        ? [
+            {
+              url: coverImage,
+              alt: pageTitle,
+            },
+          ]
         : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: pageTitle,
+      description,
+      images: coverImage ? [coverImage] : [],
     },
   };
 }

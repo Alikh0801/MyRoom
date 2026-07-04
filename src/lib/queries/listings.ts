@@ -58,6 +58,12 @@ export interface SearchListingsResult {
   total: number;
 }
 
+export interface SitemapListing {
+  id: string;
+  updated_at: string;
+  created_at: string;
+}
+
 export type ListingRow = {
   id: string;
   title: string;
@@ -287,6 +293,31 @@ export async function getApprovedListings(
   const { vipListings, regularListings } = await getSearchListings(filters);
   return [...vipListings, ...regularListings];
 }
+
+export async function getSitemapListings(): Promise<SitemapListing[]> {
+  return getSitemapListingsCached();
+}
+
+const getSitemapListingsCached = unstable_cache(
+  async (): Promise<SitemapListing[]> => {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase
+      .from("listings")
+      .select("id, updated_at, created_at")
+      .eq("status", "approved")
+      .order("updated_at", { ascending: false })
+      .limit(5000);
+
+    if (error) {
+      console.error("getSitemapListings:", error.message);
+      return [];
+    }
+
+    return (data ?? []) as SitemapListing[];
+  },
+  ["sitemap-listings"],
+  { revalidate: 3600, tags: [LISTINGS_CACHE_TAG] }
+);
 
 export async function getSimilarListings(
   listingId: string,
