@@ -8,8 +8,12 @@ export function getSiteUrl() {
     process.env.NEXT_PUBLIC_SITE_URL ||
     process.env.NEXT_PUBLIC_APP_URL ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
+  const normalizedUrl =
+    configuredUrl && !/^https?:\/\//i.test(configuredUrl)
+      ? `https://${configuredUrl}`
+      : configuredUrl;
 
-  return (configuredUrl || "https://my-room-pi.vercel.app").replace(/\/$/, "");
+  return (normalizedUrl || "https://myroomaz.com").replace(/\/$/, "");
 }
 
 export function getLocalizedPath(path: string, locale: Locale) {
