@@ -3975,10 +3975,16 @@ h3.amenities-feature-title {
 }
 
 .listing-map__frame {
-  height: 260px;
+  height: 320px;
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid var(--color-border);
+}
+
+@media (min-width: 768px) {
+  .listing-map__frame {
+    height: 360px;
+  }
 }
 
 .listing-detail__directions {
