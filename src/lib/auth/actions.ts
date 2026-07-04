@@ -7,6 +7,7 @@ import { resolveAuthErrorKey } from "@/lib/auth/errors";
 import { verifyTurnstileToken } from "@/lib/auth/turnstile";
 import { isValidPhone, normalizePhone } from "@/lib/phone";
 import { getClientIp } from "@/lib/request";
+import { getSiteUrl } from "@/lib/seo";
 import { createClient } from "@/lib/supabase/server";
 import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
 import { EMAIL_OTP_LENGTH } from "@/lib/auth/otp";
@@ -46,6 +47,11 @@ function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
 }
 
+function normalizeRedirectTo(value: string): string {
+  if (!value.startsWith("/") || value.startsWith("//")) return "/";
+  return value;
+}
+
 export async function signIn(
   _prevState: AuthState | null,
   formData: FormData
@@ -53,7 +59,9 @@ export async function signIn(
   const t = await getTranslations("auth.errors");
   const email = (formData.get("email") as string)?.trim();
   const password = formData.get("password") as string;
-  const redirectTo = (formData.get("redirectTo") as string) || "/";
+  const redirectTo = normalizeRedirectTo(
+    (formData.get("redirectTo") as string) || "/"
+  );
   const turnstileToken = formData.get("turnstileToken") as string | null;
 
   if (!email || !password) {
@@ -156,7 +164,7 @@ export async function signUp(
         phone,
         whatsapp_phone: whatsappPhone,
       },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/auth/callback?next=/`,
+      emailRedirectTo: `${getSiteUrl()}/auth/callback?next=/`,
     },
   });
 

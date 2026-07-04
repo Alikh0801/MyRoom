@@ -96,6 +96,7 @@ export function RegionCombobox({
           {showEmpty && (
             <li
               role="option"
+              aria-selected={value === ""}
               className="region-combobox__option"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => selectRegion("")}

@@ -35,6 +35,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Elan tapılmadı" }, { status: 404 });
   }
 
+  const expectedPrefix = `${user.id}/${listingId}/`;
+  if (!storagePath.startsWith(expectedPrefix)) {
+    return NextResponse.json({ error: "Fayl yolu icazəli deyil" }, { status: 400 });
+  }
+
   const url = getPublicUrl(storagePath);
 
   const { data: image, error } = await supabase

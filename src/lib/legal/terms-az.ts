@@ -15,7 +15,7 @@ export const TERMS_SECTIONS: LegalSection[] = [
       "Bu Şərtlərdə aşağıdakı terminlər istifadə olunur:",
     ],
     list: [
-      "Platforma — MyRoom veb-saytı, mobil interfeysi və əlaqəli texniki infrastruktur.",
+      "Platforma — MyRoomAZ veb-saytı, mobil interfeysi və əlaqəli texniki infrastruktur.",
       "İstifadəçi — Platformaya daxil olan, qeydiyyatdan keçən və ya Platformadan istifadə edən hər bir fiziki və ya hüquqi şəxs.",
       "Elan sahibi (Host) — icarəyə verilən mülk və ya xidmət barədə elan yerləşdirən istifadəçi.",
       "Qonaq (Guest) — elanları baxan, axtaran və ya elan sahibi ilə əlaqə saxlayan istifadəçi.",

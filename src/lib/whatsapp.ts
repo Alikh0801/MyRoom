@@ -9,7 +9,7 @@ export function buildWhatsAppUrl(
     ? cleaned
     : `994${cleaned.replace(/^0/, "")}`;
 
-  let message = `Salam! MyRoom-da "${listingTitle}" elanınıza maraqlanıram.`;
+  let message = `Salam! MyRoomAZ-da "${listingTitle}" elanınıza maraqlanıram.`;
   if (checkIn && checkOut) {
     message += ` ${checkIn} – ${checkOut} tarixləri üçün müsaitdir?`;
   } else {
