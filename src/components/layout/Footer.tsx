@@ -10,7 +10,7 @@ export async function Footer() {
         <div className="footer__grid">
           <div className="footer__brand">
             <p className="footer__logo">
-              My<span>Room</span>
+              My<span>Room</span><span className="brand-az">AZ</span>
             </p>
             <p className="footer__tagline">{t("tagline")}</p>
           </div>

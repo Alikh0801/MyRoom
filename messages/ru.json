@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "MyRoom — посуточная аренда и отдых в Азербайджане",
-    "titleTemplate": "%s | MyRoom",
+    "title": "MyRoomAZ | Hotel, A-frame, hostel və rayon evləri",
+    "titleTemplate": "%s | MyRoomAZ",
     "description": "Отели, хостелы, A-frame (глamping) и загородные дома. Объявления для краткосрочного отдыха по всему Азербайджану."
   },
   "nav": {
@@ -32,7 +32,7 @@
     "legalTitle": "Правовая информация",
     "terms": "Условия использования",
     "privacy": "Политика конфиденциальности",
-    "copyright": "© {year} MyRoom. Все права защищены."
+    "copyright": "© {year} MyRoomAZ. Все права защищены."
   },
   "home": {
     "heroTitle": "Найдите идеальное место для отдыха в Азербайджане",

@@ -6,7 +6,7 @@ export function HeaderShell() {
       <div className="container header__inner">
         <div className="header__start">
           <Link href="/" className="header__logo">
-            My<span>Room</span>
+            My<span>Room</span><span className="brand-az">AZ</span>
           </Link>
           <span className="header__skeleton-pill" aria-hidden="true" />
         </div>

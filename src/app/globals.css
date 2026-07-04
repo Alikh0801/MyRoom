@@ -143,6 +143,23 @@ img {
   color: var(--color-accent);
 }
 
+.header__logo .brand-az,
+.footer__logo .brand-az {
+  color: transparent;
+  background: linear-gradient(
+    180deg,
+    #00b5e2 0%,
+    #00b5e2 33%,
+    #ef3340 33%,
+    #ef3340 66%,
+    #509e2f 66%,
+    #509e2f 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  font-weight: 800;
+}
+
 .header__actions {
   display: flex;
   align-items: center;

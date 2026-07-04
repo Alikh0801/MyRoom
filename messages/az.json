@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "MyRoom — Azərbaycan üzrə günlük icarə və istirahət",
-    "titleTemplate": "%s | MyRoom",
+    "title": "MyRoomAZ | Hotel, A-frame, hostel və rayon evləri",
+    "titleTemplate": "%s | MyRoomAZ",
     "description": "Hotel, hostel, A-frame (Glamping) və rayon evləri. Qısamüddətli istirahət üçün elanlar — Azərbaycan üzrə."
   },
   "nav": {
@@ -32,7 +32,7 @@
     "legalTitle": "Hüquqi",
     "terms": "Şərtlər və qaydalar",
     "privacy": "Məxfilik siyasəti",
-    "copyright": "© {year} MyRoom. Bütün hüquqlar qorunur."
+    "copyright": "© {year} MyRoomAZ. Bütün hüquqlar qorunur."
   },
   "home": {
     "heroTitle": "Azərbaycanda istirahət üçün ideal yerinizi tapın",
