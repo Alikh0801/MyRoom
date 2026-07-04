@@ -1,5 +1,4 @@
 import { HeaderActions } from "@/components/layout/HeaderActions";
-import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { Link } from "@/i18n/navigation";
 import { getHeaderAuth } from "@/lib/auth/session";
 
@@ -13,7 +12,6 @@ export async function Header() {
           <Link href="/" className="header__logo">
             My<span>Room</span><span className="brand-az">AZ</span>
           </Link>
-          <LanguageSwitcher variant="mobile" />
         </div>
         <HeaderActions
           user={user}

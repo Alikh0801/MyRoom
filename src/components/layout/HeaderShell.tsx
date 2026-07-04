@@ -8,10 +8,10 @@ export function HeaderShell() {
           <Link href="/" className="header__logo">
             My<span>Room</span><span className="brand-az">AZ</span>
           </Link>
-          <span className="header__skeleton-pill" aria-hidden="true" />
         </div>
         <div className="header__actions header__actions--skeleton" aria-hidden="true">
           <span className="theme-toggle theme-toggle--placeholder" aria-hidden="true" />
+          <span className="header__skeleton-pill" aria-hidden="true" />
           <span className="header__skeleton-avatar" />
         </div>
       </div>

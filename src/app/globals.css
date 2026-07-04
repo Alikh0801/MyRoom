@@ -124,17 +124,15 @@ img {
 .header__start {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
   min-width: 0;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
 }
 
 .header__logo {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--color-primary);
-  flex-shrink: 1;
-  min-width: 0;
+  flex-shrink: 0;
   line-height: 1;
   white-space: nowrap;
 }
@@ -844,10 +842,6 @@ img {
   .header__inner {
     gap: 0.375rem;
     height: 56px;
-  }
-
-  .header__start {
-    gap: 0.3rem;
   }
 
   .header__logo {

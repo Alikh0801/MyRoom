@@ -26,6 +26,7 @@ export function HeaderActions({
     return (
       <div className="header__actions">
         <ThemeToggle />
+        <LanguageSwitcher variant="mobile" />
         <LanguageSwitcher variant="desktop" />
         <div className="header__auth-desktop">
           <Link href="/auth/login" className="btn btn--ghost btn--header">
@@ -43,6 +44,7 @@ export function HeaderActions({
   return (
     <div className="header__actions">
       <ThemeToggle />
+      <LanguageSwitcher variant="mobile" />
       <LanguageSwitcher variant="desktop" />
       <Link
         href="/dashboard/listings/new"
