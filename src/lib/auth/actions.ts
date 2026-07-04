@@ -1,9 +1,10 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { localizedRedirect } from "@/lib/i18n/server-redirect";
 import { checkAuthRateLimit } from "@/lib/auth/rate-limit";
-import { resolveAuthErrorKey } from "@/lib/auth/errors";
+import { resolveAuthErrorKey, type AuthErrorKey } from "@/lib/auth/errors";
 import { verifyTurnstileToken } from "@/lib/auth/turnstile";
 import { isValidPhone, normalizePhone } from "@/lib/phone";
 import { getClientIp } from "@/lib/request";
@@ -11,9 +12,14 @@ import { getSiteUrl } from "@/lib/seo";
 import { createClient } from "@/lib/supabase/server";
 import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
 import { EMAIL_OTP_LENGTH } from "@/lib/auth/otp";
+import {
+  getPendingVerificationCookieOptions,
+  PENDING_VERIFICATION_COOKIE,
+} from "@/lib/auth/pending-verification";
 
 export interface AuthState {
   error?: string;
+  errorKey?: AuthErrorKey;
   success?: string;
 }
 
@@ -83,7 +89,19 @@ export async function signIn(
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    return { error: t(resolveAuthErrorKey(error.message)) };
+    const errorKey = resolveAuthErrorKey(error.message);
+    if (errorKey === "emailNotConfirmed") {
+      const cookieStore = await cookies();
+      cookieStore.set(
+        PENDING_VERIFICATION_COOKIE,
+        email,
+        getPendingVerificationCookieOptions()
+      );
+      return localizedRedirect(
+        `/auth/verify-email?email=${encodeURIComponent(email)}&reason=unconfirmed`
+      );
+    }
+    return { error: t(errorKey) };
   }
 
   return localizedRedirect(redirectTo || "/");
@@ -183,7 +201,13 @@ export async function signUp(
     return { error: t("emailAlreadyRegistered") };
   }
 
-  if (data.user && !data.session) {
+  if (data.user && !data.user.email_confirmed_at) {
+    const cookieStore = await cookies();
+    cookieStore.set(
+      PENDING_VERIFICATION_COOKIE,
+      email,
+      getPendingVerificationCookieOptions()
+    );
     return localizedRedirect(
       `/auth/verify-email?email=${encodeURIComponent(email)}`
     );
@@ -238,8 +262,12 @@ export async function verifyEmailOtp(
   });
 
   if (error) {
-    return { error: t(resolveAuthErrorKey(error.message)) };
+    const errorKey = resolveAuthErrorKey(error.message);
+    return { error: t(errorKey), errorKey };
   }
+
+  const cookieStore = await cookies();
+  cookieStore.delete(PENDING_VERIFICATION_COOKIE);
 
   return localizedRedirect("/");
 }

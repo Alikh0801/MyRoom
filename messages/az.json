@@ -115,6 +115,8 @@
       "email": "Email",
       "emailPlaceholder": "siz@example.com",
       "password": "Şifrə",
+      "showPassword": "Şifrəni göstər",
+      "hidePassword": "Şifrəni gizlət",
       "passwordPlaceholder": "••••••••",
       "passwordMinPlaceholder": "Ən azı 6 simvol",
       "fullName": "Ad, soyad",
@@ -163,7 +165,22 @@
       "invalidOtpLength": "{length} rəqəmli kodu daxil edin."
     },
     "verify": {
-      "resendSuccess": "Yeni təsdiq kodu email ünvanınıza göndərildi."
+      "title": "Email təsdiqi",
+      "hintSignup": "Qeydiyyatı tamamlamaq üçün email ünvanınıza göndərilən təsdiq kodunu daxil edin.",
+      "hintUnconfirmed": "Hesabınızı aktivləşdirmək üçün email ünvanınıza göndərilən təsdiq kodunu daxil edin.",
+      "expiryHint": "Kod {minutes} dəqiqə ərzində etibarlıdır.",
+      "expiredNote": "Kodun vaxtı bitibsə, aşağıdan yeni kod tələb edin.",
+      "otpLabel": "Təsdiq kodu",
+      "otpDigit": "Kod {index}",
+      "submit": "Təsdiqlə və davam et",
+      "submitPending": "Yoxlanılır...",
+      "resend": "Kodu yenidən göndər",
+      "resendPending": "Göndərilir...",
+      "resendCooldown": "Kodu yenidən göndər ({seconds}s)",
+      "resendSuccess": "Yeni təsdiq kodu email ünvanınıza göndərildi.",
+      "missingEmailTitle": "Email tapılmadı",
+      "missingEmailSubtitle": "Təsdiq kodunu daxil etmək üçün əvvəlcə qeydiyyatdan keçin və ya daxil olun.",
+      "registerCta": "Qeydiyyatdan keç"
     }
   },
   "listingForm": {

@@ -1,30 +1,68 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { VerifyEmailForm } from "@/components/auth/VerifyEmailForm";
-
-export const metadata = {
-  title: "Email təsdiqi",
-};
+import { OTP_EXPIRY_SECONDS } from "@/lib/auth/otp";
+import { PENDING_VERIFICATION_COOKIE } from "@/lib/auth/pending-verification";
+import { createClient } from "@/lib/supabase/server";
 
 interface VerifyEmailPageProps {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ email?: string; reason?: string }>;
 }
 
-export default async function VerifyEmailPage({ searchParams }: VerifyEmailPageProps) {
-  const params = await searchParams;
-  const email = params.email?.trim().toLowerCase() ?? "";
-  const isUnconfirmed = params.reason === "unconfirmed";
+export async function generateMetadata({ params }: VerifyEmailPageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "auth.verify" });
+
+  return {
+    title: t("title"),
+  };
+}
+
+async function resolveVerificationEmail(queryEmail?: string): Promise<string> {
+  const normalizedQuery = queryEmail?.trim().toLowerCase() ?? "";
+
+  if (normalizedQuery) {
+    return normalizedQuery;
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user?.email) {
+    return user.email.toLowerCase();
+  }
+
+  const cookieStore = await cookies();
+  const cookieEmail = cookieStore.get(PENDING_VERIFICATION_COOKIE)?.value;
+
+  return cookieEmail?.trim().toLowerCase() ?? "";
+}
+
+export default async function VerifyEmailPage({
+  params,
+  searchParams,
+}: VerifyEmailPageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const routeParams = await searchParams;
+  const t = await getTranslations("auth.verify");
+  const email = await resolveVerificationEmail(routeParams.email);
+  const isUnconfirmed = routeParams.reason === "unconfirmed";
+  const otpExpiryMinutes = Math.max(1, Math.round(OTP_EXPIRY_SECONDS / 60));
 
   if (!email) {
     return (
       <div className="auth-page">
         <div className="auth-card auth-card--center">
-          <h1 className="auth-card__title">Email tapılmadı</h1>
-          <p className="auth-card__subtitle">
-            Təsdiq kodunu daxil etmək üçün əvvəlcə qeydiyyatdan keçin və ya
-            daxil olun.
-          </p>
+          <h1 className="auth-card__title">{t("missingEmailTitle")}</h1>
+          <p className="auth-card__subtitle">{t("missingEmailSubtitle")}</p>
           <Link href="/auth/register" className="btn btn--primary">
-            Qeydiyyatdan keç
+            {t("registerCta")}
           </Link>
         </div>
       </div>
@@ -34,8 +72,12 @@ export default async function VerifyEmailPage({ searchParams }: VerifyEmailPageP
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1 className="auth-card__title">Email təsdiqi</h1>
-        <VerifyEmailForm email={email} isUnconfirmed={isUnconfirmed} />
+        <h1 className="auth-card__title">{t("title")}</h1>
+        <VerifyEmailForm
+          email={email}
+          isUnconfirmed={isUnconfirmed}
+          otpExpiryMinutes={otpExpiryMinutes}
+        />
       </div>
     </div>
   );

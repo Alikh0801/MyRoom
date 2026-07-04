@@ -115,6 +115,20 @@ export async function updateSession(
 
   if (
     user &&
+    !emailConfirmed &&
+    (pathname === "/auth/login" || pathname === "/auth/register")
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = withLocalePrefix("/auth/verify-email", locale);
+    if (user.email) {
+      url.searchParams.set("email", user.email);
+    }
+    url.searchParams.set("reason", "unconfirmed");
+    return NextResponse.redirect(url);
+  }
+
+  if (
+    user &&
     emailConfirmed &&
     (pathname === "/auth/login" ||
       pathname === "/auth/register" ||

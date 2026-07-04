@@ -2715,6 +2715,44 @@ h3.amenities-feature-title {
   color: var(--color-text);
 }
 
+.password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 2.75rem;
+}
+
+.password-field__toggle {
+  position: absolute;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.password-field__toggle:hover {
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+.password-field__toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
 .auth-form__field select,
 .auth-form__field textarea {
   padding: 0.625rem 0.875rem;
@@ -2785,6 +2823,23 @@ h3.amenities-feature-title {
   font-size: 0.95rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
+}
+
+.auth-verify-email__expiry {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.auth-verify-email__expired-note {
+  font-size: 0.875rem;
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--color-accent) 25%, var(--color-border));
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.45;
 }
 
 .auth-verify-email {

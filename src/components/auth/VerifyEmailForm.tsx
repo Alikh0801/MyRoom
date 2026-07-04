@@ -1,19 +1,21 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useActionState, useEffect, useRef, useState } from "react";
 import {
   resendVerificationOtp,
   verifyEmailOtp,
   type AuthState,
 } from "@/lib/auth/actions";
-
 import { EMAIL_OTP_LENGTH } from "@/lib/auth/otp";
+
 const RESEND_COOLDOWN_SEC = 60;
+const VERIFY_EMAIL_STORAGE_KEY = "myroom-verify-email";
 
 interface VerifyEmailFormProps {
   email: string;
   isUnconfirmed?: boolean;
+  otpExpiryMinutes: number;
 }
 
 function maskEmail(email: string): string {
@@ -23,7 +25,24 @@ function maskEmail(email: string): string {
   return `${visible}${"*".repeat(Math.max(1, local.length - visible.length))}@${domain}`;
 }
 
-export function VerifyEmailForm({ email, isUnconfirmed }: VerifyEmailFormProps) {
+export function VerifyEmailForm({
+  email: initialEmail,
+  isUnconfirmed,
+  otpExpiryMinutes,
+}: VerifyEmailFormProps) {
+  const t = useTranslations("auth.verify");
+  const [email] = useState(() => {
+    if (typeof window === "undefined") {
+      return initialEmail;
+    }
+
+    if (initialEmail) {
+      sessionStorage.setItem(VERIFY_EMAIL_STORAGE_KEY, initialEmail);
+      return initialEmail;
+    }
+
+    return sessionStorage.getItem(VERIFY_EMAIL_STORAGE_KEY) ?? initialEmail;
+  });
   const [verifyState, verifyAction, verifyPending] = useActionState<
     AuthState | null,
     FormData
@@ -51,12 +70,22 @@ export function VerifyEmailForm({ email, isUnconfirmed }: VerifyEmailFormProps) 
   useEffect(() => {
     if (resendState?.success) {
       setCooldown(RESEND_COOLDOWN_SEC);
+      setDigits(Array(EMAIL_OTP_LENGTH).fill(""));
+      inputRefs.current[0]?.focus();
     }
   }, [resendState?.success]);
+
+  useEffect(() => {
+    if (verifyState?.errorKey !== "invalidToken") return;
+    setCooldown(0);
+    setDigits(Array(EMAIL_OTP_LENGTH).fill(""));
+    inputRefs.current[0]?.focus();
+  }, [verifyState?.errorKey]);
 
   const token = digits.join("");
   const error = verifyState?.error ?? resendState?.error;
   const success = resendState?.success;
+  const tokenExpired = verifyState?.errorKey === "invalidToken";
 
   function updateDigit(index: number, value: string) {
     const digit = value.replace(/\D/g, "").slice(-1);
@@ -101,21 +130,22 @@ export function VerifyEmailForm({ email, isUnconfirmed }: VerifyEmailFormProps) 
       {success && <p className="auth-form__success">{success}</p>}
 
       <p className="auth-verify-email__hint">
-        {isUnconfirmed
-          ? "Hesabınızı aktivləşdirmək üçün email ünvanınıza göndərilən təsdiq kodunu daxil edin."
-          : "Qeydiyyatı tamamlamaq üçün email ünvanınıza göndərilən təsdiq kodunu daxil edin."}
+        {isUnconfirmed ? t("hintUnconfirmed") : t("hintSignup")}
       </p>
       <p className="auth-verify-email__email">{maskEmail(email)}</p>
+      <p className="auth-verify-email__expiry">
+        {t("expiryHint", { minutes: otpExpiryMinutes })}
+      </p>
+
+      {tokenExpired && (
+        <p className="auth-verify-email__expired-note">{t("expiredNote")}</p>
+      )}
 
       <form action={verifyAction} className="auth-verify-email">
         <input type="hidden" name="email" value={email} />
         <input type="hidden" name="token" value={token} />
 
-        <div
-          className="auth-otp"
-          role="group"
-          aria-label="Təsdiq kodu"
-        >
+        <div className="auth-otp" role="group" aria-label={t("otpLabel")}>
           {digits.map((digit, index) => (
             <input
               key={index}
@@ -129,7 +159,7 @@ export function VerifyEmailForm({ email, isUnconfirmed }: VerifyEmailFormProps) 
               maxLength={1}
               value={digit}
               disabled={verifyPending}
-              aria-label={`Kod ${index + 1}`}
+              aria-label={t("otpDigit", { index: index + 1 })}
               onChange={(event) => updateDigit(index, event.target.value)}
               onKeyDown={(event) => handleKeyDown(index, event.key)}
               onPaste={handlePaste}
@@ -142,7 +172,7 @@ export function VerifyEmailForm({ email, isUnconfirmed }: VerifyEmailFormProps) 
           className="btn btn--primary auth-form__submit"
           disabled={verifyPending || token.length !== EMAIL_OTP_LENGTH}
         >
-          {verifyPending ? "Yoxlanılır..." : "Təsdiqlə və davam et"}
+          {verifyPending ? t("submitPending") : t("submit")}
         </button>
       </form>
 
@@ -154,16 +184,12 @@ export function VerifyEmailForm({ email, isUnconfirmed }: VerifyEmailFormProps) 
           disabled={!canResend}
         >
           {resendPending
-            ? "Göndərilir..."
+            ? t("resendPending")
             : cooldown > 0
-              ? `Kodu yenidən göndər (${cooldown}s)`
-              : "Kodu yenidən göndər"}
+              ? t("resendCooldown", { seconds: cooldown })
+              : t("resend")}
         </button>
       </form>
-
-      <p className="auth-form__footer">
-        <Link href="/auth/login">Giriş səhifəsinə qayıt</Link>
-      </p>
     </div>
   );
 }

@@ -8,6 +8,7 @@ import {
   TurnstileField,
   useTurnstileRequired,
 } from "@/components/auth/TurnstileField";
+import { PasswordInput } from "@/components/auth/PasswordInput";
 
 interface LoginFormProps {
   redirectTo?: string;
@@ -40,17 +41,14 @@ export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
         />
       </label>
 
-      <label className="auth-form__field">
-        {t("password")}
-        <input
-          type="password"
-          name="password"
-          required
-          autoComplete="current-password"
-          placeholder={t("passwordPlaceholder")}
-          minLength={6}
-        />
-      </label>
+      <PasswordInput
+        label={t("password")}
+        name="password"
+        required
+        autoComplete="current-password"
+        placeholder={t("passwordPlaceholder")}
+        minLength={6}
+      />
 
       {turnstileRequired && (
         <input type="hidden" name="turnstileToken" value={turnstileToken} />

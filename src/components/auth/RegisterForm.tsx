@@ -9,6 +9,7 @@ import {
   useTurnstileRequired,
 } from "@/components/auth/TurnstileField";
 import { LegalAcceptanceField } from "@/components/legal/LegalAcceptanceField";
+import { PasswordInput } from "@/components/auth/PasswordInput";
 
 export function RegisterForm() {
   const t = useTranslations("auth.form");
@@ -103,17 +104,14 @@ export function RegisterForm() {
         </label>
       )}
 
-      <label className="auth-form__field">
-        {t("password")}
-        <input
-          type="password"
-          name="password"
-          required
-          autoComplete="new-password"
-          placeholder={t("passwordMinPlaceholder")}
-          minLength={6}
-        />
-      </label>
+      <PasswordInput
+        label={t("password")}
+        name="password"
+        required
+        autoComplete="new-password"
+        placeholder={t("passwordMinPlaceholder")}
+        minLength={6}
+      />
 
       {turnstileRequired && (
         <input type="hidden" name="turnstileToken" value={turnstileToken} />

@@ -115,6 +115,8 @@
       "email": "Email",
       "emailPlaceholder": "you@example.com",
       "password": "Пароль",
+      "showPassword": "Показать пароль",
+      "hidePassword": "Скрыть пароль",
       "passwordPlaceholder": "••••••••",
       "passwordMinPlaceholder": "Минимум 6 символов",
       "fullName": "Имя и фамилия",
@@ -163,7 +165,22 @@
       "invalidOtpLength": "Введите {length}-значный код."
     },
     "verify": {
-      "resendSuccess": "Новый код подтверждения отправлен на ваш email."
+      "title": "Подтверждение email",
+      "hintSignup": "Чтобы завершить регистрацию, введите код подтверждения, отправленный на ваш email.",
+      "hintUnconfirmed": "Чтобы активировать аккаунт, введите код подтверждения, отправленный на ваш email.",
+      "expiryHint": "Код действителен в течение {minutes} мин.",
+      "expiredNote": "Если срок действия кода истёк, запросите новый код ниже.",
+      "otpLabel": "Код подтверждения",
+      "otpDigit": "Код {index}",
+      "submit": "Подтвердить и продолжить",
+      "submitPending": "Проверка...",
+      "resend": "Отправить код повторно",
+      "resendPending": "Отправка...",
+      "resendCooldown": "Отправить код повторно ({seconds}с)",
+      "resendSuccess": "Новый код подтверждения отправлен на ваш email.",
+      "missingEmailTitle": "Email не найден",
+      "missingEmailSubtitle": "Чтобы ввести код подтверждения, сначала зарегистрируйтесь или войдите.",
+      "registerCta": "Зарегистрироваться"
     }
   },
   "listingForm": {
