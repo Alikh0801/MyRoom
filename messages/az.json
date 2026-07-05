@@ -36,7 +36,7 @@
   },
   "home": {
     "heroTitle": "Azərbaycanda istirahət üçün ideal yerinizi tapın",
-    "heroSubtitle": "Hotel, hostel, A-frame (Glamping) və rayon evləri — qısamüddətli günlük icarə elanları bir yerdə.",
+    "heroSubtitle": "Səyahətinizə uyğun otel, hostel, A-frame və ya rayon evini bir neçə kliklə tapın.",
     "searchRegion": "Rayon və ya şəhər seç",
     "allRegions": "Bütün rayonlar",
     "allTypes": "Bütün növlər",
@@ -236,8 +236,8 @@
     },
     "dropzone": {
       "selected": "{count} şəkil seçildi",
-      "dragHere": "Şəkilləri buraya sürüşdürün",
-      "orSelect": "və ya cihazdan seçin"
+      "dragHere": "Şəkilləri əlavə edin",
+      "orSelect": "Seçmək üçün toxunun"
     },
     "location": {
       "hint": "Xəritədə mülkün yerini klikləyin və ya pin-i sürüşdürün.",
