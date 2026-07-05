@@ -19,7 +19,7 @@ export function CategoryGrid({ categories, locale }: CategoryGridProps) {
           className="category-card"
         >
           <span className="category-card__icon">
-            <CategoryIcon slug={cat.slug} />
+            <CategoryIcon slug={cat.slug} size={72} />
           </span>
           <span className="category-card__label">
             {getLocalizedName(cat, locale)}

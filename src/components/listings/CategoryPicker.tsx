@@ -40,7 +40,7 @@ export function CategoryPicker({
               onClick={() => onChange(cat.id)}
             >
               <span className="category-picker__icon">
-                <CategoryIcon slug={cat.slug} size={22} />
+                <CategoryIcon slug={cat.slug} size={40} />
               </span>
               <span className="category-picker__label">
                 {getLocalizedName(cat, locale)}
