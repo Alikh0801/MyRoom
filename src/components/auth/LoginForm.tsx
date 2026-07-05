@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useActionState, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { signIn, type AuthState } from "@/lib/auth/actions";
+import { validateLoginForm } from "@/lib/form/validate-auth-form";
 import {
   TurnstileField,
   useTurnstileRequired,
@@ -16,26 +17,44 @@ interface LoginFormProps {
 
 export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
   const t = useTranslations("auth.form");
+  const tErrors = useTranslations("auth.errors");
   const [state, formAction, pending] = useActionState<AuthState | null, FormData>(
     signIn,
     null
   );
+  const [clientError, setClientError] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState("");
   const turnstileRequired = useTurnstileRequired();
   const submitDisabled = pending || (turnstileRequired && !turnstileToken);
 
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    const validationError = validateLoginForm(
+      new FormData(event.currentTarget),
+      (key) => tErrors(key)
+    );
+
+    if (validationError) {
+      event.preventDefault();
+      setClientError(validationError);
+      return;
+    }
+
+    setClientError(null);
+  }
+
+  const displayError = clientError ?? state?.error;
+
   return (
-    <form className="auth-form" action={formAction}>
+    <form className="auth-form" action={formAction} noValidate onSubmit={handleSubmit}>
       <input type="hidden" name="redirectTo" value={redirectTo} />
 
-      {state?.error && <p className="auth-form__error">{state.error}</p>}
+      {displayError && <p className="auth-form__error">{displayError}</p>}
 
       <label className="auth-form__field">
         {t("email")}
         <input
           type="email"
           name="email"
-          required
           autoComplete="email"
           placeholder={t("emailPlaceholder")}
         />
@@ -44,7 +63,6 @@ export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
       <PasswordInput
         label={t("password")}
         name="password"
-        required
         autoComplete="current-password"
         placeholder={t("passwordPlaceholder")}
         minLength={6}

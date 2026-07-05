@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useLocale, useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { CategoryPicker } from "@/components/listings/CategoryPicker";
 import { ExistingListingImages } from "@/components/listings/ExistingListingImages";
@@ -22,6 +22,7 @@ import {
 } from "@/lib/listings/upload-images";
 import { isValidCoordinates } from "@/lib/map";
 import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
+import { validateListingFormFields } from "@/lib/form/validate-listing-form";
 import { LegalAcceptanceField } from "@/components/legal/LegalAcceptanceField";
 import type { EditListingData } from "@/lib/queries/edit-listing";
 import type { Locale } from "@/i18n/routing";
@@ -86,6 +87,7 @@ export function CreateListingForm({
   const [dragOver, setDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const errorRef = useRef<HTMLDivElement>(null);
   const [existingImages, setExistingImages] = useState(() =>
     [...(editData?.images ?? [])].sort((a, b) => a.sort_order - b.sort_order)
   );
@@ -107,6 +109,14 @@ export function CreateListingForm({
   const listingAmenityGroups = isHotel ? propertyAmenityGroups : amenityGroups;
 
   let step = 1;
+
+  useEffect(() => {
+    if (!error) return;
+    const alert = errorRef.current;
+    if (!alert) return;
+    alert.focus({ preventScroll: true });
+    alert.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [error]);
 
   function setImageFiles(files: File[]) {
     const images = files.filter((file) => ACCEPTED_IMAGE_TYPES.includes(file.type));
@@ -156,6 +166,16 @@ export function CreateListingForm({
     e.preventDefault();
     setError(null);
 
+    const formData = new FormData(e.currentTarget);
+
+    const fieldError = validateListingFormFields(formData, isHotel, (key) =>
+      tErrors(key)
+    );
+    if (fieldError) {
+      setError(fieldError);
+      return;
+    }
+
     const totalImages = existingImageCount + selectedFiles.length;
 
     if (totalImages === 0) {
@@ -182,8 +202,6 @@ export function CreateListingForm({
       setError(tErrors("selectMapLocation"));
       return;
     }
-
-    const formData = new FormData(e.currentTarget);
 
     if (!isEdit && !hasAcceptedLegalTerms(formData)) {
       setError(tErrors("legalRequired"));
@@ -229,14 +247,8 @@ export function CreateListingForm({
   }
 
   return (
-    <form className="listing-form" onSubmit={handleSubmit}>
+    <form className="listing-form" noValidate onSubmit={handleSubmit}>
       {isEdit && <input type="hidden" name="listingId" value={editData!.id} />}
-
-      {error && (
-        <div className="listing-form__alert" role="alert">
-          {error}
-        </div>
-      )}
 
       <ListingFormSection
         step={step++}
@@ -316,7 +328,6 @@ export function CreateListingForm({
           <input
             type="text"
             name="title"
-            required
             minLength={5}
             defaultValue={editData?.title}
             placeholder={t("placeholders.title")}
@@ -327,7 +338,6 @@ export function CreateListingForm({
           <span className="listing-form__label">{t("fields.description")}</span>
           <textarea
             name="description"
-            required
             minLength={20}
             rows={5}
             defaultValue={editData?.description}
@@ -381,7 +391,6 @@ export function CreateListingForm({
               name="region"
               value={region}
               onChange={setRegion}
-              required
               placeholder={t("placeholders.region")}
             />
           </label>
@@ -391,7 +400,6 @@ export function CreateListingForm({
             <input
               type="text"
               name="city"
-              required
               defaultValue={editData?.city}
               placeholder={t("placeholders.city")}
             />
@@ -426,7 +434,6 @@ export function CreateListingForm({
             <input
               type="number"
               name="maxGuests"
-              required
               min={1}
               defaultValue={editData?.max_guests ?? 2}
             />
@@ -455,7 +462,6 @@ export function CreateListingForm({
             <input
               type="number"
               name="pricePerNight"
-              required
               min={1}
               step={1}
               defaultValue={editData?.price_per_night}
@@ -467,7 +473,6 @@ export function CreateListingForm({
             <span className="listing-form__label">{t("fields.priceUnit")}</span>
             <select
               name="priceUnit"
-              required
               defaultValue={editData?.price_unit ?? "day"}
             >
               {priceUnitOptions.map((opt) => (
@@ -484,7 +489,6 @@ export function CreateListingForm({
           <input
             type="tel"
             name="whatsappPhone"
-            required
             defaultValue={editData?.whatsapp_phone ?? defaultWhatsapp}
             placeholder={t("placeholders.whatsapp")}
           />
@@ -541,6 +545,16 @@ export function CreateListingForm({
 
       <div className="listing-form__footer">
         {!isEdit && <LegalAcceptanceField className="listing-form__legal" />}
+        {error && (
+          <div
+            ref={errorRef}
+            className="listing-form__alert"
+            role="alert"
+            tabIndex={-1}
+          >
+            {error}
+          </div>
+        )}
         <p className="listing-form__note">
           {isEdit ? tEdit("note") : t("footer.note")}
         </p>

@@ -3259,6 +3259,8 @@ h3.amenities-feature-title {
   color: #922b21;
   font-size: 0.9rem;
   font-weight: 500;
+  scroll-margin-top: 6rem;
+  scroll-margin-bottom: 1rem;
 }
 
 .listing-form__section {

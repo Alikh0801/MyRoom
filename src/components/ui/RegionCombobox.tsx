@@ -79,7 +79,6 @@ export function RegionCombobox({
         }}
         onFocus={() => setOpen(true)}
         placeholder={placeholder}
-        required={required && !value}
         autoComplete="off"
         role="combobox"
         aria-expanded={open}

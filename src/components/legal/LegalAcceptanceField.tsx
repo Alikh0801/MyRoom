@@ -12,7 +12,7 @@ export function LegalAcceptanceField({ className }: LegalAcceptanceFieldProps) {
 
   return (
     <label className={`legal-acceptance${className ? ` ${className}` : ""}`}>
-      <input type="checkbox" name="acceptTerms" required />
+      <input type="checkbox" name="acceptTerms" />
       <span className="legal-acceptance__text">
         {t("acceptPrefix")}
         <Link href="/terms" target="_blank" rel="noopener noreferrer">

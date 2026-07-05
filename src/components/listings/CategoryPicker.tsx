@@ -26,7 +26,7 @@ export function CategoryPicker({
       role="radiogroup"
       aria-label={t("categoryAriaLabel")}
     >
-      <input type="hidden" name="categoryId" value={value} required />
+      <input type="hidden" name="categoryId" value={value} />
       <div className="category-picker__grid">
         {categories.map((cat) => {
           const selected = value === cat.id;

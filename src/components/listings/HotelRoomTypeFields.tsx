@@ -40,7 +40,6 @@ export function HotelRoomTypeFields({
           <input
             type="text"
             name="roomTypeName"
-            required
             defaultValue={defaultName}
             placeholder={t("placeholders.roomTypeName")}
           />

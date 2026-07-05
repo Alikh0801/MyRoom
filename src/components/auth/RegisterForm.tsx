@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useActionState, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { signUp, type AuthState } from "@/lib/auth/actions";
+import { validateRegisterForm } from "@/lib/form/validate-auth-form";
 import {
   TurnstileField,
   useTurnstileRequired,
@@ -13,10 +14,12 @@ import { PasswordInput } from "@/components/auth/PasswordInput";
 
 export function RegisterForm() {
   const t = useTranslations("auth.form");
+  const tErrors = useTranslations("auth.errors");
   const [state, formAction, pending] = useActionState<AuthState | null, FormData>(
     signUp,
     null
   );
+  const [clientError, setClientError] = useState<string | null>(null);
   const [phone, setPhone] = useState("");
   const [whatsappPhone, setWhatsappPhone] = useState("");
   const [sameAsPhone, setSameAsPhone] = useState(false);
@@ -39,16 +42,33 @@ export function RegisterForm() {
 
   const submitDisabled = pending || (turnstileRequired && !turnstileToken);
 
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    const validationError = validateRegisterForm(
+      new FormData(event.currentTarget),
+      sameAsPhone,
+      (key) => tErrors(key)
+    );
+
+    if (validationError) {
+      event.preventDefault();
+      setClientError(validationError);
+      return;
+    }
+
+    setClientError(null);
+  }
+
+  const displayError = clientError ?? state?.error;
+
   return (
-    <form className="auth-form" action={formAction}>
-      {state?.error && <p className="auth-form__error">{state.error}</p>}
+    <form className="auth-form" action={formAction} noValidate onSubmit={handleSubmit}>
+      {displayError && <p className="auth-form__error">{displayError}</p>}
 
       <label className="auth-form__field">
         {t("fullName")}
         <input
           type="text"
           name="fullName"
-          required
           autoComplete="name"
           placeholder={t("fullNamePlaceholder")}
         />
@@ -59,7 +79,6 @@ export function RegisterForm() {
         <input
           type="email"
           name="email"
-          required
           autoComplete="email"
           placeholder={t("emailPlaceholder")}
         />
@@ -70,7 +89,6 @@ export function RegisterForm() {
         <input
           type="tel"
           name="phone"
-          required
           autoComplete="tel"
           value={phone}
           onChange={(e) => handlePhoneChange(e.target.value)}
@@ -95,7 +113,6 @@ export function RegisterForm() {
           <input
             type="tel"
             name="whatsappPhone"
-            required
             autoComplete="tel"
             value={whatsappPhone}
             onChange={(e) => setWhatsappPhone(e.target.value)}
@@ -107,7 +124,6 @@ export function RegisterForm() {
       <PasswordInput
         label={t("password")}
         name="password"
-        required
         autoComplete="new-password"
         placeholder={t("passwordMinPlaceholder")}
         minLength={6}

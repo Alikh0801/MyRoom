@@ -120,8 +120,8 @@ export function LocationPicker({ lat, lng, onChange }: LocationPickerProps) {
         </MapContainer>
       </div>
 
-      <input type="hidden" name="lat" value={lat ?? ""} required={hasPin} />
-      <input type="hidden" name="lng" value={lng ?? ""} required={hasPin} />
+      <input type="hidden" name="lat" value={lat ?? ""} />
+      <input type="hidden" name="lng" value={lng ?? ""} />
 
       {hasPin ? (
         <p className="location-picker__coords">
