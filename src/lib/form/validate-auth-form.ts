@@ -4,7 +4,9 @@ type AuthErrorTranslator = (
     | "missingRequired"
     | "missingPhone"
     | "missingWhatsapp"
+    | "missingEmail"
     | "passwordTooShort"
+    | "passwordMismatch"
     | "legalRequired"
 ) => string;
 
@@ -54,6 +56,37 @@ export function validateRegisterForm(
 
   if (!acceptTerms) {
     return t("legalRequired");
+  }
+
+  return null;
+}
+
+export function validateForgotPasswordForm(
+  formData: FormData,
+  t: AuthErrorTranslator
+): string | null {
+  const email = (formData.get("email") as string)?.trim();
+
+  if (!email) {
+    return t("missingEmail");
+  }
+
+  return null;
+}
+
+export function validateResetPasswordForm(
+  formData: FormData,
+  t: AuthErrorTranslator
+): string | null {
+  const password = formData.get("password") as string;
+  const confirmPassword = formData.get("confirmPassword") as string;
+
+  if (!password || password.length < 6) {
+    return t("passwordTooShort");
+  }
+
+  if (password !== confirmPassword) {
+    return t("passwordMismatch");
   }
 
   return null;

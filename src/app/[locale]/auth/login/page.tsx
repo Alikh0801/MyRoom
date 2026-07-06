@@ -3,7 +3,7 @@ import { LoginForm } from "@/components/auth/LoginForm";
 
 type LoginPageProps = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ redirectTo?: string; error?: string }>;
+  searchParams: Promise<{ redirectTo?: string; error?: string; reset?: string }>;
 };
 
 export async function generateMetadata({ params }: LoginPageProps) {
@@ -31,6 +31,10 @@ export default async function LoginPage({ params, searchParams }: LoginPageProps
 
         {routeParams.error === "auth_callback_failed" && (
           <p className="auth-form__error">{t("callbackError")}</p>
+        )}
+
+        {routeParams.reset === "success" && (
+          <p className="auth-form__success">{t("resetSuccess")}</p>
         )}
 
         <LoginForm redirectTo={redirectTo} />

@@ -3,32 +3,30 @@
 import { useTranslations } from "next-intl";
 import { useActionState, useState } from "react";
 import { Link } from "@/i18n/navigation";
-import { signIn, type AuthState } from "@/lib/auth/actions";
-import { validateLoginForm } from "@/lib/form/validate-auth-form";
+import { requestPasswordReset, type AuthState } from "@/lib/auth/actions";
+import { validateForgotPasswordForm } from "@/lib/form/validate-auth-form";
 import {
   TurnstileField,
   useTurnstileRequired,
 } from "@/components/auth/TurnstileField";
-import { PasswordInput } from "@/components/auth/PasswordInput";
 
-interface LoginFormProps {
-  redirectTo?: string;
-}
-
-export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
+export function ForgotPasswordForm() {
   const t = useTranslations("auth.form");
+  const tForgot = useTranslations("auth.forgot");
   const tErrors = useTranslations("auth.errors");
   const [state, formAction, pending] = useActionState<AuthState | null, FormData>(
-    signIn,
+    requestPasswordReset,
     null
   );
   const [clientError, setClientError] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState("");
   const turnstileRequired = useTurnstileRequired();
   const submitDisabled = pending || (turnstileRequired && !turnstileToken);
+  const displayError = clientError ?? state?.error;
+  const emailSent = Boolean(state?.success);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    const validationError = validateLoginForm(
+    const validationError = validateForgotPasswordForm(
       new FormData(event.currentTarget),
       (key) => tErrors(key)
     );
@@ -42,12 +40,19 @@ export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
     setClientError(null);
   }
 
-  const displayError = clientError ?? state?.error;
+  if (emailSent) {
+    return (
+      <div className="auth-form">
+        <p className="auth-form__success">{state?.success}</p>
+        <p className="auth-form__footer">
+          <Link href="/auth/login">{t("loginLink")}</Link>
+        </p>
+      </div>
+    );
+  }
 
   return (
     <form className="auth-form" action={formAction} noValidate onSubmit={handleSubmit}>
-      <input type="hidden" name="redirectTo" value={redirectTo} />
-
       {displayError && <p className="auth-form__error">{displayError}</p>}
 
       <label className="auth-form__field">
@@ -59,18 +64,6 @@ export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
           placeholder={t("emailPlaceholder")}
         />
       </label>
-
-      <PasswordInput
-        label={t("password")}
-        name="password"
-        autoComplete="current-password"
-        placeholder={t("passwordPlaceholder")}
-        minLength={6}
-      />
-
-      <p className="auth-form__forgot">
-        <Link href="/auth/forgot-password">{t("forgotPasswordLink")}</Link>
-      </p>
 
       {turnstileRequired && (
         <input type="hidden" name="turnstileToken" value={turnstileToken} />
@@ -85,12 +78,11 @@ export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
         className="btn btn--primary auth-form__submit"
         disabled={submitDisabled}
       >
-        {pending ? t("submitLoginPending") : t("submitLogin")}
+        {pending ? tForgot("submitPending") : tForgot("submit")}
       </button>
 
       <p className="auth-form__footer">
-        {t("noAccount")}{" "}
-        <Link href="/auth/register">{t("registerLink")}</Link>
+        <Link href="/auth/login">{tForgot("backToLogin")}</Link>
       </p>
     </form>
   );

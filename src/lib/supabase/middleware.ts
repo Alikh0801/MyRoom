@@ -132,7 +132,8 @@ export async function updateSession(
     emailConfirmed &&
     (pathname === "/auth/login" ||
       pathname === "/auth/register" ||
-      pathname === "/auth/verify-email")
+      pathname === "/auth/verify-email" ||
+      pathname === "/auth/forgot-password")
   ) {
     return localizedRedirect("/");
   }

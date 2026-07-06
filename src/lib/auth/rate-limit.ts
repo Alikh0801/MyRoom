@@ -6,7 +6,9 @@ export type AuthRateLimitAction =
   | "signup"
   | "signin"
   | "verify-otp"
-  | "resend-otp";
+  | "resend-otp"
+  | "forgot-password"
+  | "reset-password";
 
 function getRedis(): Redis | null {
   const url = process.env.UPSTASH_REDIS_REST_URL;
@@ -37,6 +39,22 @@ function getLimiter(action: AuthRateLimitAction, redis: Redis): Ratelimit {
       redis,
       limiter: Ratelimit.slidingWindow(3, "1 h"),
       prefix: "myroom:auth:resend-otp",
+    });
+  }
+
+  if (action === "forgot-password") {
+    return new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(3, "1 h"),
+      prefix: "myroom:auth:forgot-password",
+    });
+  }
+
+  if (action === "reset-password") {
+    return new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(10, "15 m"),
+      prefix: "myroom:auth:reset-password",
     });
   }
 
@@ -77,11 +95,21 @@ export async function checkAuthRateLimit(
 
   const t = await getTranslations("auth.errors");
 
-  const keys: Record<AuthRateLimitAction, "rateLimitSignup" | "rateLimitSignin" | "rateLimitVerifyOtp" | "rateLimitResendOtp"> = {
+  const keys: Record<
+    AuthRateLimitAction,
+    | "rateLimitSignup"
+    | "rateLimitSignin"
+    | "rateLimitVerifyOtp"
+    | "rateLimitResendOtp"
+    | "rateLimitForgotPassword"
+    | "rateLimitResetPassword"
+  > = {
     signup: "rateLimitSignup",
     signin: "rateLimitSignin",
     "verify-otp": "rateLimitVerifyOtp",
     "resend-otp": "rateLimitResendOtp",
+    "forgot-password": "rateLimitForgotPassword",
+    "reset-password": "rateLimitResetPassword",
   };
 
   return {

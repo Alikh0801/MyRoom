@@ -1,8 +1,9 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { localizedRedirect } from "@/lib/i18n/server-redirect";
+import type { Locale } from "@/i18n/routing";
 import { checkAuthRateLimit } from "@/lib/auth/rate-limit";
 import { resolveAuthErrorKey, type AuthErrorKey } from "@/lib/auth/errors";
 import { verifyTurnstileToken } from "@/lib/auth/turnstile";
@@ -301,6 +302,91 @@ export async function resendVerificationOtp(
   }
 
   return { success: tVerify("resendSuccess") };
+}
+
+export async function requestPasswordReset(
+  _prevState: AuthState | null,
+  formData: FormData
+): Promise<AuthState | null> {
+  const t = await getTranslations("auth.errors");
+  const tForgot = await getTranslations("auth.forgot");
+  const email = normalizeEmail((formData.get("email") as string) ?? "");
+  const turnstileToken = formData.get("turnstileToken") as string | null;
+
+  if (!email) {
+    return { error: t("missingEmail") };
+  }
+
+  const ip = await getClientIp();
+  const rateLimit = await checkAuthRateLimit("forgot-password", ip);
+  if (!rateLimit.ok) {
+    return { error: rateLimit.error };
+  }
+
+  const captcha = await verifyTurnstileToken(turnstileToken);
+  if (!captcha.ok) {
+    return { error: captcha.error };
+  }
+
+  const locale = (await getLocale()) as Locale;
+  const recoveryPath =
+    locale === "ru" ? "/auth/callback/recovery/ru" : "/auth/callback/recovery";
+  const redirectTo = `${getSiteUrl()}${recoveryPath}`;
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo,
+  });
+
+  if (error) {
+    const errorKey = resolveAuthErrorKey(error.message);
+    if (errorKey === "rateLimitResend" || errorKey === "invalidEmailFormat") {
+      return { error: t(errorKey) };
+    }
+  }
+
+  return { success: tForgot("emailSent") };
+}
+
+export async function updatePassword(
+  _prevState: AuthState | null,
+  formData: FormData
+): Promise<AuthState | null> {
+  const t = await getTranslations("auth.errors");
+  const password = formData.get("password") as string;
+  const confirmPassword = formData.get("confirmPassword") as string;
+
+  if (!password || password.length < 6) {
+    return { error: t("passwordTooShort") };
+  }
+
+  if (password !== confirmPassword) {
+    return { error: t("passwordMismatch") };
+  }
+
+  const ip = await getClientIp();
+  const rateLimit = await checkAuthRateLimit("reset-password", ip);
+  if (!rateLimit.ok) {
+    return { error: rateLimit.error };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: t("resetSessionExpired") };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+
+  if (error) {
+    return { error: t(resolveAuthErrorKey(error.message)) };
+  }
+
+  await supabase.auth.signOut();
+  return localizedRedirect("/auth/login?reset=success");
 }
 
 export async function signOut() {

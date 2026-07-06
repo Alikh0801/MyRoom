@@ -105,7 +105,8 @@
     "login": {
       "title": "Daxil ol",
       "subtitle": "Elan yerləşdirmək və idarə etmək üçün hesabınıza daxil olun.",
-      "callbackError": "Giriş linki etibarsızdır və ya vaxtı keçib. Yenidən cəhd edin."
+      "callbackError": "Giriş linki etibarsızdır və ya vaxtı keçib. Yenidən cəhd edin.",
+      "resetSuccess": "Şifrəniz uğurla yeniləndi. Yeni şifrə ilə daxil ola bilərsiniz."
     },
     "register": {
       "title": "Qeydiyyat",
@@ -132,7 +133,8 @@
       "noAccount": "Hesabınız yoxdur?",
       "registerLink": "Qeydiyyatdan keçin",
       "hasAccount": "Artıq hesabınız var?",
-      "loginLink": "Daxil olun"
+      "loginLink": "Daxil olun",
+      "forgotPasswordLink": "Şifrəni unutmusan?"
     },
     "errors": {
       "missingCredentials": "Email və şifrə daxil edin.",
@@ -162,7 +164,12 @@
       "rateLimitResendOtp": "Çox sayda kod göndərmə cəhdi. {minutes} dəqiqə sonra yenidən cəhd edin.",
       "emailNotFound": "Email ünvanı tapılmadı.",
       "missingOtp": "Təsdiq kodunu daxil edin.",
-      "invalidOtpLength": "{length} rəqəmli kodu daxil edin."
+      "invalidOtpLength": "{length} rəqəmli kodu daxil edin.",
+      "missingEmail": "Email daxil edin.",
+      "passwordMismatch": "Şifrələr uyğun gəlmir.",
+      "resetSessionExpired": "Şifrə bərpa linkinin vaxtı bitib. Yeni link tələb edin.",
+      "rateLimitForgotPassword": "Çox sayda şifrə bərpa cəhdi. {minutes} dəqiqə sonra yenidən cəhd edin.",
+      "rateLimitResetPassword": "Çox sayda şifrə yeniləmə cəhdi. {minutes} dəqiqə sonra yenidən cəhd edin."
     },
     "verify": {
       "title": "Email təsdiqi",
@@ -181,6 +188,24 @@
       "missingEmailTitle": "Email tapılmadı",
       "missingEmailSubtitle": "Təsdiq kodunu daxil etmək üçün əvvəlcə qeydiyyatdan keçin və ya daxil olun.",
       "registerCta": "Qeydiyyatdan keç"
+    },
+    "forgot": {
+      "title": "Şifrəni unutmusan?",
+      "subtitle": "Email ünvanınızı daxil edin — şifrəni yeniləmək üçün link göndərəcəyik.",
+      "submit": "Link göndər",
+      "submitPending": "Göndərilir...",
+      "emailSent": "Əgər bu email ilə qeydiyyatdan keçmisinizsə, şifrə bərpa linki göndərildi. Gələn qutunuzu yoxlayın.",
+      "backToLogin": "Giriş səhifəsinə qayıt",
+      "linkExpired": "Şifrə bərpa linki etibarsızdır və ya vaxtı keçib. Yeni link tələb edin."
+    },
+    "reset": {
+      "title": "Yeni şifrə",
+      "subtitle": "Hesabınız üçün yeni şifrə təyin edin.",
+      "confirmPassword": "Şifrəni təkrarlayın",
+      "submit": "Şifrəni yenilə",
+      "submitPending": "Yenilənir...",
+      "requestNewLink": "Yeni link tələb et",
+      "sessionExpired": "Şifrə bərpa sessiyası bitib. Email ünvanınıza yeni link göndərin."
     }
   },
   "listingForm": {
