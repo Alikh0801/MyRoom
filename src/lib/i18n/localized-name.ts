@@ -3,7 +3,7 @@ import type { Locale } from "@/i18n/routing";
 /** Kateqoriya slug → rus adı (DB-dən asılı olmayaraq) */
 const CATEGORY_NAME_RU: Record<string, string> = {
   hotel: "Отель",
-  hostel: "Хостел",
+  hostel: "Хостел/Кортеч",
   "a-frame": "A-frame (Glamping)",
   villa: "Вилла",
   "rayon-evi": "Загородный дом",
