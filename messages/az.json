@@ -194,7 +194,7 @@
       "subtitle": "Email ünvanınızı daxil edin — şifrəni yeniləmək üçün link göndərəcəyik.",
       "submit": "Link göndər",
       "submitPending": "Göndərilir...",
-      "emailSent": "Əgər bu email ilə qeydiyyatdan keçmisinizsə, şifrə bərpa linki göndərildi. Gələn qutunuzu yoxlayın.",
+      "emailSent": "Bərpa linki emailə göndərildi.",
       "backToLogin": "Giriş səhifəsinə qayıt",
       "linkExpired": "Şifrə bərpa linki etibarsızdır və ya vaxtı keçib. Yeni link tələb edin."
     },
