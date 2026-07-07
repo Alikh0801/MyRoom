@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "MyRoomAZ | Hotel, A-frame, hostel/kortec və rayon evləri",
+    "title": "MyRoomAZ | Hotel, A-frame, hostel/kotec və rayon evləri",
     "titleTemplate": "%s | MyRoomAZ",
-    "description": "Hotel, hostel/kortec, A-frame (Glamping) və rayon evləri. Qısamüddətli istirahət üçün elanlar — Azərbaycan üzrə."
+    "description": "Hotel, hostel/kotec, A-frame (Glamping) və rayon evləri. Qısamüddətli istirahət üçün elanlar — Azərbaycan üzrə."
   },
   "nav": {
     "login": "Daxil ol",
@@ -36,7 +36,7 @@
   },
   "home": {
     "heroTitle": "Azərbaycanda istirahət üçün ideal yerinizi tapın",
-    "heroSubtitle": "Səyahətinizə uyğun otel, hostel/kortec, A-frame və ya rayon evini bir neçə kliklə tapın.",
+    "heroSubtitle": "Səyahətinizə uyğun otel, hostel/kotec, A-frame və ya rayon evini bir neçə kliklə tapın.",
     "searchRegion": "Rayon və ya şəhər seç",
     "allRegions": "Bütün rayonlar",
     "allTypes": "Bütün növlər",

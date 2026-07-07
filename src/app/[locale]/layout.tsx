@@ -40,7 +40,7 @@ export async function generateMetadata({
       "günlük icarə",
       "A-frame (Glamping)",
       "glamping",
-      "hostel/kortec",
+      "hostel/kotec",
       "hotel",
       "rayon evi",
       "Azərbaycan",
