@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { ImageSlider, type SliderImage } from "@/components/listings/ImageSlider";
 import {
@@ -54,6 +55,7 @@ function GridCell({
 }
 
 export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
+  const t = useTranslations("listing");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
 
@@ -85,6 +87,10 @@ export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
   const rightThumbs = thumbImages.slice(3, 5);
   const remainingCount = count - 8;
 
+  const mobileBottomImages = images.slice(1, 4);
+  const mobileRemainingCount = count > 4 ? count - 4 : 0;
+  const mobileLastBottomIndex = mobileBottomImages.length - 1;
+
   const featuredClass =
     count === 1
       ? "listing-photo-grid__featured listing-photo-grid__featured--single"
@@ -100,7 +106,7 @@ export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
   ) {
     const overlay =
       globalIndex === lastThumbGlobalIndex && remainingCount > 0
-        ? `+${remainingCount} foto`
+        ? t("morePhotos", { count: remainingCount })
         : undefined;
 
     return (
@@ -122,7 +128,39 @@ export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
 
   return (
     <>
-      <div className="listing-photo-grid">
+      <div className="listing-photo-grid listing-photo-grid--mobile">
+        <GridCell
+          image={images[0]}
+          className="listing-photo-grid__mobile-hero"
+          priority
+          sizes="100vw"
+          onClick={() => openLightbox(0)}
+        />
+
+        {mobileBottomImages.length > 0 && (
+          <div className="listing-photo-grid__mobile-row">
+            {mobileBottomImages.map((image, index) => {
+              const globalIndex = index + 1;
+              const isLastWithMore = index === mobileLastBottomIndex && mobileRemainingCount > 0;
+              const overlay = isLastWithMore
+                ? t("morePhotos", { count: mobileRemainingCount })
+                : undefined;
+
+              return (
+                <GridCell
+                  key={image.id}
+                  image={image}
+                  overlay={overlay}
+                  sizes="33vw"
+                  onClick={() => openLightbox(isLastWithMore ? 4 : globalIndex)}
+                />
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <div className="listing-photo-grid listing-photo-grid--desktop">
         <div className={featuredClass}>
           <GridCell
             image={images[0]}
