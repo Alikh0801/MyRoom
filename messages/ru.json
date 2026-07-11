@@ -123,7 +123,7 @@
       "fullName": "Имя и фамилия",
       "fullNamePlaceholder": "Имя Фамилия",
       "phone": "Телефон для звонков *",
-      "phonePlaceholder": "+994 50 123 45 67",
+      "phonePlaceholder": "50 123 45 67",
       "whatsappSameAsPhone": "Номер WhatsApp совпадает с телефоном",
       "whatsapp": "Номер WhatsApp *",
       "submitLogin": "Войти",

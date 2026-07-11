@@ -11,6 +11,7 @@ import {
 } from "@/components/auth/TurnstileField";
 import { LegalAcceptanceField } from "@/components/legal/LegalAcceptanceField";
 import { PasswordInput } from "@/components/auth/PasswordInput";
+import { PhoneInput } from "@/components/auth/PhoneInput";
 
 export function RegisterForm() {
   const t = useTranslations("auth.form");
@@ -84,17 +85,13 @@ export function RegisterForm() {
         />
       </label>
 
-      <label className="auth-form__field">
-        {t("phone")}
-        <input
-          type="tel"
-          name="phone"
-          autoComplete="tel"
-          value={phone}
-          onChange={(e) => handlePhoneChange(e.target.value)}
-          placeholder={t("phonePlaceholder")}
-        />
-      </label>
+      <PhoneInput
+        label={t("phone")}
+        name="phone"
+        value={phone}
+        onChange={handlePhoneChange}
+        placeholder={t("phonePlaceholder")}
+      />
 
       <label className="auth-form__checkbox">
         <input
@@ -106,19 +103,19 @@ export function RegisterForm() {
       </label>
 
       {sameAsPhone ? (
-        <input type="hidden" name="whatsappPhone" value={phone} />
+        <input
+          type="hidden"
+          name="whatsappPhone"
+          value={phone ? `+994${phone.replace(/\D/g, "").slice(0, 9)}` : ""}
+        />
       ) : (
-        <label className="auth-form__field">
-          {t("whatsapp")}
-          <input
-            type="tel"
-            name="whatsappPhone"
-            autoComplete="tel"
-            value={whatsappPhone}
-            onChange={(e) => setWhatsappPhone(e.target.value)}
-            placeholder={t("phonePlaceholder")}
-          />
-        </label>
+        <PhoneInput
+          label={t("whatsapp")}
+          name="whatsappPhone"
+          value={whatsappPhone}
+          onChange={setWhatsappPhone}
+          placeholder={t("phonePlaceholder")}
+        />
       )}
 
       <PasswordInput

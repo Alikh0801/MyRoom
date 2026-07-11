@@ -2705,6 +2705,42 @@ h3.amenities-feature-title {
   color: var(--color-text);
 }
 
+.phone-field {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.phone-field__prefix {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  font-weight: 500;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.phone-field input {
+  flex: 1;
+  min-width: 0;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.phone-field:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+  border-color: var(--color-primary);
+}
+
 .password-field {
   position: relative;
   display: flex;

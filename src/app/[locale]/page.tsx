@@ -1,5 +1,4 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { ListingCard } from "@/components/listings/ListingCard";
 import { Pagination } from "@/components/ui/Pagination";
@@ -66,14 +65,6 @@ export default async function HomePage({ params, searchParams }: HomePageProps) 
           <h1 className="hero__title">{t("heroTitle")}</h1>
           <p className="hero__subtitle">{t("heroSubtitle")}</p>
           <HeroSearch categories={categories} locale={locale as Locale} />
-        </div>
-      </section>
-
-      <section className="section section--center section--categories">
-        <div className="container">
-          <h2 className="section__title">{t("categories")}</h2>
-          <p className="section__subtitle">{t("categoriesSubtitle")}</p>
-          <CategoryGrid categories={categories} locale={locale as Locale} />
         </div>
       </section>
 

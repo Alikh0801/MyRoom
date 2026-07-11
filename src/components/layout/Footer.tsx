@@ -1,8 +1,13 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
+import { getLocalizedName } from "@/lib/i18n/localized-name";
+import { getCategories } from "@/lib/queries/listings";
 
 export async function Footer() {
   const t = await getTranslations("footer");
+  const locale = (await getLocale()) as Locale;
+  const categories = await getCategories();
 
   return (
     <footer className="footer">
@@ -19,8 +24,14 @@ export async function Footer() {
             <h3 className="footer__col-title">{t("listingsTitle")}</h3>
             <div className="footer__links">
               <Link href="/search">{t("allListings")}</Link>
-              <Link href="/search?category=a-frame">A-frame (Glamping)</Link>
-              <Link href="/search?category=rayon-evi">{t("rayonHomes")}</Link>
+              {categories.map((category) => (
+                <Link
+                  key={category.id}
+                  href={`/search?category=${category.slug}`}
+                >
+                  {getLocalizedName(category, locale)}
+                </Link>
+              ))}
             </div>
           </div>
 
