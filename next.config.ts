@@ -9,6 +9,9 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
 
 const nextConfig: NextConfig = {
   images: {
+    // Hobby plan: 5K/ay Image Optimization limiti bitəndə şəkillər sınır.
+    // unoptimized = şəkillər birbaşa R2/Supabase URL-indən gəlir, Vercel transformasiyası yoxdur.
+    unoptimized: true,
     qualities: [75, 80, 85, 90],
     remotePatterns: [
       {
