@@ -120,6 +120,7 @@ const getVipListingsCached = unstable_cache(
       .select(CARD_SELECT)
       .eq("status", "approved")
       .eq("is_vip", true)
+      .or(`vip_expires_at.is.null,vip_expires_at.gt.${new Date().toISOString()}`)
       .order("created_at", { ascending: false })
       .limit(limit);
 
@@ -150,11 +151,12 @@ const getHomeListingsPageData = unstable_cache(
     const from = (safePage - 1) * pageSize;
     const to = from + pageSize - 1;
 
+    const now = new Date().toISOString();
     const { data, error, count } = await supabase
       .from("listings")
       .select(CARD_SELECT, { count: "exact" })
       .eq("status", "approved")
-      .eq("is_vip", false)
+      .or(`is_vip.eq.false,and(is_vip.eq.true,vip_expires_at.lte.${now})`)
       .order("created_at", { ascending: false })
       .range(from, to);
 
@@ -224,12 +226,22 @@ function buildPublicSearchQuery(
   categoryId: string | null,
   isVip: boolean
 ) {
+  const now = new Date().toISOString();
   let query = supabase
     .from("listings")
     .select(CARD_SELECT)
     .eq("status", "approved")
-    .eq("is_vip", isVip)
     .order("created_at", { ascending: false });
+
+  if (isVip) {
+    query = query
+      .eq("is_vip", true)
+      .or(`vip_expires_at.is.null,vip_expires_at.gt.${now}`);
+  } else {
+    query = query.or(
+      `is_vip.eq.false,and(is_vip.eq.true,vip_expires_at.lte.${now})`
+    );
+  }
 
   if (filters.region) query = query.ilike("region", `%${filters.region}%`);
   if (categoryId) query = query.eq("category_id", categoryId);

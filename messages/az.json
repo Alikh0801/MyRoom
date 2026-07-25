@@ -279,6 +279,7 @@
       "ariaLabel": "Premium elan paketi",
       "intro": "Elanınızı VIP bölməsində göstərin və daha çox baxış əldə edin.",
       "recommended": "Ən sərfəli",
+      "paymentNotice": "Onlayn ödəniş hələ aktiv deyil. Müvəqqəti olaraq VIP paket ödənişlərini bank kartına köçürmə və ödəniş çeki ilə qəbul edirik. Admin çeki yoxladıqdan sonra VIP statusu aktivləşdirilir.",
       "comingSoon": "Ödəniş funksionallığı tezliklə aktiv olacaq. Hazırda seçim yalnız önizləmə üçündür.",
       "plans": {
         "none": {
@@ -294,6 +295,16 @@
           "duration": "1 həftə",
           "desc": "VIP bölməsində 7 gün"
         }
+      },
+      "payment": {
+        "title": "Ödəniş məlumatları",
+        "hint": "Seçdiyiniz paket məbləğini aşağıdakı karta köçürün və ödəniş çekini yükləyin.",
+        "bankName": "Bank",
+        "cardNumber": "Kart nömrəsi",
+        "cardholder": "Kart sahibi",
+        "receiptLabel": "Ödəniş çeki *",
+        "receiptHint": "Köçürmə qəbzinin şəklini yükləyin (JPEG, PNG və ya WebP).",
+        "cardNotConfigured": "Bank kartı hələ təyin olunmayıb. Admin kart məlumatını əlavə etdikdən sonra VIP seçə bilərsiniz."
       }
     },
     "footer": {
@@ -309,6 +320,7 @@
       "selectRegion": "Rayon siyahıdan seçin.",
       "selectMapLocation": "Xəritədə mülkün yerini göstərin.",
       "legalRequired": "İstifadəçi şərtləri və Məxfilik siyasəti ilə razı olmalısınız.",
+      "vipReceiptRequired": "VIP paket üçün ödəniş çeki yükləyin.",
       "createFailed": "Elan yaradıla bilmədi.",
       "uploadFailed": "Şəkil yükləmə xətası",
       "uploadServerFailed": "Şəkil serverə yüklənmədi",
@@ -389,6 +401,7 @@
       "noImage": "Şəkil yoxdur",
       "createdAt": "Yaradılıb: {date}",
       "vip": "VIP",
+      "vipPending": "VIP gözləyir",
       "edit": "Redaktə et",
       "viewPublic": "Saytda bax",
       "preview": "Önizləmə",
@@ -397,6 +410,21 @@
       "delete": "Sil",
       "deleting": "Silinir...",
       "deleteConfirm": "\"{title}\" elanını silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz."
+    },
+    "vip": {
+      "button": "VIP et",
+      "submit": "VIP sorğusu göndər",
+      "submitting": "Göndərilir...",
+      "cancel": "Ləğv et",
+      "selectPlan": "VIP paketi seçin.",
+      "receiptRequired": "Ödəniş çeki yükləyin.",
+      "uploadFailed": "Çeki yüklənmədi."
+    }
+  },
+  "admin": {
+    "settings": {
+      "title": "Bank kartı ayarları",
+      "subtitle": "VIP ödənişləri üçün kart məlumatını təyin edin. Elan sahibləri bu karta köçürmə edəcək."
     }
   },
   "locale": {

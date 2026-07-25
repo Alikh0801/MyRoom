@@ -2,10 +2,11 @@ import { Link } from "@/i18n/navigation";
 import { adminTabHref, type AdminTab } from "@/lib/admin/tabs";
 import type { AdminTabCounts } from "@/lib/queries/admin";
 
-const TABS: { id: AdminTab; label: string }[] = [
-  { id: "pending", label: "Gözləyən elanlar" },
-  { id: "active", label: "Aktiv elanlar" },
-  { id: "deleted", label: "Silinmiş elanlar" },
+const TABS: { id: AdminTab; label: string; showCount: boolean }[] = [
+  { id: "pending", label: "Gözləyən elanlar", showCount: true },
+  { id: "active", label: "Aktiv elanlar", showCount: true },
+  { id: "deleted", label: "Silinmiş elanlar", showCount: true },
+  { id: "settings", label: "Bank kartı", showCount: false },
 ];
 
 interface AdminPanelTabsProps {
@@ -16,7 +17,8 @@ interface AdminPanelTabsProps {
 function countFor(counts: AdminTabCounts, tab: AdminTab): number {
   if (tab === "pending") return counts.pending;
   if (tab === "active") return counts.active;
-  return counts.deleted;
+  if (tab === "deleted") return counts.deleted;
+  return 0;
 }
 
 export function AdminPanelTabs({ counts, activeTab }: AdminPanelTabsProps) {
@@ -24,7 +26,7 @@ export function AdminPanelTabs({ counts, activeTab }: AdminPanelTabsProps) {
     <nav
       className="admin-panel-tabs"
       role="tablist"
-      aria-label="Admin elan tabları"
+      aria-label="Admin panel tabları"
     >
       {TABS.map((tab) => {
         const isActive = activeTab === tab.id;
@@ -41,7 +43,9 @@ export function AdminPanelTabs({ counts, activeTab }: AdminPanelTabsProps) {
             aria-selected={isActive}
           >
             <span className="admin-panel-tabs__label">{tab.label}</span>
-            <span className="admin-panel-tabs__count">{count}</span>
+            {tab.showCount && (
+              <span className="admin-panel-tabs__count">{count}</span>
+            )}
           </Link>
         );
       })}

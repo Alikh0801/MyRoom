@@ -1,8 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
-import type { ListingStatus, PriceUnit } from "@/types/database";
+import type {
+  ListingStatus,
+  PriceUnit,
+  VipPaymentStatus,
+} from "@/types/database";
+import { isVipCurrentlyActive } from "@/lib/listings/vip-payment";
 
 const MY_LISTING_SELECT = `
-  id, title, status, is_vip, rejection_reason, price_per_night, price_unit, currency,
+  id, title, status, is_vip, vip_payment_status, vip_expires_at, rejection_reason,
+  price_per_night, price_unit, currency,
   city, region, created_at, updated_at,
   category:categories(slug, name_az),
   listing_images(url, is_cover, sort_order)
@@ -13,6 +19,8 @@ type MyListingRow = {
   title: string;
   status: ListingStatus;
   is_vip: boolean;
+  vip_payment_status?: VipPaymentStatus;
+  vip_expires_at?: string | null;
   rejection_reason: string | null;
   price_per_night: number;
   price_unit: PriceUnit;
@@ -32,6 +40,8 @@ export interface MyListingItem {
   title: string;
   status: ListingStatus;
   is_vip: boolean;
+  vip_active: boolean;
+  vip_payment_status: VipPaymentStatus;
   rejection_reason: string | null;
   price_per_night: number;
   price_unit: PriceUnit;
@@ -67,6 +77,8 @@ function mapMyListing(row: MyListingRow): MyListingItem {
     title: row.title,
     status: row.status,
     is_vip: row.is_vip,
+    vip_active: isVipCurrentlyActive(row.is_vip, row.vip_expires_at),
+    vip_payment_status: row.vip_payment_status ?? "none",
     rejection_reason: row.rejection_reason,
     price_per_night: row.price_per_night,
     price_unit: row.price_unit ?? "day",

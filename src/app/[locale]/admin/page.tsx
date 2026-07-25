@@ -1,11 +1,13 @@
 import { AdminListingsList } from "@/components/admin/AdminListingsList";
 import { AdminPanelTabs } from "@/components/admin/AdminPanelTabs";
+import { PaymentSettingsForm } from "@/components/admin/PaymentSettingsForm";
 import { requireAdmin } from "@/lib/admin/auth";
-import { parseAdminTab } from "@/lib/admin/tabs";
+import { isListingsAdminTab, parseAdminTab } from "@/lib/admin/tabs";
 import {
   getAdminListingsForTab,
   getAdminTabCounts,
 } from "@/lib/queries/admin";
+import { getPaymentSettings } from "@/lib/queries/payment-settings";
 
 export const metadata = {
   title: "Admin panel",
@@ -17,6 +19,7 @@ const TAB_SUBTITLES = {
   pending: "Təsdiq gözləyən elanlar",
   active: "Saytda aktiv olan elanlar",
   deleted: "Admin tərəfindən silinmiş elanlar",
+  settings: "VIP ödənişləri üçün bank kartı məlumatı",
 } as const;
 
 type AdminPageProps = {
@@ -29,9 +32,10 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   const { tab: tabParam } = await searchParams;
   const tab = parseAdminTab(tabParam);
 
-  const [counts, listings] = await Promise.all([
+  const [counts, listings, paymentSettings] = await Promise.all([
     getAdminTabCounts(),
-    getAdminListingsForTab(tab),
+    isListingsAdminTab(tab) ? getAdminListingsForTab(tab) : Promise.resolve([]),
+    tab === "settings" ? getPaymentSettings() : Promise.resolve(null),
   ]);
 
   return (
@@ -45,7 +49,15 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         <AdminPanelTabs counts={counts} activeTab={tab} />
 
         <section className="admin-panel__content" role="tabpanel">
-          <AdminListingsList tab={tab} listings={listings} />
+          {tab === "settings" && paymentSettings ? (
+            <div className="admin-settings-card">
+              <PaymentSettingsForm settings={paymentSettings} />
+            </div>
+          ) : (
+            isListingsAdminTab(tab) && (
+              <AdminListingsList tab={tab} listings={listings} />
+            )
+          )}
         </section>
       </div>
     </div>

@@ -8,6 +8,7 @@ import {
   getMyListingCounts,
   getMyListings,
 } from "@/lib/queries/my-listings";
+import { getPaymentSettings } from "@/lib/queries/payment-settings";
 import { createClient } from "@/lib/supabase/server";
 
 interface MyListingsPageProps {
@@ -42,9 +43,10 @@ export default async function MyListingsPage({
 
   if (!user) redirect("/auth/login?redirectTo=/dashboard/listings");
 
-  const [listings, counts] = await Promise.all([
+  const [listings, counts, paymentSettings] = await Promise.all([
     getMyListings(user.id, statusFilter),
     getMyListingCounts(user.id),
+    getPaymentSettings(),
   ]);
 
   const pageTitle = statusFilter
@@ -76,7 +78,11 @@ export default async function MyListingsPage({
         {listings.length > 0 ? (
           <div className="my-listings">
             {listings.map((listing) => (
-              <MyListingCard key={listing.id} listing={listing} />
+              <MyListingCard
+                key={listing.id}
+                listing={listing}
+                paymentSettings={paymentSettings}
+              />
             ))}
           </div>
         ) : (

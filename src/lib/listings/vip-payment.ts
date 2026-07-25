@@ -2,6 +2,11 @@ import type { VipPaymentStatus, VipPlan } from "@/types/database";
 
 export type { VipPaymentStatus, VipPlan };
 
+export const VIP_PLAN_DURATIONS: Record<VipPlan, { days: number; labelAz: string }> = {
+  day: { days: 1, labelAz: "1 gün VIP" },
+  week: { days: 7, labelAz: "1 həftə VIP" },
+};
+
 export function parseRequestedVipPlan(
   value: string | null | undefined
 ): VipPlan | null {
@@ -14,5 +19,20 @@ export function hasPaidVipPayment(status: VipPaymentStatus): boolean {
 }
 
 export function vipPlanLabel(plan: VipPlan): string {
-  return plan === "day" ? "1 gün VIP" : "1 həftə VIP";
+  return VIP_PLAN_DURATIONS[plan].labelAz;
+}
+
+export function vipExpiresAtFromPlan(plan: VipPlan, from = new Date()): Date {
+  const expires = new Date(from);
+  expires.setDate(expires.getDate() + VIP_PLAN_DURATIONS[plan].days);
+  return expires;
+}
+
+export function isVipCurrentlyActive(
+  isVip: boolean,
+  expiresAt?: string | null
+): boolean {
+  if (!isVip) return false;
+  if (!expiresAt) return true;
+  return new Date(expiresAt).getTime() > Date.now();
 }

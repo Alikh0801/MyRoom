@@ -17,6 +17,8 @@ export interface AdminListingItem {
   created_at: string;
   requested_vip_plan: VipPlan | null;
   vip_payment_status: VipPaymentStatus;
+  vip_payment_receipt_url: string | null;
+  vip_expires_at: string | null;
   category: { name_az: string } | null;
   owner: { full_name: string | null; phone: string | null } | null;
   cover_image: string | null;
@@ -58,7 +60,8 @@ const LISTING_CORE = `
   max_guests, whatsapp_phone, created_at
 `;
 
-const LISTING_VIP = "requested_vip_plan, vip_payment_status";
+const LISTING_VIP =
+  "requested_vip_plan, vip_payment_status, vip_payment_receipt_url, vip_expires_at";
 
 type AdminListingRow = {
   id: string;
@@ -75,6 +78,8 @@ type AdminListingRow = {
   created_at: string;
   requested_vip_plan?: VipPlan | null;
   vip_payment_status?: VipPaymentStatus;
+  vip_payment_receipt_url?: string | null;
+  vip_expires_at?: string | null;
   category:
     | { name_az: string }
     | { name_az: string }[]
@@ -112,6 +117,8 @@ function mapAdminListing(row: AdminListingRow): AdminListingItem {
     created_at: row.created_at,
     requested_vip_plan: row.requested_vip_plan ?? null,
     vip_payment_status: row.vip_payment_status ?? "none",
+    vip_payment_receipt_url: row.vip_payment_receipt_url ?? null,
+    vip_expires_at: row.vip_expires_at ?? null,
     category: category ?? null,
     owner: owner ?? null,
     cover_image: sorted[0]?.url ?? null,
@@ -229,7 +236,7 @@ export async function getDeletedListings(): Promise<DeletedListingRecord[]> {
 }
 
 export async function getAdminListingsForTab(
-  tab: AdminTab
+  tab: Exclude<AdminTab, "settings">
 ): Promise<AdminListingItem[] | DeletedListingRecord[]> {
   if (tab === "active") return getActiveListings();
   if (tab === "deleted") return getDeletedListings();

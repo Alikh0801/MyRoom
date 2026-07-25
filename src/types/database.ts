@@ -72,6 +72,9 @@ export interface Listing {
   is_vip: boolean;
   requested_vip_plan?: VipPlan | null;
   vip_payment_status?: VipPaymentStatus;
+  vip_payment_receipt_url?: string | null;
+  vip_payment_receipt_path?: string | null;
+  vip_expires_at?: string | null;
   rejection_reason?: string | null;
   view_count: number;
   created_at: string;

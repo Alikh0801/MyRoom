@@ -2,10 +2,12 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/admin/auth";
-import { hasPaidVipPayment } from "@/lib/listings/vip-payment";
+import {
+  parseRequestedVipPlan,
+  vipExpiresAtFromPlan,
+} from "@/lib/listings/vip-payment";
 import { LISTINGS_CACHE_TAG } from "@/lib/queries/listings";
 import { createClient } from "@/lib/supabase/server";
-import type { VipPaymentStatus } from "@/types/database";
 
 const MIN_REASON_LENGTH = 10;
 
@@ -38,6 +40,7 @@ export async function approveListing(formData: FormData) {
   await requireAdmin();
 
   const listingId = formData.get("listingId") as string;
+  const vipPlan = parseRequestedVipPlan(formData.get("activateVip") as string);
 
   if (!listingId) return;
 
@@ -45,22 +48,31 @@ export async function approveListing(formData: FormData) {
 
   const { data: listing } = await supabase
     .from("listings")
-    .select("vip_payment_status")
+    .select("id")
     .eq("id", listingId)
     .eq("status", "pending")
     .maybeSingle();
 
   if (!listing) return;
 
+  const updatePayload: Record<string, unknown> = {
+    status: "approved",
+    rejection_reason: null,
+  };
+
+  if (vipPlan) {
+    updatePayload.is_vip = true;
+    updatePayload.requested_vip_plan = vipPlan;
+    updatePayload.vip_payment_status = "paid";
+    updatePayload.vip_expires_at = vipExpiresAtFromPlan(vipPlan).toISOString();
+  } else {
+    updatePayload.is_vip = false;
+    updatePayload.vip_expires_at = null;
+  }
+
   const { error } = await supabase
     .from("listings")
-    .update({
-      status: "approved",
-      is_vip: hasPaidVipPayment(
-        (listing.vip_payment_status ?? "none") as VipPaymentStatus
-      ),
-      rejection_reason: null,
-    })
+    .update(updatePayload)
     .eq("id", listingId)
     .eq("status", "pending");
 
@@ -70,6 +82,52 @@ export async function approveListing(formData: FormData) {
     .from("listing_deletion_log")
     .delete()
     .eq("listing_id", listingId);
+
+  revalidateListingPaths(listingId);
+}
+
+export async function setListingVip(formData: FormData) {
+  await requireAdmin();
+
+  const listingId = formData.get("listingId") as string;
+  const plan = parseRequestedVipPlan(formData.get("vipPlan") as string);
+
+  if (!listingId || !plan) return;
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("listings")
+    .update({
+      is_vip: true,
+      requested_vip_plan: plan,
+      vip_payment_status: "paid",
+      vip_expires_at: vipExpiresAtFromPlan(plan).toISOString(),
+    })
+    .eq("id", listingId)
+    .eq("status", "approved");
+
+  if (error) throw new Error(error.message);
+
+  revalidateListingPaths(listingId);
+}
+
+export async function removeListingVip(formData: FormData) {
+  await requireAdmin();
+
+  const listingId = formData.get("listingId") as string;
+  if (!listingId) return;
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("listings")
+    .update({
+      is_vip: false,
+      vip_expires_at: null,
+      vip_payment_status: "none",
+    })
+    .eq("id", listingId);
+
+  if (error) throw new Error(error.message);
 
   revalidateListingPaths(listingId);
 }
@@ -134,6 +192,7 @@ export async function deleteListingAsAdmin(formData: FormData) {
     .update({
       status: "rejected",
       is_vip: false,
+      vip_expires_at: null,
       rejection_reason: deleteReason,
     })
     .eq("id", listingId);

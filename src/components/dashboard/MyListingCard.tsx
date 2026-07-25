@@ -5,16 +5,22 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { DeleteListingButton } from "@/components/dashboard/DeleteListingButton";
 import { ListingStatusBadge } from "@/components/dashboard/ListingStatusBadge";
+import { RequestVipButton } from "@/components/dashboard/RequestVipButton";
 import { getLocalizedName } from "@/lib/i18n/localized-name";
 import { formatPriceSuffix } from "@/lib/price";
 import type { Locale } from "@/i18n/routing";
 import type { MyListingItem } from "@/lib/queries/my-listings";
+import type { PaymentSettings } from "@/lib/queries/payment-settings";
 
 interface MyListingCardProps {
   listing: MyListingItem;
+  paymentSettings: PaymentSettings;
 }
 
-export function MyListingCard({ listing }: MyListingCardProps) {
+export function MyListingCard({
+  listing,
+  paymentSettings,
+}: MyListingCardProps) {
   const t = useTranslations("dashboard");
   const locale = useLocale() as Locale;
   const dateLocale = locale === "ru" ? "ru-RU" : "az-AZ";
@@ -26,6 +32,11 @@ export function MyListingCard({ listing }: MyListingCardProps) {
   });
 
   const canViewPublic = listing.status === "approved";
+  const canRequestVip =
+    (listing.status === "approved" || listing.status === "pending") &&
+    !listing.vip_active &&
+    listing.vip_payment_status !== "paid" &&
+    listing.vip_payment_status !== "pending";
 
   return (
     <article className="my-listing-card">
@@ -48,8 +59,13 @@ export function MyListingCard({ listing }: MyListingCardProps) {
           <h2 className="my-listing-card__title">{listing.title}</h2>
           <div className="my-listing-card__badges">
             <ListingStatusBadge status={listing.status} />
-            {listing.is_vip && listing.status === "approved" && (
+            {listing.vip_active && (
               <span className="my-listing-card__vip">{t("card.vip")}</span>
+            )}
+            {listing.vip_payment_status === "pending" && !listing.vip_active && (
+              <span className="my-listing-card__vip my-listing-card__vip--pending">
+                {t("card.vipPending")}
+              </span>
             )}
           </div>
         </div>
@@ -72,6 +88,13 @@ export function MyListingCard({ listing }: MyListingCardProps) {
             {listing.rejection_reason}
           </p>
         )}
+
+        {canRequestVip && (
+          <RequestVipButton
+            listingId={listing.id}
+            paymentSettings={paymentSettings}
+          />
+        )}
       </div>
 
       <div className="my-listing-card__actions">
@@ -82,10 +105,7 @@ export function MyListingCard({ listing }: MyListingCardProps) {
           {t("card.edit")}
         </Link>
 
-        <Link
-          href={`/listings/${listing.id}`}
-          className="btn btn--ghost"
-        >
+        <Link href={`/listings/${listing.id}`} className="btn btn--ghost">
           {canViewPublic ? t("card.viewPublic") : t("card.preview")}
         </Link>
 

@@ -2,18 +2,19 @@ import { AdminActiveListingCard } from "@/components/admin/AdminActiveListingCar
 import { AdminDeletedListingCard } from "@/components/admin/AdminDeletedListingCard";
 import { PendingListingCard } from "@/components/admin/PendingListingCard";
 import type { AdminTab } from "@/lib/admin/tabs";
+import { isListingsAdminTab } from "@/lib/admin/tabs";
 import type {
   AdminListingItem,
   DeletedListingRecord,
 } from "@/lib/queries/admin";
 
 interface AdminListingsListProps {
-  tab: AdminTab;
+  tab: Exclude<AdminTab, "settings">;
   listings: AdminListingItem[] | DeletedListingRecord[];
 }
 
 const EMPTY_COPY: Record<
-  AdminTab,
+  Exclude<AdminTab, "settings">,
   { title: string; description: string }
 > = {
   pending: {
@@ -31,6 +32,8 @@ const EMPTY_COPY: Record<
 };
 
 export function AdminListingsList({ tab, listings }: AdminListingsListProps) {
+  if (!isListingsAdminTab(tab)) return null;
+
   if (listings.length === 0) {
     const copy = EMPTY_COPY[tab];
     return (

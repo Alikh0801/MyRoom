@@ -20,11 +20,13 @@ import {
   ACCEPTED_IMAGE_TYPES,
   uploadListingImages,
 } from "@/lib/listings/upload-images";
+import { uploadVipReceipt } from "@/lib/listings/upload-vip-receipt";
 import { isValidCoordinates } from "@/lib/map";
 import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
 import { validateListingFormFields } from "@/lib/form/validate-listing-form";
 import { LegalAcceptanceField } from "@/components/legal/LegalAcceptanceField";
 import type { EditListingData } from "@/lib/queries/edit-listing";
+import type { PaymentSettings } from "@/lib/queries/payment-settings";
 import type { Locale } from "@/i18n/routing";
 import type { AmenityGroup, Category } from "@/types/database";
 
@@ -51,6 +53,7 @@ interface CreateListingFormProps {
   amenityGroups: AmenityGroup[];
   defaultWhatsapp?: string;
   editData?: EditListingData;
+  paymentSettings?: PaymentSettings;
 }
 
 const MAX_IMAGES = 15;
@@ -60,6 +63,7 @@ export function CreateListingForm({
   amenityGroups,
   defaultWhatsapp = "",
   editData,
+  paymentSettings,
 }: CreateListingFormProps) {
   const isEdit = Boolean(editData);
   const t = useTranslations("listingForm");
@@ -74,6 +78,7 @@ export function CreateListingForm({
   );
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [vipReceiptFile, setVipReceiptFile] = useState<File | null>(null);
   const [categoryId, setCategoryId] = useState(editData?.category_id ?? "");
   const [region, setRegion] = useState(editData?.region ?? "");
   const [lat, setLat] = useState<number | null>(editData?.lat ?? null);
@@ -208,6 +213,16 @@ export function CreateListingForm({
       return;
     }
 
+    const premiumPlan = formData.get("premiumPlan") as string;
+    if (
+      !isEdit &&
+      (premiumPlan === "day" || premiumPlan === "week") &&
+      !vipReceiptFile
+    ) {
+      setError(tErrors("vipReceiptRequired"));
+      return;
+    }
+
     setSubmitting(true);
 
     const result = isEdit
@@ -220,18 +235,21 @@ export function CreateListingForm({
       return;
     }
 
-    if (selectedFiles.length === 0) {
-      router.push(
-        isEdit ? "/dashboard/listings?updated=1" : "/dashboard/listings?created=1"
-      );
-      return;
-    }
-
     try {
-      await uploadListingImages(result.listingId, selectedFiles, tErrors, {
-        startSortOrder: existingImageCount,
-        setCover: existingImageCount === 0,
-      });
+      if (selectedFiles.length > 0) {
+        await uploadListingImages(result.listingId, selectedFiles, tErrors, {
+          startSortOrder: existingImageCount,
+          setCover: existingImageCount === 0,
+        });
+      }
+
+      if (
+        !isEdit &&
+        vipReceiptFile &&
+        (premiumPlan === "day" || premiumPlan === "week")
+      ) {
+        await uploadVipReceipt(result.listingId, vipReceiptFile, tErrors);
+      }
 
       router.push(
         isEdit ? "/dashboard/listings?updated=1" : "/dashboard/listings?created=1"
@@ -532,14 +550,18 @@ export function CreateListingForm({
         </ListingFormSection>
       )}
 
-      {!isEdit && (
+      {!isEdit && paymentSettings && (
         <ListingFormSection
           step={step++}
           title={t("sections.premiumTitle")}
           description={t("sections.premiumDesc")}
           className="listing-form__section--premium"
         >
-          <PremiumPlanPicker />
+          <PremiumPlanPicker
+            paymentSettings={paymentSettings}
+            receiptFile={vipReceiptFile}
+            onReceiptChange={setVipReceiptFile}
+          />
         </ListingFormSection>
       )}
 
