@@ -8,7 +8,7 @@ import type { ListingCardData, ListingWithRelations } from "@/types/database";
 const LISTINGS_CACHE_TAG = "listings";
 const LISTINGS_REVALIDATE_SECONDS = 60;
 
-export { LISTINGS_CACHE_TAG };
+export { LISTINGS_CACHE_TAG, LISTINGS_REVALIDATE_SECONDS };
 
 const LISTING_SELECT = `
   *,
@@ -43,6 +43,8 @@ const CARD_SELECT = `
   category:categories(slug, name_az, name_ru),
   listing_images(url, is_cover, sort_order)
 `;
+
+export { CARD_SELECT };
 
 export interface SearchFilters {
   region?: string;

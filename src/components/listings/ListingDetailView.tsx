@@ -143,6 +143,7 @@ export async function ListingDetailView({
 
           <ListingContactCard
             locale={locale}
+            ownerId={listing.owner_id}
             ownerName={owner?.full_name ?? null}
             phone={owner?.phone ?? null}
             whatsappPhone={listing.whatsapp_phone}

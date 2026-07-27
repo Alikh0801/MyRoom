@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { WhatsAppButton } from "@/components/listings/WhatsAppButton";
 import type { Locale } from "@/i18n/routing";
 import { formatPriceSuffix } from "@/lib/price";
@@ -7,6 +8,7 @@ import type { PriceUnit } from "@/types/database";
 
 interface ListingContactCardProps {
   locale: Locale;
+  ownerId: string;
   ownerName: string | null;
   phone: string | null;
   whatsappPhone: string;
@@ -32,6 +34,7 @@ function formatAddress(region: string, city: string, address: string | null) {
 
 export async function ListingContactCard({
   locale,
+  ownerId,
   ownerName,
   phone,
   whatsappPhone,
@@ -120,9 +123,13 @@ export async function ListingContactCard({
 
       <div className="listing-detail__owner">
         <h2 className="listing-detail__owner-title">{t("ownerTitle")}</h2>
-        <p className="listing-detail__owner-name">
+        <Link
+          href={`/owners/${ownerId}`}
+          className="listing-detail__owner-name"
+          title={t("viewOwnerProfile")}
+        >
           {ownerName ?? t("ownerFallback")}
-        </p>
+        </Link>
       </div>
 
       <div className="listing-detail__contact-actions">

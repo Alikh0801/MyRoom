@@ -74,8 +74,22 @@
     "bedroom": "Спальни",
     "ownerTitle": "Владелец объявления",
     "ownerFallback": "Владелец",
+    "viewOwnerProfile": "Профиль владельца объявления",
     "call": "Позвонить",
     "whatsappContact": "Связаться в WhatsApp"
+  },
+  "ownerProfile": {
+    "metaTitle": "{name} — Владелец объявлений",
+    "metaDescription": "{count, plural, one {# объявление} few {# объявления} many {# объявлений} other {# объявления}} от {name}.",
+    "notFound": "Профиль не найден",
+    "ownerFallback": "Владелец",
+    "memberSince": "На сайте с {date}",
+    "listingsCount": "{count, plural, one {# объявление} few {# объявления} many {# объявлений} other {# объявления}}",
+    "listingsTitle": "Объявления",
+    "empty": {
+      "title": "Нет объявлений",
+      "desc": "У этого пользователя пока нет активных объявлений."
+    }
   },
   "favorites": {
     "add": "Добавить в избранное",

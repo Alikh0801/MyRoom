@@ -74,8 +74,22 @@
     "bedroom": "Yataq otağı",
     "ownerTitle": "Elan sahibi",
     "ownerFallback": "Mülk sahibi",
+    "viewOwnerProfile": "Elan sahibinin profilinə bax",
     "call": "Zəng et",
     "whatsappContact": "WhatsApp ilə əlaqə"
+  },
+  "ownerProfile": {
+    "metaTitle": "{name} — Elan sahibi",
+    "metaDescription": "{name} tərəfindən yerləşdirilmiş {count} elan.",
+    "notFound": "Profil tapılmadı",
+    "ownerFallback": "Mülk sahibi",
+    "memberSince": "Üzv: {date}",
+    "listingsCount": "{count, plural, one {# elan} other {# elan}}",
+    "listingsTitle": "Elanlar",
+    "empty": {
+      "title": "Elan yoxdur",
+      "desc": "Bu istifadəçinin hazırda aktiv elanı yoxdur."
+    }
   },
   "favorites": {
     "add": "Sevimlilərə əlavə et",
