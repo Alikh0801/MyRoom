@@ -137,7 +137,7 @@ const getVipListingsCached = unstable_cache(
   { revalidate: LISTINGS_REVALIDATE_SECONDS, tags: [LISTINGS_CACHE_TAG] }
 );
 
-export const HOME_LISTINGS_PAGE_SIZE = 12;
+export const HOME_LISTINGS_PAGE_SIZE = 16;
 
 export interface PaginatedListings {
   listings: ListingCardData[];

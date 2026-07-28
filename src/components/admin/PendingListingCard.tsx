@@ -50,7 +50,7 @@ export function PendingListingCard({ listing }: PendingListingCardProps) {
         <p className="admin-card__meta">
           {listing.price_per_night} {listing.currency}
           {formatPriceSuffix(listing.price_unit ?? "day")} · {listing.max_guests}{" "}
-          qonaq
+          qonaq sayı
         </p>
         <p className="admin-card__meta">
           Sahib: {listing.owner?.full_name ?? "—"} · {listing.whatsapp_phone}

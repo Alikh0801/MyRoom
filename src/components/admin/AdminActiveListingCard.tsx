@@ -59,7 +59,7 @@ export function AdminActiveListingCard({ listing }: AdminActiveListingCardProps)
         </p>
         <p className="admin-card__meta">
           {listing.price_per_night} {listing.currency}
-          {formatPriceSuffix(listing.price_unit)} · {listing.max_guests} qonaq
+          {formatPriceSuffix(listing.price_unit)} · {listing.max_guests} qonaq sayı
         </p>
         <p className="admin-card__meta">
           Sahib: {listing.owner?.full_name ?? "—"}

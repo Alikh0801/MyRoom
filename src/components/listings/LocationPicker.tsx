@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useEffect, useId, useRef, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import {
   MapContainer,
   Marker,
@@ -15,6 +15,7 @@ import {
   isValidCoordinates,
 } from "@/lib/map";
 import { fixLeafletIcon } from "@/lib/leaflet-icon";
+import type { GeocodeResult } from "@/lib/geocode/types";
 import "leaflet/dist/leaflet.css";
 
 interface LocationPickerProps {
@@ -56,10 +57,68 @@ function MapViewSync({
 
 export function LocationPicker({ lat, lng, onChange }: LocationPickerProps) {
   const t = useTranslations("listingForm.location");
+  const locale = useLocale();
+  const listId = useId();
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<GeocodeResult[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [listOpen, setListOpen] = useState(false);
+  const blurTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     fixLeafletIcon();
   }, []);
+
+  useEffect(() => {
+    const trimmed = query.trim();
+    if (trimmed.length < 2) {
+      setResults([]);
+      setSearchError(null);
+      setSearching(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      setSearching(true);
+      setSearchError(null);
+
+      try {
+        const params = new URLSearchParams({
+          q: trimmed,
+          locale,
+        });
+        const res = await fetch(`/api/geocode/search?${params}`, {
+          signal: controller.signal,
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          setResults([]);
+          setSearchError(t("searchFailed"));
+          return;
+        }
+
+        setResults(data.results ?? []);
+        setListOpen(true);
+        if ((data.results ?? []).length === 0) {
+          setSearchError(t("noResults"));
+        }
+      } catch (error) {
+        if ((error as Error).name === "AbortError") return;
+        setResults([]);
+        setSearchError(t("searchFailed"));
+      } finally {
+        setSearching(false);
+      }
+    }, 400);
+
+    return () => {
+      controller.abort();
+      clearTimeout(timer);
+    };
+  }, [query, locale, t]);
 
   const hasPin = lat != null && lng != null;
   const center = hasPin ? [lat, lng] : [AZ_MAP_CENTER.lat, AZ_MAP_CENTER.lng];
@@ -79,6 +138,14 @@ export function LocationPicker({ lat, lng, onChange }: LocationPickerProps) {
     );
   }
 
+  function handleSelectResult(result: GeocodeResult) {
+    onChange(result.lat, result.lng);
+    setQuery(result.label);
+    setResults([]);
+    setListOpen(false);
+    setSearchError(null);
+  }
+
   return (
     <div className="location-picker">
       <div className="location-picker__toolbar">
@@ -90,6 +157,53 @@ export function LocationPicker({ lat, lng, onChange }: LocationPickerProps) {
         >
           {t("useMyLocation")}
         </button>
+      </div>
+
+      <div className="location-picker__search">
+        <label className="location-picker__search-label" htmlFor={listId}>
+          {t("searchLabel")}
+        </label>
+        <input
+          id={listId}
+          type="search"
+          className="location-picker__search-input"
+          value={query}
+          placeholder={t("searchPlaceholder")}
+          autoComplete="off"
+          onChange={(e) => setQuery(e.target.value)}
+          onFocus={() => {
+            if (blurTimer.current) clearTimeout(blurTimer.current);
+            if (results.length > 0) setListOpen(true);
+          }}
+          onBlur={() => {
+            blurTimer.current = setTimeout(() => setListOpen(false), 150);
+          }}
+        />
+
+        {searching && (
+          <p className="location-picker__search-status">{t("searching")}</p>
+        )}
+
+        {!searching && searchError && (
+          <p className="location-picker__search-status">{searchError}</p>
+        )}
+
+        {listOpen && results.length > 0 && (
+          <ul className="location-picker__results" role="listbox">
+            {results.map((result) => (
+              <li key={result.id}>
+                <button
+                  type="button"
+                  className="location-picker__result"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => handleSelectResult(result)}
+                >
+                  {result.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="location-picker__map">
