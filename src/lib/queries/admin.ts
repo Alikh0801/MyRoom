@@ -13,6 +13,7 @@ export interface AdminListingItem {
   city: string;
   region: string;
   max_guests: number;
+  view_count: number;
   whatsapp_phone: string;
   created_at: string;
   requested_vip_plan: VipPlan | null;
@@ -57,7 +58,7 @@ const LISTING_EMBEDS = `
 
 const LISTING_CORE = `
   id, title, status, is_vip, price_per_night, price_unit, currency, city, region,
-  max_guests, whatsapp_phone, created_at
+  max_guests, view_count, whatsapp_phone, created_at
 `;
 
 const LISTING_VIP =
@@ -74,6 +75,7 @@ type AdminListingRow = {
   city: string;
   region: string;
   max_guests: number;
+  view_count?: number | null;
   whatsapp_phone: string;
   created_at: string;
   requested_vip_plan?: VipPlan | null;
@@ -113,6 +115,7 @@ function mapAdminListing(row: AdminListingRow): AdminListingItem {
     city: row.city,
     region: row.region,
     max_guests: row.max_guests,
+    view_count: row.view_count ?? 0,
     whatsapp_phone: row.whatsapp_phone,
     created_at: row.created_at,
     requested_vip_plan: row.requested_vip_plan ?? null,

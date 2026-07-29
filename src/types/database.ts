@@ -123,6 +123,7 @@ export interface ListingCardData {
   city: string;
   region: string;
   max_guests: number;
+  view_count: number;
   created_at: string;
   category: Pick<Category, "slug" | "name_az" | "name_ru">;
   cover_image: string | null;

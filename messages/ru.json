@@ -75,6 +75,7 @@
     "ownerTitle": "Владелец объявления",
     "ownerFallback": "Владелец",
     "viewOwnerProfile": "Профиль владельца объявления",
+    "views": "{count} просмотров",
     "call": "Позвонить",
     "whatsappContact": "Связаться в WhatsApp"
   },

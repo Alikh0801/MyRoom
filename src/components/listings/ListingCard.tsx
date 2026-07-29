@@ -54,9 +54,32 @@ function ListingCardContent({
         </span>
       </div>
       <div className="listing-card__meta-row">
-        <time className="listing-card__date" dateTime={listing.created_at}>
-          {formatListingCardDate(listing.created_at)}
-        </time>
+        <div className="listing-card__meta-left">
+          <time className="listing-card__date" dateTime={listing.created_at}>
+            {formatListingCardDate(listing.created_at)}
+          </time>
+          <span
+            className="listing-card__views"
+            aria-label={t("views", { count: listing.view_count })}
+          >
+            <svg
+              className="listing-card__views-icon"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            {listing.view_count}
+          </span>
+        </div>
         <FavoriteButton
           listingId={listing.id}
           initialFavorited={isFavorited}

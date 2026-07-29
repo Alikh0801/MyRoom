@@ -5,6 +5,7 @@ import { HotelRoomTypeDisplay } from "@/components/listings/HotelRoomTypeDisplay
 import { ListingContactCard } from "@/components/listings/ListingContactCard";
 import { ListingGallery } from "@/components/listings/ListingGallery";
 import { ListingMapSection } from "@/components/listings/ListingMapSection";
+import { RecordListingView } from "@/components/listings/RecordListingView";
 import { SimilarListings } from "@/components/listings/SimilarListings";
 import type { Locale } from "@/i18n/routing";
 import { getLocalizedName } from "@/lib/i18n/localized-name";
@@ -25,6 +26,7 @@ interface ListingDetailViewProps {
   isLoggedIn?: boolean;
   favoriteIds?: Set<string>;
   showSimilarListings?: boolean;
+  trackViews?: boolean;
   previewBanner?: ReactNode;
 }
 
@@ -36,6 +38,7 @@ export async function ListingDetailView({
   isLoggedIn = false,
   favoriteIds = new Set<string>(),
   showSimilarListings = true,
+  trackViews = true,
   previewBanner,
 }: ListingDetailViewProps) {
   const t = await getTranslations("listing");
@@ -87,6 +90,9 @@ export async function ListingDetailView({
 
   return (
     <article className="listing-detail">
+      {trackViews && listing.status === "approved" && (
+        <RecordListingView listingId={listing.id} />
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

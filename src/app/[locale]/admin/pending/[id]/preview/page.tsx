@@ -44,6 +44,7 @@ export default async function AdminListingPreviewPage({
       listing={listing}
       locale={locale}
       showSimilarListings={false}
+      trackViews={false}
       previewBanner={
         <div className="admin-preview-banner">
           <div className="container admin-preview-banner__inner">
