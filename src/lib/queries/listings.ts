@@ -39,7 +39,7 @@ function normalizeListingWithRelations(
 }
 
 const CARD_SELECT = `
-  id, title, title_ru, price_per_night, price_unit, currency, city, region, max_guests, created_at,
+  id, title, title_ru, price_per_night, price_unit, currency, city, region, max_guests, view_count, created_at,
   category:categories(slug, name_az, name_ru),
   listing_images(url, is_cover, sort_order)
 `;
@@ -76,6 +76,7 @@ export type ListingRow = {
   city: string;
   region: string;
   max_guests: number;
+  view_count?: number | null;
   created_at: string;
   category: { slug: string; name_az: string; name_ru?: string | null } | { slug: string; name_az: string; name_ru?: string | null }[];
   listing_images: { url: string; is_cover: boolean; sort_order: number }[];
@@ -102,6 +103,7 @@ export function mapToListingCards(rows: ListingRow[]): ListingCardData[] {
       city: row.city,
       region: row.region,
       max_guests: row.max_guests,
+      view_count: row.view_count ?? 0,
       created_at: row.created_at,
       category: category ?? { slug: "", name_az: "" },
       cover_image: sorted[0]?.url ?? null,
