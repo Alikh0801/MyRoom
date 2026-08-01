@@ -1,4 +1,7 @@
+"use client";
+
 import { Link } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 import { adminTabHref, type AdminTab } from "@/lib/admin/tabs";
 import type { AdminTabCounts } from "@/lib/queries/admin";
 
@@ -22,6 +25,13 @@ function countFor(counts: AdminTabCounts, tab: AdminTab): number {
 }
 
 export function AdminPanelTabs({ counts, activeTab }: AdminPanelTabsProps) {
+  const searchParams = useSearchParams();
+  const filterParams = {
+    q: searchParams.get("q") ?? undefined,
+    sort: searchParams.get("sort") ?? undefined,
+    vip: searchParams.get("vip") ?? undefined,
+  };
+
   return (
     <nav
       className="admin-panel-tabs"
@@ -35,7 +45,7 @@ export function AdminPanelTabs({ counts, activeTab }: AdminPanelTabsProps) {
         return (
           <Link
             key={tab.id}
-            href={adminTabHref(tab.id)}
+            href={adminTabHref(tab.id, filterParams)}
             className={`admin-panel-tabs__tab${
               isActive ? " admin-panel-tabs__tab--active" : ""
             }`}

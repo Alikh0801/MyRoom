@@ -1,3 +1,4 @@
+import { addCalendarDaysInBaku } from "@/lib/datetime/baku";
 import type { VipPaymentStatus, VipPlan } from "@/types/database";
 
 export type { VipPaymentStatus, VipPlan };
@@ -23,9 +24,7 @@ export function vipPlanLabel(plan: VipPlan): string {
 }
 
 export function vipExpiresAtFromPlan(plan: VipPlan, from = new Date()): Date {
-  const expires = new Date(from);
-  expires.setDate(expires.getDate() + VIP_PLAN_DURATIONS[plan].days);
-  return expires;
+  return addCalendarDaysInBaku(from, VIP_PLAN_DURATIONS[plan].days);
 }
 
 export function isVipCurrentlyActive(

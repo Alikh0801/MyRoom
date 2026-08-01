@@ -9,6 +9,7 @@ import {
   isVipCurrentlyActive,
   vipPlanLabel,
 } from "@/lib/listings/vip-payment";
+import { formatDateTimeInBaku } from "@/lib/datetime/baku";
 import { formatPriceSuffix } from "@/lib/price";
 import type { AdminListingItem } from "@/lib/queries/admin";
 
@@ -68,8 +69,8 @@ export function AdminActiveListingCard({ listing }: AdminActiveListingCardProps)
 
         {vipActive && listing.vip_expires_at && (
           <p className="admin-card__vip-notice admin-card__vip-notice--paid">
-            VIP bitir:{" "}
-            {new Date(listing.vip_expires_at).toLocaleString("az-AZ")}
+            VIP bitir (Bakı vaxtı):{" "}
+            {formatDateTimeInBaku(listing.vip_expires_at)}
           </p>
         )}
 

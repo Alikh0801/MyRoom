@@ -2,12 +2,21 @@ import { AdminListingsList } from "@/components/admin/AdminListingsList";
 import { AdminPanelTabs } from "@/components/admin/AdminPanelTabs";
 import { PaymentSettingsForm } from "@/components/admin/PaymentSettingsForm";
 import { requireAdmin } from "@/lib/admin/auth";
+import {
+  filterAdminListingItems,
+  filterDeletedListingRecords,
+  parseAdminListingsSort,
+  parseAdminListingsVipFilter,
+} from "@/lib/admin/listings-filter";
 import { isListingsAdminTab, parseAdminTab } from "@/lib/admin/tabs";
 import {
   getAdminListingsForTab,
   getAdminTabCounts,
+  type AdminListingItem,
+  type DeletedListingRecord,
 } from "@/lib/queries/admin";
 import { getPaymentSettings } from "@/lib/queries/payment-settings";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "Admin panel",
@@ -23,20 +32,43 @@ const TAB_SUBTITLES = {
 } as const;
 
 type AdminPageProps = {
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; q?: string; sort?: string; vip?: string }>;
 };
 
 export default async function AdminPage({ searchParams }: AdminPageProps) {
   await requireAdmin();
 
-  const { tab: tabParam } = await searchParams;
+  const { tab: tabParam, q = "", sort: sortParam, vip: vipParam } =
+    await searchParams;
   const tab = parseAdminTab(tabParam);
+  const sort = parseAdminListingsSort(sortParam);
+  const vipFilter = parseAdminListingsVipFilter(vipParam);
+  const searchQuery = q.trim();
+  const hasActiveFilters =
+    searchQuery.length > 0 ||
+    sort !== "newest" ||
+    (tab !== "deleted" && vipFilter !== "all");
 
   const [counts, listings, paymentSettings] = await Promise.all([
     getAdminTabCounts(),
     isListingsAdminTab(tab) ? getAdminListingsForTab(tab) : Promise.resolve([]),
     tab === "settings" ? getPaymentSettings() : Promise.resolve(null),
   ]);
+
+  const filteredListings = isListingsAdminTab(tab)
+    ? tab === "deleted"
+      ? filterDeletedListingRecords(
+          listings as DeletedListingRecord[],
+          searchQuery,
+          sort
+        )
+      : filterAdminListingItems(
+          listings as AdminListingItem[],
+          searchQuery,
+          sort,
+          vipFilter
+        )
+    : [];
 
   return (
     <div className="container dashboard admin-panel-page">
@@ -46,7 +78,9 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
       </header>
 
       <div className="admin-panel">
-        <AdminPanelTabs counts={counts} activeTab={tab} />
+        <Suspense fallback={null}>
+          <AdminPanelTabs counts={counts} activeTab={tab} />
+        </Suspense>
 
         <section className="admin-panel__content" role="tabpanel">
           {tab === "settings" && paymentSettings ? (
@@ -55,7 +89,11 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             </div>
           ) : (
             isListingsAdminTab(tab) && (
-              <AdminListingsList tab={tab} listings={listings} />
+              <AdminListingsList
+                tab={tab}
+                listings={filteredListings}
+                hasActiveSearch={searchQuery.length > 0}
+              />
             )
           )}
         </section>

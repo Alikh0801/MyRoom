@@ -4498,6 +4498,64 @@ h3.amenities-feature-title {
   min-width: 0;
 }
 
+.admin-listings-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.admin-listings-filters--with-vip {
+  grid-template-columns: minmax(0, 1fr) 180px 180px;
+}
+
+@media (max-width: 900px) {
+  .admin-listings-filters--with-vip {
+    grid-template-columns: minmax(0, 1fr) 180px;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-listings-filters,
+  .admin-listings-filters--with-vip {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-listings-filters__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.admin-listings-filters__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.admin-listings-filters__input,
+.admin-listings-filters__select {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.admin-listings-filters__input:focus,
+.admin-listings-filters__select:focus {
+  outline: 2px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+  border-color: var(--color-primary);
+}
+
+.admin-listings-filters + .admin-list {
+  margin-top: 0;
+}
+
 .admin-panel__content .admin-list,
 .admin-panel__empty {
   margin-top: 0;
