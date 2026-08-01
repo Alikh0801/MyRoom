@@ -201,3 +201,43 @@ export async function deleteListingAsAdmin(formData: FormData) {
 
   revalidateListingPaths(listingId);
 }
+
+const MAX_VIEW_BOOST = 100_000;
+
+export async function boostListingViews(formData: FormData) {
+  await requireAdmin();
+
+  const listingId = formData.get("listingId") as string;
+  const amountRaw = Number(formData.get("amount"));
+
+  if (!listingId || !Number.isFinite(amountRaw)) return;
+
+  const amount = Math.floor(amountRaw);
+  if (amount < 1 || amount > MAX_VIEW_BOOST) {
+    throw new Error(`Baxış sayı 1–${MAX_VIEW_BOOST} arasında olmalıdır.`);
+  }
+
+  const supabase = await createClient();
+
+  const { data: listing, error: fetchError } = await supabase
+    .from("listings")
+    .select("view_count")
+    .eq("id", listingId)
+    .eq("status", "approved")
+    .maybeSingle();
+
+  if (fetchError) throw new Error(fetchError.message);
+  if (!listing) return;
+
+  const nextCount = (listing.view_count ?? 0) + amount;
+
+  const { error } = await supabase
+    .from("listings")
+    .update({ view_count: nextCount })
+    .eq("id", listingId)
+    .eq("status", "approved");
+
+  if (error) throw new Error(error.message);
+
+  revalidateListingPaths(listingId);
+}

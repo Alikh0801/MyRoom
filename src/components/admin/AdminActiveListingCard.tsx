@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import {
+  boostListingViews,
   removeListingVip,
   setListingVip,
 } from "@/lib/admin/actions";
@@ -65,6 +66,7 @@ export function AdminActiveListingCard({ listing }: AdminActiveListingCardProps)
         <p className="admin-card__meta">
           Sahib: {listing.owner?.full_name ?? "—"}
         </p>
+        <p className="admin-card__meta">Baxış: {listing.view_count}</p>
         <p className="admin-card__date">Təsdiqlənib: {date}</p>
 
         {vipActive && listing.vip_expires_at && (
@@ -127,6 +129,24 @@ export function AdminActiveListingCard({ listing }: AdminActiveListingCardProps)
             </button>
           </form>
         )}
+
+        <form action={boostListingViews} className="admin-card__views-form">
+          <input type="hidden" name="listingId" value={listing.id} />
+          <label className="admin-card__views-label">
+            Baxış artır
+            <input
+              type="number"
+              name="amount"
+              min={1}
+              max={100000}
+              defaultValue={10}
+              required
+            />
+          </label>
+          <button type="submit" className="btn btn--ghost">
+            Artır
+          </button>
+        </form>
 
         <DeleteListingForm listingId={listing.id} />
       </div>
