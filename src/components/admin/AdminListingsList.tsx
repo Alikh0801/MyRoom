@@ -13,7 +13,7 @@ import { Suspense } from "react";
 interface AdminListingsListProps {
   tab: Exclude<AdminTab, "settings">;
   listings: AdminListingItem[] | DeletedListingRecord[];
-  hasActiveFilters: boolean;
+  hasActiveSearch: boolean;
 }
 
 const EMPTY_COPY: Record<

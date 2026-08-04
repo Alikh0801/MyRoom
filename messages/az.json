@@ -48,7 +48,9 @@
     "listings": "Elanlar",
     "listingsCount": "{total} elan · Səhifə {page} / {totalPages}",
     "noListingsTitle": "Hələ elan yoxdur",
-    "noListingsText": "Tezliklə yeni elanlar əlavə olunacaq."
+    "noListingsText": "Tezliklə yeni elanlar əlavə olunacaq.",
+    "seoAboutTitle": "Azərbaycanda gündəlik istirahət mekanları",
+    "seoAboutText": "MyRoomAZ — Azərbaycanın bütün rayonları üzrə gündəlik icarə və istirahət mekanlarını bir platformada birləşdirir. Bakı, Qəbələ, Şəki, Qusar, Quba, Qax, Lənkəran, Şamaxı və digər turistik bölgələrdə otel, hostel/kotec, A-frame (glamping) və rayon evləri arasından sizə uyğun variantı asanlıqla tapa bilərsiniz. İstər ailəniz, istərsə də dostlarınızla həftə sonu istirahəti planlayarkən, rayon, qiymət və qonaq sayına görə filtrləyərək Azərbaycanda ən uyğun gündəlik icarə elanını MyRoomAZ-da seçin."
   },
   "listing": {
     "noPhoto": "Şəkil yoxdur",
