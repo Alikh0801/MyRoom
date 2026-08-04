@@ -130,6 +130,13 @@ export default async function HomePage({ params, searchParams }: HomePageProps) 
           )}
         </div>
       </section>
+
+      <section className="section section--center section--seo-about">
+        <div className="container">
+          <h2 className="section__title">{t("seoAboutTitle")}</h2>
+          <p className="section__subtitle">{t("seoAboutText")}</p>
+        </div>
+      </section>
     </>
   );
 }

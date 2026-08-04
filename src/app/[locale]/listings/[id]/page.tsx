@@ -8,7 +8,12 @@ import {
 } from "@/lib/i18n/localized-listing";
 import { getFavoritePageContext } from "@/lib/favorites/page-context";
 import { getListingById, getSimilarListings } from "@/lib/queries/listings";
-import { buildCanonicalAlternates, getAbsoluteUrl } from "@/lib/seo";
+import { buildCanonicalAlternates, getAbsoluteUrl, SITE_NAME } from "@/lib/seo";
+import {
+  buildBreadcrumbJsonLd,
+  buildLodgingBusinessJsonLd,
+  jsonLdScriptProps,
+} from "@/lib/seo/structured-data";
 
 interface ListingPageProps {
   params: Promise<{ locale: string; id: string }>;
@@ -59,9 +64,10 @@ export default async function ListingPage({ params }: ListingPageProps) {
   const locale = localeParam as Locale;
   setRequestLocale(locale);
 
-  const [listing, favoriteContext] = await Promise.all([
+  const [listing, favoriteContext, t] = await Promise.all([
     getListingById(id),
     getFavoritePageContext(),
+    getTranslations({ locale, namespace: "home" }),
   ]);
 
   if (!listing) notFound();
@@ -73,14 +79,35 @@ export default async function ListingPage({ params }: ListingPageProps) {
     4
   );
 
+  const pageTitle = getLocalizedListingTitle(listing, locale);
+  const pageDescription = getLocalizedListingDescription(listing, locale).slice(0, 160);
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd(
+    [
+      { name: SITE_NAME, path: "/" },
+      { name: t("listings"), path: "/search" },
+      { name: pageTitle, path: `/listings/${id}` },
+    ],
+    locale
+  );
+  const lodgingJsonLd = buildLodgingBusinessJsonLd(
+    listing,
+    locale,
+    pageTitle,
+    pageDescription
+  );
+
   return (
-    <ListingDetailView
-      listing={listing}
-      locale={locale}
-      similarListings={similarListings}
-      isFavorited={favoriteContext.favoriteIds.has(listing.id)}
-      isLoggedIn={favoriteContext.isLoggedIn}
-      favoriteIds={favoriteContext.favoriteIds}
-    />
+    <>
+      <script {...jsonLdScriptProps(breadcrumbJsonLd)} type="application/ld+json" />
+      <script {...jsonLdScriptProps(lodgingJsonLd)} type="application/ld+json" />
+      <ListingDetailView
+        listing={listing}
+        locale={locale}
+        similarListings={similarListings}
+        isFavorited={favoriteContext.favoriteIds.has(listing.id)}
+        isLoggedIn={favoriteContext.isLoggedIn}
+        favoriteIds={favoriteContext.favoriteIds}
+      />
+    </>
   );
 }

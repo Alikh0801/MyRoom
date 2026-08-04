@@ -9,7 +9,13 @@ import { HeaderShell } from "@/components/layout/HeaderShell";
 import { ThemeScript } from "@/components/theme/ThemeScript";
 import { routing, type Locale } from "@/i18n/routing";
 import { getSiteUrl, SITE_NAME } from "@/lib/seo";
+import {
+  buildOrganizationJsonLd,
+  buildWebSiteJsonLd,
+  jsonLdScriptProps,
+} from "@/lib/seo/structured-data";
 import "../globals.css";
+import "../seo.css";
 
 type LocaleLayoutProps = {
   children: React.ReactNode;
@@ -58,6 +64,9 @@ export async function generateMetadata({
       title: t("title"),
       description: t("description"),
     },
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    },
   };
 }
 
@@ -77,6 +86,11 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body>
+        <script {...jsonLdScriptProps(buildOrganizationJsonLd())} type="application/ld+json" />
+        <script
+          {...jsonLdScriptProps(buildWebSiteJsonLd(locale as Locale))}
+          type="application/ld+json"
+        />
         <ThemeScript />
         <NextIntlClientProvider messages={messages}>
           <div className="page-wrapper">
