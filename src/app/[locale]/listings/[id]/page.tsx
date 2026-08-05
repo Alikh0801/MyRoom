@@ -7,8 +7,17 @@ import {
   getLocalizedListingTitle,
 } from "@/lib/i18n/localized-listing";
 import { getFavoritePageContext } from "@/lib/favorites/page-context";
-import { getListingById, getSimilarListings } from "@/lib/queries/listings";
-import { buildCanonicalAlternates, getAbsoluteUrl, SITE_NAME } from "@/lib/seo";
+import {
+  getListingById,
+  getSimilarListings,
+  SIMILAR_LISTINGS_PAGE_SIZE,
+} from "@/lib/queries/listings";
+import {
+  buildCanonicalAlternates,
+  getAbsoluteUrl,
+  getLocalizedPath,
+  SITE_NAME,
+} from "@/lib/seo";
 import {
   buildBreadcrumbJsonLd,
   buildLodgingBusinessJsonLd,
@@ -17,6 +26,7 @@ import {
 
 interface ListingPageProps {
   params: Promise<{ locale: string; id: string }>;
+  searchParams: Promise<{ page?: string }>;
 }
 
 export async function generateMetadata({ params }: ListingPageProps) {
@@ -59,24 +69,30 @@ export async function generateMetadata({ params }: ListingPageProps) {
   };
 }
 
-export default async function ListingPage({ params }: ListingPageProps) {
+export default async function ListingPage({
+  params,
+  searchParams,
+}: ListingPageProps) {
   const { id, locale: localeParam } = await params;
   const locale = localeParam as Locale;
   setRequestLocale(locale);
 
-  const [listing, favoriteContext, t] = await Promise.all([
+  const [listing, favoriteContext, t, { page: pageParam }] = await Promise.all([
     getListingById(id),
     getFavoritePageContext(),
     getTranslations({ locale, namespace: "home" }),
+    searchParams,
   ]);
 
   if (!listing) notFound();
 
-  const similarListings = await getSimilarListings(
+  const similarPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+  const similarResult = await getSimilarListings(
     listing.id,
     listing.category_id,
     listing.region,
-    4
+    similarPage,
+    SIMILAR_LISTINGS_PAGE_SIZE
   );
 
   const pageTitle = getLocalizedListingTitle(listing, locale);
@@ -103,7 +119,10 @@ export default async function ListingPage({ params }: ListingPageProps) {
       <ListingDetailView
         listing={listing}
         locale={locale}
-        similarListings={similarListings}
+        similarListings={similarResult.listings}
+        similarPage={similarResult.page}
+        similarTotalPages={similarResult.totalPages}
+        similarBasePath={getLocalizedPath(`/listings/${id}`, locale)}
         isFavorited={favoriteContext.favoriteIds.has(listing.id)}
         isLoggedIn={favoriteContext.isLoggedIn}
         favoriteIds={favoriteContext.favoriteIds}

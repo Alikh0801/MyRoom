@@ -22,6 +22,9 @@ interface ListingDetailViewProps {
   listing: ListingWithRelations;
   locale: Locale;
   similarListings?: ListingCardData[];
+  similarPage?: number;
+  similarTotalPages?: number;
+  similarBasePath?: string;
   isFavorited?: boolean;
   isLoggedIn?: boolean;
   favoriteIds?: Set<string>;
@@ -34,6 +37,9 @@ export async function ListingDetailView({
   listing,
   locale,
   similarListings = [],
+  similarPage = 1,
+  similarTotalPages = 1,
+  similarBasePath = "/",
   isFavorited = false,
   isLoggedIn = false,
   favoriteIds = new Set<string>(),
@@ -173,6 +179,9 @@ export async function ListingDetailView({
       {showSimilarListings && (
         <SimilarListings
           listings={similarListings}
+          page={similarPage}
+          totalPages={similarTotalPages}
+          basePath={similarBasePath}
           isLoggedIn={isLoggedIn}
           favoriteIds={favoriteIds}
         />

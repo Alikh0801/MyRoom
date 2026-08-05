@@ -335,57 +335,111 @@ const getSitemapListingsCached = unstable_cache(
   { revalidate: 3600, tags: [LISTINGS_CACHE_TAG] }
 );
 
+export const SIMILAR_LISTINGS_PAGE_SIZE = 8;
+
 export async function getSimilarListings(
   listingId: string,
   categoryId: string,
   region: string,
-  limit = 4
-): Promise<ListingCardData[]> {
-  return getSimilarListingsCached(listingId, categoryId, region, limit);
+  page = 1,
+  pageSize = SIMILAR_LISTINGS_PAGE_SIZE
+): Promise<PaginatedListings> {
+  const safePage = Math.max(1, page);
+  const result = await getSimilarListingsCached(
+    listingId,
+    categoryId,
+    region,
+    safePage,
+    pageSize
+  );
+
+  if (result.total > 0 && safePage > result.totalPages) {
+    return getSimilarListingsCached(
+      listingId,
+      categoryId,
+      region,
+      result.totalPages,
+      pageSize
+    );
+  }
+
+  return result;
 }
 
+// Region-matched listings are ranked ahead of other regions; both pools are
+// ordered by created_at desc, so pagination slices across the two counts.
 const getSimilarListingsCached = unstable_cache(
   async (
     listingId: string,
     categoryId: string,
     region: string,
-    limit: number
-  ) => {
+    page: number,
+    pageSize: number
+  ): Promise<PaginatedListings> => {
     const supabase = createPublicClient();
-    const results: ListingCardData[] = [];
-    const excludeIds = new Set([listingId]);
 
-    async function collect(applyRegion: boolean) {
-      if (results.length >= limit) return;
+    const [{ count: regionCount }, { count: otherCount }] = await Promise.all([
+      supabase
+        .from("listings")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "approved")
+        .eq("category_id", categoryId)
+        .neq("id", listingId)
+        .ilike("region", region),
+      supabase
+        .from("listings")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "approved")
+        .eq("category_id", categoryId)
+        .neq("id", listingId)
+        .not("region", "ilike", region),
+    ]);
 
-      let query = supabase
+    const totalRegion = regionCount ?? 0;
+    const total = totalRegion + (otherCount ?? 0);
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+    const offset = (page - 1) * pageSize;
+    const end = offset + pageSize - 1;
+    const rows: ListingRow[] = [];
+
+    if (offset < totalRegion) {
+      const { data, error } = await supabase
         .from("listings")
         .select(CARD_SELECT)
         .eq("status", "approved")
         .eq("category_id", categoryId)
+        .neq("id", listingId)
+        .ilike("region", region)
         .order("created_at", { ascending: false })
-        .limit(limit * 2);
+        .range(offset, Math.min(end, totalRegion - 1));
 
-      if (applyRegion) query = query.ilike("region", region);
-
-      const { data, error } = await query;
-      if (error) {
-        console.error("getSimilarListings:", error.message);
-        return;
-      }
-
-      for (const row of (data ?? []) as ListingRow[]) {
-        if (results.length >= limit) break;
-        if (excludeIds.has(row.id)) continue;
-        excludeIds.add(row.id);
-        results.push(mapToListingCards([row])[0]);
-      }
+      if (error) console.error("getSimilarListings(region):", error.message);
+      else rows.push(...((data ?? []) as ListingRow[]));
     }
 
-    await collect(true);
-    if (results.length < limit) await collect(false);
+    if (end >= totalRegion) {
+      const { data, error } = await supabase
+        .from("listings")
+        .select(CARD_SELECT)
+        .eq("status", "approved")
+        .eq("category_id", categoryId)
+        .neq("id", listingId)
+        .not("region", "ilike", region)
+        .order("created_at", { ascending: false })
+        .range(Math.max(0, offset - totalRegion), end - totalRegion);
 
-    return results;
+      if (error) console.error("getSimilarListings(other):", error.message);
+      else rows.push(...((data ?? []) as ListingRow[]));
+    }
+
+    return {
+      listings: mapToListingCards(rows),
+      page,
+      pageSize,
+      total,
+      totalPages,
+    };
   },
   ["similar-listings"],
   { revalidate: LISTINGS_REVALIDATE_SECONDS, tags: [LISTINGS_CACHE_TAG] }
