@@ -89,6 +89,8 @@
     "memberSince": "На сайте с {date}",
     "listingsCount": "{count, plural, one {# объявление} few {# объявления} many {# объявлений} other {# объявления}}",
     "listingsTitle": "Объявления",
+    "callButton": "Позвонить",
+    "whatsappButton": "WhatsApp",
     "empty": {
       "title": "Нет объявлений",
       "desc": "У этого пользователя пока нет активных объявлений."

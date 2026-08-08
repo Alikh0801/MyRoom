@@ -2460,6 +2460,25 @@ h3.amenities-feature-title {
   color: var(--color-text);
 }
 
+.owner-profile__contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.owner-profile__contact-actions .btn {
+  width: auto;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 599px) {
+  .owner-profile__contact-actions {
+    justify-content: center;
+  }
+}
+
 .owner-profile__listings .section__title {
   margin-bottom: 1.5rem;
 }

@@ -13,6 +13,8 @@ export interface OwnerPublicProfile {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
+  phone: string | null;
+  whatsapp_phone: string | null;
   created_at: string;
 }
 
@@ -22,7 +24,7 @@ const getOwnerPublicProfileCached = unstable_cache(
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, full_name, avatar_url, created_at")
+      .select("id, full_name, avatar_url, phone, whatsapp_phone, created_at")
       .eq("id", ownerId)
       .maybeSingle();
 

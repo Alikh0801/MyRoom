@@ -89,6 +89,8 @@
     "memberSince": "Üzv: {date}",
     "listingsCount": "{count, plural, one {# elan} other {# elan}}",
     "listingsTitle": "Elanlar",
+    "callButton": "Zəng et",
+    "whatsappButton": "WhatsApp",
     "empty": {
       "title": "Elan yoxdur",
       "desc": "Bu istifadəçinin hazırda aktiv elanı yoxdur."
