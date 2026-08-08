@@ -236,7 +236,7 @@
     "categoryAriaLabel": "Категория",
     "sections": {
       "photosTitle": "Фотографии",
-      "photosDesc": "Первое фото станет обложкой. Минимум 1, максимум 15 фото.",
+      "photosDesc": "Первое фото станет обложкой. Минимум 1, максимум 20 фото.",
       "basicsTitle": "Основная информация",
       "basicsDesc": "Сделайте объявление привлекательным для гостей.",
       "locationTitle": "Местоположение",
@@ -338,7 +338,7 @@
     },
     "errors": {
       "invalidImageType": "Можно выбрать только JPEG, PNG или WebP.",
-      "tooManyImages": "Максимум 15 фотографий.",
+      "tooManyImages": "Максимум 20 фотографий.",
       "minOneImage": "Выберите хотя бы 1 фото.",
       "selectCategory": "Выберите категорию.",
       "selectRegion": "Выберите район из списка.",
@@ -368,7 +368,7 @@
       "roomAmenitiesSaveFailed": "Не удалось сохранить особенности номера.",
       "updateFailed": "Не удалось обновить объявление.",
       "notFound": "Объявление не найдено.",
-      "tooManyImagesTotal": "Всего можно не более 15 фотографий.",
+      "tooManyImagesTotal": "Всего можно не более 20 фотографий.",
       "imagesSaveFailed": "Не удалось обновить фотографии.",
       "cannotDeleteLastPhoto": "Должно остаться хотя бы одно фото."
     },

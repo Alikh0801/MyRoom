@@ -56,7 +56,7 @@ interface CreateListingFormProps {
   paymentSettings?: PaymentSettings;
 }
 
-const MAX_IMAGES = 15;
+const MAX_IMAGES = 20;
 
 export function CreateListingForm({
   categories,

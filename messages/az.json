@@ -236,7 +236,7 @@
     "categoryAriaLabel": "Kateqoriya",
     "sections": {
       "photosTitle": "Şəkillər",
-      "photosDesc": "İlk şəkil əsas şəkil olacaq. Minimum 1, maksimum 15 şəkil.",
+      "photosDesc": "İlk şəkil əsas şəkil olacaq. Minimum 1, maksimum 20 şəkil.",
       "basicsTitle": "Əsas məlumat",
       "basicsDesc": "Elanınızı qonaqlar üçün cəlbedici edin.",
       "locationTitle": "Məkan məlumatları",
@@ -338,7 +338,7 @@
     },
     "errors": {
       "invalidImageType": "Yalnız JPEG, PNG və ya WebP şəkilləri seçə bilərsiniz.",
-      "tooManyImages": "Maksimum 15 şəkil seçə bilərsiniz.",
+      "tooManyImages": "Maksimum 20 şəkil seçə bilərsiniz.",
       "minOneImage": "Ən azı 1 şəkil seçin.",
       "selectCategory": "Kateqoriya seçin.",
       "selectRegion": "Rayon siyahıdan seçin.",
@@ -368,7 +368,7 @@
       "roomAmenitiesSaveFailed": "Otaq xüsusiyyətləri saxlanıla bilmədi.",
       "updateFailed": "Elan yenilənə bilmədi.",
       "notFound": "Elan tapılmadı.",
-      "tooManyImagesTotal": "Ümumi şəkil sayı maksimum 15 ola bilər.",
+      "tooManyImagesTotal": "Ümumi şəkil sayı maksimum 20 ola bilər.",
       "imagesSaveFailed": "Şəkillər yenilənə bilmədi.",
       "cannotDeleteLastPhoto": "Ən azı bir şəkil qalmalıdır."
     },
