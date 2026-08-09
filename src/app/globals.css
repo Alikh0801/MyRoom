@@ -1219,7 +1219,7 @@ img {
   padding: 0.625rem 0.875rem;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   background: var(--color-surface);
   color: var(--color-text);
 }
@@ -1807,7 +1807,7 @@ img {
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .search-filters__actions {
@@ -4148,6 +4148,7 @@ h3.amenities-feature-title {
   border-radius: 8px;
   background: var(--color-surface);
   color: var(--color-text);
+  font-size: 1rem;
 }
 
 .admin-card__vip-select select,
@@ -4157,6 +4158,7 @@ h3.amenities-feature-title {
   border-radius: 8px;
   background: var(--color-surface);
   color: var(--color-text);
+  font-size: 1rem;
 }
 
 .admin-card--vip-pending {
