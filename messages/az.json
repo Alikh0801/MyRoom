@@ -60,6 +60,7 @@
     "perMonth": "/ay",
     "guests": "{count} qonaq",
     "bedrooms": "{count} otaq",
+    "bathrooms": "{count} sanuzel",
     "included": "Daxildir",
     "propertyFeatures": "Müəssisə xüsusiyyətləri",
     "roomFeatures": "Otaq xüsusiyyətləri",
@@ -74,6 +75,7 @@
     "guest": "Qonaq sayı",
     "guestCount": "{count}",
     "bedroom": "Otaq sayı",
+    "bathroom": "Sanuzel sayı",
     "ownerTitle": "Elan sahibi",
     "ownerFallback": "Mülk sahibi",
     "viewOwnerProfile": "Elan sahibinin profilinə bax",
@@ -261,6 +263,7 @@
       "mapLocation": "Xəritədə yer *",
       "guests": "Qonaq sayı *",
       "bedrooms": "Otaq sayı",
+      "bathrooms": "Sanuzel sayı",
       "price": "Qiymət (AZN) *",
       "priceUnit": "Vahid *",
       "whatsapp": "WhatsApp nömrəsi *"

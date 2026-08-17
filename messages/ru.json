@@ -60,6 +60,7 @@
     "perMonth": "/месяц",
     "guests": "{count} гостей",
     "bedrooms": "{count} комнат",
+    "bathrooms": "{count} санузлов",
     "included": "Включено",
     "propertyFeatures": "Особенности заведения",
     "roomFeatures": "Особенности номера",
@@ -74,6 +75,7 @@
     "guest": "Количество гостей",
     "guestCount": "{count}",
     "bedroom": "Количество комнат",
+    "bathroom": "Количество санузлов",
     "ownerTitle": "Владелец объявления",
     "ownerFallback": "Владелец",
     "viewOwnerProfile": "Профиль владельца объявления",
@@ -261,6 +263,7 @@
       "mapLocation": "Место на карте *",
       "guests": "Количество гостей *",
       "bedrooms": "Количество комнат",
+      "bathrooms": "Количество санузлов",
       "price": "Цена (AZN) *",
       "priceUnit": "Единица *",
       "whatsapp": "Номер WhatsApp *"

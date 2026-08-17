@@ -170,6 +170,7 @@ export async function ListingDetailView({
             lng={listing.lng}
             maxGuests={listing.max_guests}
             bedrooms={listing.bedrooms}
+            bathrooms={listing.bathrooms}
             roomTypeName={isHotel ? roomType?.name : null}
             roomTypeFloor={isHotel ? roomType?.floor ?? null : null}
           />

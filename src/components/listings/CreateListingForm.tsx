@@ -446,7 +446,7 @@ export function CreateListingForm({
           />
         </div>
 
-        <div className="listing-form__row">
+        <div className="listing-form__row listing-form__row--3">
           <label className="listing-form__field">
             <span className="listing-form__label">{t("fields.guests")}</span>
             <input
@@ -464,6 +464,16 @@ export function CreateListingForm({
               name="bedrooms"
               min={0}
               defaultValue={editData?.bedrooms ?? 1}
+            />
+          </label>
+
+          <label className="listing-form__field">
+            <span className="listing-form__label">{t("fields.bathrooms")}</span>
+            <input
+              type="number"
+              name="bathrooms"
+              min={1}
+              defaultValue={editData?.bathrooms ?? 1}
             />
           </label>
         </div>

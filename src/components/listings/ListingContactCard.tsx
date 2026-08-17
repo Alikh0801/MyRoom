@@ -23,6 +23,7 @@ interface ListingContactCardProps {
   lng: number | null;
   maxGuests: number;
   bedrooms: number;
+  bathrooms: number;
   roomTypeName?: string | null;
   roomTypeFloor?: number | null;
 }
@@ -49,6 +50,7 @@ export async function ListingContactCard({
   lng,
   maxGuests,
   bedrooms,
+  bathrooms,
   roomTypeName,
   roomTypeFloor,
 }: ListingContactCardProps) {
@@ -112,12 +114,73 @@ export async function ListingContactCard({
 
         <div className="listing-detail__fact">
           <dt>{t("guest")}</dt>
-          <dd>{t("guestCount", { count: maxGuests })}</dd>
+          <dd className="listing-detail__fact-value">
+            <svg
+              className="listing-detail__fact-icon"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20 21v2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            {t("guestCount", { count: maxGuests })}
+          </dd>
         </div>
 
         <div className="listing-detail__fact">
           <dt>{t("bedroom")}</dt>
-          <dd>{bedrooms}</dd>
+          <dd className="listing-detail__fact-value">
+            <svg
+              className="listing-detail__fact-icon"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M2 17v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4" />
+              <path d="M2 17v2" />
+              <path d="M22 17v2" />
+              <path d="M6 11V8a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v3" />
+              <path d="M2 17h20" />
+            </svg>
+            {bedrooms}
+          </dd>
+        </div>
+
+        <div className="listing-detail__fact">
+          <dt>{t("bathroom")}</dt>
+          <dd className="listing-detail__fact-value">
+            <svg
+              className="listing-detail__fact-icon"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="11" width="18" height="7" rx="3.5" />
+              <path d="M6 11V6a2 2 0 0 1 2-2h1" />
+              <path d="M8 20v1" />
+              <path d="M16 20v1" />
+            </svg>
+            {bathrooms}
+          </dd>
         </div>
       </dl>
 

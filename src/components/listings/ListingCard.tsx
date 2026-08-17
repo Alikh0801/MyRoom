@@ -96,27 +96,76 @@ function ListingCardContent({
           {listing.region}, {listing.city}
         </p>
         <div className="listing-card__meta">
-          <span
-            className="listing-card__guests"
-            aria-label={t("guests", { count: listing.max_guests })}
-          >
-            {listing.max_guests}
-            <svg
-              className="listing-card__guest-icon"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
+          <div className="listing-card__facts">
+            <span
+              className="listing-card__guests"
+              aria-label={t("guests", { count: listing.max_guests })}
             >
-              <path d="M20 21v2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </span>
+              {listing.max_guests}
+              <svg
+                className="listing-card__guest-icon"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M20 21v2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </span>
+            <span
+              className="listing-card__bedrooms"
+              aria-label={t("bedrooms", { count: listing.bedrooms })}
+            >
+              {listing.bedrooms}
+              <svg
+                className="listing-card__bedroom-icon"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M2 17v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4" />
+                <path d="M2 17v2" />
+                <path d="M22 17v2" />
+                <path d="M6 11V8a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v3" />
+                <path d="M2 17h20" />
+              </svg>
+            </span>
+            <span
+              className="listing-card__bathrooms"
+              aria-label={t("bathrooms", { count: listing.bathrooms })}
+            >
+              {listing.bathrooms}
+              <svg
+                className="listing-card__bathroom-icon"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="3" y="11" width="18" height="7" rx="3.5" />
+                <path d="M6 11V6a2 2 0 0 1 2-2h1" />
+                <path d="M8 20v1" />
+                <path d="M16 20v1" />
+              </svg>
+            </span>
+          </div>
           <span className="listing-card__price">
             {listing.price_per_night} {listing.currency}
             <small>{formatPriceSuffix(listing.price_unit ?? "day", locale)}</small>

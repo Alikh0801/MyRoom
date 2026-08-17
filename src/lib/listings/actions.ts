@@ -46,6 +46,7 @@ export async function createListing(
   const lng = Number(formData.get("lng"));
   const maxGuests = Number(formData.get("maxGuests"));
   const bedrooms = Number(formData.get("bedrooms"));
+  const bathrooms = Number(formData.get("bathrooms"));
   const whatsappPhone = (formData.get("whatsappPhone") as string)?.trim();
   const amenityIds = formData.getAll("amenities") as string[];
   const roomTypeName = (formData.get("roomTypeName") as string)?.trim();
@@ -132,7 +133,7 @@ export async function createListing(
       lng,
       max_guests: maxGuests,
       bedrooms: bedrooms >= 0 ? bedrooms : 1,
-      bathrooms: 1,
+      bathrooms: bathrooms >= 1 ? bathrooms : 1,
       whatsapp_phone: whatsappPhone,
       status: "pending",
     };
@@ -255,6 +256,7 @@ export async function updateListing(
   const lng = Number(formData.get("lng"));
   const maxGuests = Number(formData.get("maxGuests"));
   const bedrooms = Number(formData.get("bedrooms"));
+  const bathrooms = Number(formData.get("bathrooms"));
   const whatsappPhone = (formData.get("whatsappPhone") as string)?.trim();
   const amenityIds = formData.getAll("amenities") as string[];
   const roomTypeName = (formData.get("roomTypeName") as string)?.trim();
@@ -340,6 +342,7 @@ export async function updateListing(
       lng,
       max_guests: maxGuests,
       bedrooms: bedrooms >= 0 ? bedrooms : 1,
+      bathrooms: bathrooms >= 1 ? bathrooms : 1,
       whatsapp_phone: whatsappPhone,
       status: nextStatus,
       ...(needsReview ? { rejection_reason: null } : {}),

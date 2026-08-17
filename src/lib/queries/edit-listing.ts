@@ -24,6 +24,7 @@ export interface EditListingData {
   lng: number;
   max_guests: number;
   bedrooms: number;
+  bathrooms: number;
   whatsapp_phone: string;
   status: ListingStatus;
   amenity_ids: string[];
@@ -47,6 +48,7 @@ export type EditListingRow = {
   lng: number;
   max_guests: number;
   bedrooms: number;
+  bathrooms: number;
   whatsapp_phone: string;
   status: ListingStatus;
   listing_amenities: { amenity_id: string }[];
@@ -72,7 +74,7 @@ export async function getMyListingForEdit(
       id, title, description, title_ru, description_ru,
       category_id, price_per_night, price_unit,
       city, region, address, lat, lng,
-      max_guests, bedrooms, whatsapp_phone, status,
+      max_guests, bedrooms, bathrooms, whatsapp_phone, status,
       listing_amenities(amenity_id),
       listing_images(id, url, is_cover, sort_order, storage_path),
       listing_room_types(
@@ -112,6 +114,7 @@ export async function getMyListingForEdit(
     lng: row.lng ?? 0,
     max_guests: row.max_guests,
     bedrooms: row.bedrooms,
+    bathrooms: row.bathrooms,
     whatsapp_phone: row.whatsapp_phone,
     status: row.status,
     amenity_ids: row.listing_amenities?.map((a) => a.amenity_id) ?? [],
