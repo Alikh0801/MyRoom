@@ -3,12 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
+import { FlagIcon } from "@/components/layout/FlagIcon";
 import { routing, type Locale } from "@/i18n/routing";
 
-const LOCALE_META: Record<Locale, { flag: string; code: string }> = {
-  az: { flag: "🇦🇿", code: "AZ" },
-  ru: { flag: "🇷🇺", code: "RU" },
-  tr: { flag: "🇹🇷", code: "TR" },
+const LOCALE_META: Record<Locale, { code: string }> = {
+  az: { code: "AZ" },
+  ru: { code: "RU" },
+  tr: { code: "TR" },
 };
 
 interface LanguageSwitcherProps {
@@ -62,9 +63,7 @@ export function LanguageSwitcher({ variant = "desktop" }: LanguageSwitcherProps)
         aria-haspopup="menu"
         aria-label={t("language")}
       >
-        <span className="lang-switcher__flag" aria-hidden="true">
-          {current.flag}
-        </span>
+        <FlagIcon locale={locale} className="lang-switcher__flag" />
         <span className="lang-switcher__code">{current.code}</span>
         <svg
           className={`lang-switcher__chevron${open ? " lang-switcher__chevron--open" : ""}`}
@@ -97,9 +96,7 @@ export function LanguageSwitcher({ variant = "desktop" }: LanguageSwitcherProps)
               onClick={() => switchLocale(item)}
               aria-current={item === locale}
             >
-              <span className="lang-switcher__flag" aria-hidden="true">
-                {LOCALE_META[item].flag}
-              </span>
+              <FlagIcon locale={item} className="lang-switcher__flag" />
               {LOCALE_META[item].code}
             </button>
           ))}

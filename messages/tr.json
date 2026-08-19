@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "MyRoomAZ | Otel, A-frame, hostel/apart otel ve sayfiye evleri",
+    "title": "MyRoomAZ | Otel, A-frame, hostel/apart otel ve köy evleri",
     "titleTemplate": "%s | MyRoomAZ",
-    "description": "Otel, hostel/apart otel, A-frame (Glamping) ve sayfiye evleri. Kısa süreli tatil için ilanlar — Azerbaycan genelinde."
+    "description": "Otel, hostel/apart otel, A-frame (Glamping) ve köy evleri. Kısa süreli tatil için ilanlar — Azerbaycan genelinde."
   },
   "nav": {
     "login": "Giriş yap",
@@ -28,7 +28,7 @@
     "tagline": "Azerbaycan genelinde kısa süreli tatil ve günlük kiralama ilanları",
     "listingsTitle": "İlanlar",
     "allListings": "Tüm ilanlar",
-    "rayonHomes": "Sayfiye evleri",
+    "rayonHomes": "Köy evleri",
     "legalTitle": "Yasal",
     "terms": "Şartlar ve koşullar",
     "privacy": "Gizlilik politikası",
@@ -36,7 +36,7 @@
   },
   "home": {
     "heroTitle": "Azerbaycan'da tatil için ideal yerinizi bulun",
-    "heroSubtitle": "Seyahatinize uygun Otel, A-frame, Villa ve Sayfiye evlerini tek adreste arayın.",
+    "heroSubtitle": "Seyahatinize uygun Otel, A-frame, Villa ve Köy evlerini tek adreste arayın.",
     "searchRegion": "Bölge veya şehir seçin",
     "allRegions": "Tüm bölgeler",
     "allTypes": "Tüm türler",
@@ -50,7 +50,7 @@
     "noListingsTitle": "Henüz ilan yok",
     "noListingsText": "Yakında yeni ilanlar eklenecek.",
     "seoAboutTitle": "Azerbaycan'da günlük tatil mekanları",
-    "seoAboutText": "MyRoomAZ — Azerbaycan'ın tüm bölgelerindeki günlük kiralama ve tatil mekanlarını tek platformda bir araya getirir. Bakü, Gabala, Şeki, Gusar, Guba, Gax, Lenkeran, Şamahı ve diğer turistik bölgelerde otel, hostel/apart otel, A-frame (glamping) ve sayfiye evleri arasından size uygun seçeneği kolayca bulabilirsiniz. İster aileniz, isterse arkadaşlarınızla hafta sonu tatili planlarken, bölge, fiyat ve misafir sayısına göre filtreleyerek Azerbaycan'daki en uygun günlük kiralama ilanını MyRoomAZ'da seçin."
+    "seoAboutText": "MyRoomAZ — Azerbaycan'ın tüm bölgelerindeki günlük kiralama ve tatil mekanlarını tek platformda bir araya getirir. Bakü, Gabala, Şeki, Gusar, Guba, Gax, Lenkeran, Şamahı ve diğer turistik bölgelerde otel, hostel/apart otel, A-frame (glamping) ve köy evleri arasından size uygun seçeneği kolayca bulabilirsiniz. İster aileniz, isterse arkadaşlarınızla hafta sonu tatili planlarken, bölge, fiyat ve misafir sayısına göre filtreleyerek Azerbaycan'daki en uygun günlük kiralama ilanını MyRoomAZ'da seçin."
   },
   "listing": {
     "noPhoto": "Fotoğraf yok",
