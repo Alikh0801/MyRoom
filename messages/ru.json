@@ -122,6 +122,14 @@
     "pageNotFound": "Страница не найдена",
     "pageNotFoundText": "Запрашиваемая страница не существует или была удалена."
   },
+  "pagination": {
+    "label": "Постраничная навигация",
+    "previous": "Назад",
+    "next": "Вперёд",
+    "previousAria": "Предыдущая страница",
+    "nextAria": "Следующая страница",
+    "pageAria": "Страница {page}"
+  },
   "auth": {
     "login": {
       "title": "Войти",
@@ -456,7 +464,8 @@
   },
   "locale": {
     "az": "AZ",
-    "ru": "RU"
+    "ru": "RU",
+    "tr": "TR"
   },
   "legal": {
     "lastUpdated": "Последнее обновление",

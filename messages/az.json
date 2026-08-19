@@ -122,6 +122,14 @@
     "pageNotFound": "Səhifə tapılmadı",
     "pageNotFoundText": "Axtardığınız səhifə mövcud deyil və ya silinib."
   },
+  "pagination": {
+    "label": "Səhifələmə",
+    "previous": "Əvvəlki",
+    "next": "Növbəti",
+    "previousAria": "Əvvəlki səhifə",
+    "nextAria": "Növbəti səhifə",
+    "pageAria": "Səhifə {page}"
+  },
   "auth": {
     "login": {
       "title": "Daxil ol",
@@ -456,7 +464,8 @@
   },
   "locale": {
     "az": "AZ",
-    "ru": "RU"
+    "ru": "RU",
+    "tr": "TR"
   },
   "legal": {
     "lastUpdated": "Son yenilənmə",

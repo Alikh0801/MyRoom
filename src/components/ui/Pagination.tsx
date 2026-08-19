@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 interface PaginationProps {
   currentPage: number;
@@ -35,7 +36,7 @@ function getPageNumbers(current: number, total: number): (number | "ellipsis")[]
   return pages;
 }
 
-export function Pagination({
+export async function Pagination({
   currentPage,
   totalPages,
   basePath = "/",
@@ -43,21 +44,22 @@ export function Pagination({
 }: PaginationProps) {
   if (totalPages <= 1) return null;
 
+  const t = await getTranslations("pagination");
   const pages = getPageNumbers(currentPage, totalPages);
 
   return (
-    <nav className="pagination" aria-label="Səhifələmə">
+    <nav className="pagination" aria-label={t("label")}>
       {currentPage > 1 ? (
         <Link
           href={pageHref(basePath, currentPage - 1, hash)}
           className="pagination__btn pagination__btn--nav"
-          aria-label="Əvvəlki səhifə"
+          aria-label={t("previousAria")}
         >
-          ‹ Əvvəlki
+          ‹ {t("previous")}
         </Link>
       ) : (
         <span className="pagination__btn pagination__btn--nav pagination__btn--disabled">
-          ‹ Əvvəlki
+          ‹ {t("previous")}
         </span>
       )}
 
@@ -74,7 +76,7 @@ export function Pagination({
               className={`pagination__page${
                 page === currentPage ? " pagination__page--active" : ""
               }`}
-              aria-label={`Səhifə ${page}`}
+              aria-label={t("pageAria", { page })}
               aria-current={page === currentPage ? "page" : undefined}
             >
               {page}
@@ -87,13 +89,13 @@ export function Pagination({
         <Link
           href={pageHref(basePath, currentPage + 1, hash)}
           className="pagination__btn pagination__btn--nav"
-          aria-label="Növbəti səhifə"
+          aria-label={t("nextAria")}
         >
-          Növbəti ›
+          {t("next")} ›
         </Link>
       ) : (
         <span className="pagination__btn pagination__btn--nav pagination__btn--disabled">
-          Növbəti ›
+          {t("next")} ›
         </span>
       )}
     </nav>

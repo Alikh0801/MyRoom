@@ -122,6 +122,14 @@
     "pageNotFound": "Sayfa bulunamadı",
     "pageNotFoundText": "Aradığınız sayfa mevcut değil veya kaldırılmış."
   },
+  "pagination": {
+    "label": "Sayfalama",
+    "previous": "Önceki",
+    "next": "Sonraki",
+    "previousAria": "Önceki sayfa",
+    "nextAria": "Sonraki sayfa",
+    "pageAria": "Sayfa {page}"
+  },
   "auth": {
     "login": {
       "title": "Giriş yap",
@@ -456,7 +464,8 @@
   },
   "locale": {
     "az": "AZ",
-    "ru": "RU"
+    "ru": "RU",
+    "tr": "TR"
   },
   "legal": {
     "lastUpdated": "Son güncelleme",

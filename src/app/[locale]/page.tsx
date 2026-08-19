@@ -4,7 +4,11 @@ import { ListingCard } from "@/components/listings/ListingCard";
 import { Pagination } from "@/components/ui/Pagination";
 import { getFavoritePageContext } from "@/lib/favorites/page-context";
 import type { Locale } from "@/i18n/routing";
-import { buildCanonicalAlternates, getAbsoluteUrl } from "@/lib/seo";
+import {
+  buildCanonicalAlternates,
+  getAbsoluteUrl,
+  getLocalizedPath,
+} from "@/lib/seo";
 import {
   getCategories,
   getHomeListingsPaginated,
@@ -119,6 +123,7 @@ export default async function HomePage({ params, searchParams }: HomePageProps) 
               <Pagination
                 currentPage={page}
                 totalPages={totalPages}
+                basePath={getLocalizedPath("/", locale as Locale)}
                 hash="#elanlar"
               />
             </>

@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { FlagIcon } from "@/components/layout/FlagIcon";
 import { routing, type Locale } from "@/i18n/routing";
@@ -19,9 +20,11 @@ interface LanguageSwitcherProps {
 export function LanguageSwitcher({ variant = "desktop" }: LanguageSwitcherProps) {
   const locale = useLocale() as Locale;
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const t = useTranslations("nav");
   const [open, setOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -46,7 +49,18 @@ export function LanguageSwitcher({ variant = "desktop" }: LanguageSwitcherProps)
   function switchLocale(nextLocale: Locale) {
     setOpen(false);
     if (nextLocale === locale) return;
-    router.replace(pathname, { locale: nextLocale });
+
+    // Cari query parametrləri (filtrlər, səhifə nömrəsi) saxlanılır və
+    // keçid startTransition içində olur — beləliklə səhifə yenidən
+    // yüklənmir, mövcud məzmun yeni dil gələnə qədər ekranda qalır.
+    const query = Object.fromEntries(searchParams.entries());
+
+    startTransition(() => {
+      router.replace(
+        { pathname, query },
+        { locale: nextLocale, scroll: false }
+      );
+    });
   }
 
   const current = LOCALE_META[locale];
@@ -62,6 +76,7 @@ export function LanguageSwitcher({ variant = "desktop" }: LanguageSwitcherProps)
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label={t("language")}
+        aria-busy={isPending}
       >
         <FlagIcon locale={locale} className="lang-switcher__flag" />
         <span className="lang-switcher__code">{current.code}</span>
