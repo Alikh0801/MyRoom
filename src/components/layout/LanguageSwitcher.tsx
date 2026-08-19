@@ -1,30 +1,18 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 
+const LOCALE_META: Record<Locale, { flag: string; code: string }> = {
+  az: { flag: "🇦🇿", code: "AZ" },
+  ru: { flag: "🇷🇺", code: "RU" },
+  tr: { flag: "🇹🇷", code: "TR" },
+};
+
 interface LanguageSwitcherProps {
   variant?: "desktop" | "mobile";
-}
-
-function GlobeIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-    </svg>
-  );
 }
 
 export function LanguageSwitcher({ variant = "desktop" }: LanguageSwitcherProps) {
@@ -32,47 +20,91 @@ export function LanguageSwitcher({ variant = "desktop" }: LanguageSwitcherProps)
   const pathname = usePathname();
   const router = useRouter();
   const t = useTranslations("nav");
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
 
-  const otherLocale = routing.locales.find((item) => item !== locale) ?? locale;
+  useEffect(() => {
+    if (!open) return;
+
+    function handlePointerDown(e: MouseEvent) {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+
+    document.addEventListener("mousedown", handlePointerDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
 
   function switchLocale(nextLocale: Locale) {
+    setOpen(false);
     if (nextLocale === locale) return;
     router.replace(pathname, { locale: nextLocale });
   }
 
-  if (variant === "mobile") {
-    return (
-      <button
-        type="button"
-        className="lang-switcher--mobile"
-        onClick={() => switchLocale(otherLocale)}
-        aria-label={`${t("language")}: ${otherLocale.toUpperCase()}`}
-      >
-        <GlobeIcon />
-        <span>{locale.toUpperCase()}</span>
-      </button>
-    );
-  }
+  const current = LOCALE_META[locale];
+  const wrapperClass =
+    variant === "mobile" ? "lang-switcher--mobile" : "lang-switcher--desktop";
 
   return (
-    <div
-      className="lang-switcher--desktop"
-      role="group"
-      aria-label={t("language")}
-    >
-      {routing.locales.map((item) => (
-        <button
-          key={item}
-          type="button"
-          className={`lang-switcher__btn${
-            item === locale ? " lang-switcher__btn--active" : ""
-          }`}
-          onClick={() => switchLocale(item)}
-          aria-pressed={item === locale}
+    <div className={`lang-switcher ${wrapperClass}`} ref={rootRef}>
+      <button
+        type="button"
+        className="lang-switcher__trigger"
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        aria-label={t("language")}
+      >
+        <span className="lang-switcher__flag" aria-hidden="true">
+          {current.flag}
+        </span>
+        <span className="lang-switcher__code">{current.code}</span>
+        <svg
+          className={`lang-switcher__chevron${open ? " lang-switcher__chevron--open" : ""}`}
+          width="14"
+          height="14"
+          viewBox="0 0 16 16"
+          fill="none"
+          aria-hidden="true"
         >
-          {item.toUpperCase()}
-        </button>
-      ))}
+          <path
+            d="M4 6l4 4 4-4"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="lang-switcher__dropdown" role="menu">
+          {routing.locales.map((item) => (
+            <button
+              key={item}
+              type="button"
+              role="menuitem"
+              className={`lang-switcher__option${
+                item === locale ? " lang-switcher__option--active" : ""
+              }`}
+              onClick={() => switchLocale(item)}
+              aria-current={item === locale}
+            >
+              <span className="lang-switcher__flag" aria-hidden="true">
+                {LOCALE_META[item].flag}
+              </span>
+              {LOCALE_META[item].code}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

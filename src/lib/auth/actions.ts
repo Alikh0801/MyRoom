@@ -330,7 +330,9 @@ export async function requestPasswordReset(
 
   const locale = (await getLocale()) as Locale;
   const recoveryPath =
-    locale === "ru" ? "/auth/callback/recovery/ru" : "/auth/callback/recovery";
+    locale === "az"
+      ? "/auth/callback/recovery"
+      : `/auth/callback/recovery/${locale}`;
   const redirectTo = `${getSiteUrl()}${recoveryPath}`;
 
   const supabase = await createClient();

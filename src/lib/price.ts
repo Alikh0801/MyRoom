@@ -3,6 +3,7 @@ import type { PriceUnit } from "@/types/database";
 const UNIT_LABELS: Record<string, Record<PriceUnit, string>> = {
   az: { day: "gün", week: "həftə", month: "ay" },
   ru: { day: "день", week: "неделя", month: "месяц" },
+  tr: { day: "gün", week: "hafta", month: "ay" },
 };
 
 export function formatPriceSuffix(
@@ -27,22 +28,18 @@ export function getPriceUnitLabel(unit: PriceUnit = "day", locale = "az"): strin
   return labels[unit];
 }
 
+const UNIT_LABELS_CAPITALIZED: Record<string, Record<PriceUnit, string>> = {
+  az: { day: "Gün", week: "Həftə", month: "Ay" },
+  ru: { day: "День", week: "Неделя", month: "Месяц" },
+  tr: { day: "Gün", week: "Hafta", month: "Ay" },
+};
+
 export function getPriceUnitOptions(locale = "az") {
   const labels = UNIT_LABELS[locale] ?? UNIT_LABELS.az;
+  const capitalizedLabels = UNIT_LABELS_CAPITALIZED[locale] ?? UNIT_LABELS_CAPITALIZED.az;
   return (Object.keys(labels) as PriceUnit[]).map((value) => ({
     value,
-    label:
-      locale === "ru"
-        ? value === "day"
-          ? "День"
-          : value === "week"
-            ? "Неделя"
-            : "Месяц"
-        : value === "day"
-          ? "Gün"
-          : value === "week"
-            ? "Həftə"
-            : "Ay",
+    label: capitalizedLabels[value],
   }));
 }
 

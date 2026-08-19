@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 function getForgotPasswordPath(next: string): string {
-  if (next.startsWith("/ru/")) {
-    return "/ru/auth/forgot-password?error=reset_link_expired";
+  for (const locale of ["ru", "tr"]) {
+    if (next.startsWith(`/${locale}/`)) {
+      return `/${locale}/auth/forgot-password?error=reset_link_expired`;
+    }
   }
   return "/auth/forgot-password?error=reset_link_expired";
 }

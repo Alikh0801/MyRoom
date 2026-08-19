@@ -23,7 +23,8 @@ export function MyListingCard({
 }: MyListingCardProps) {
   const t = useTranslations("dashboard");
   const locale = useLocale() as Locale;
-  const dateLocale = locale === "ru" ? "ru-RU" : "az-AZ";
+  const dateLocale =
+    locale === "ru" ? "ru-RU" : locale === "tr" ? "tr-TR" : "az-AZ";
 
   const createdAt = new Date(listing.created_at).toLocaleDateString(dateLocale, {
     day: "numeric",

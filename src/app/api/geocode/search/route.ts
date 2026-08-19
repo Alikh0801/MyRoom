@@ -15,7 +15,9 @@ type NominatimItem = {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const q = (searchParams.get("q") ?? "").trim();
-  const locale = searchParams.get("locale") === "ru" ? "ru" : "az";
+  const localeParam = searchParams.get("locale");
+  const locale =
+    localeParam === "ru" ? "ru" : localeParam === "tr" ? "tr" : "az";
 
   if (q.length < 2) {
     return NextResponse.json({ results: [] } satisfies GeocodeSearchResponse);
@@ -27,7 +29,13 @@ export async function GET(request: Request) {
   url.searchParams.set("addressdetails", "0");
   url.searchParams.set("limit", "6");
   url.searchParams.set("countrycodes", "az");
-  url.searchParams.set("accept-language", locale === "ru" ? "ru,az,en" : "az,ru,en");
+  const acceptLanguage =
+    locale === "ru"
+      ? "ru,az,en"
+      : locale === "tr"
+        ? "tr,az,en"
+        : "az,ru,en";
+  url.searchParams.set("accept-language", acceptLanguage);
 
   try {
     const response = await fetch(url.toString(), {

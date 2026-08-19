@@ -8,7 +8,7 @@ import { Header } from "@/components/layout/Header";
 import { HeaderShell } from "@/components/layout/HeaderShell";
 import { ThemeScript } from "@/components/theme/ThemeScript";
 import { routing, type Locale } from "@/i18n/routing";
-import { getSiteUrl, SITE_NAME } from "@/lib/seo";
+import { getOpenGraphLocale, getSiteUrl, SITE_NAME } from "@/lib/seo";
 import {
   buildOrganizationJsonLd,
   buildWebSiteJsonLd,
@@ -56,7 +56,7 @@ export async function generateMetadata({
       siteName: SITE_NAME,
       title: t("title"),
       description: t("description"),
-      locale: locale === "ru" ? "ru_RU" : "az_AZ",
+      locale: getOpenGraphLocale(locale as Locale),
       type: "website",
     },
     twitter: {

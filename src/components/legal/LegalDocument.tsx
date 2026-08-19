@@ -16,6 +16,7 @@ interface LegalDocumentProps {
 const DATE_LOCALE: Record<Locale, string> = {
   az: "az-AZ",
   ru: "ru-RU",
+  tr: "tr-TR",
 };
 
 export async function LegalDocument({

@@ -16,6 +16,7 @@ import {
   buildCanonicalAlternates,
   getAbsoluteUrl,
   getLocalizedPath,
+  getOpenGraphLocale,
   SITE_NAME,
 } from "@/lib/seo";
 import {
@@ -50,7 +51,7 @@ export async function generateMetadata({ params }: ListingPageProps) {
       description,
       url: getAbsoluteUrl(path, locale as Locale),
       type: "article",
-      locale: locale === "ru" ? "ru_RU" : "az_AZ",
+      locale: getOpenGraphLocale(locale as Locale),
       images: coverImage
         ? [
             {

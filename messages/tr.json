@@ -1,0 +1,477 @@
+{
+  "metadata": {
+    "title": "MyRoomAZ | Otel, A-frame, hostel/apart otel ve sayfiye evleri",
+    "titleTemplate": "%s | MyRoomAZ",
+    "description": "Otel, hostel/apart otel, A-frame (Glamping) ve sayfiye evleri. Kısa süreli tatil için ilanlar — Azerbaycan genelinde."
+  },
+  "nav": {
+    "login": "Giriş yap",
+    "loginShort": "Giriş",
+    "register": "Kayıt ol",
+    "registerShort": "Kayıt",
+    "postListing": "+ İlan ver",
+    "postListingShort": "+ İlan",
+    "myListings": "İlanlarım",
+    "myFavorites": "Favoriler",
+    "admin": "Yönetici",
+    "signOut": "Çıkış yap",
+    "accountMenu": "Hesap menüsü",
+    "myAccount": "Hesabım",
+    "language": "Dil",
+    "authMenu": "Giriş ve kayıt"
+  },
+  "theme": {
+    "switchToLight": "Aydınlık mod",
+    "switchToDark": "Karanlık mod"
+  },
+  "footer": {
+    "tagline": "Azerbaycan genelinde kısa süreli tatil ve günlük kiralama ilanları",
+    "listingsTitle": "İlanlar",
+    "allListings": "Tüm ilanlar",
+    "rayonHomes": "Sayfiye evleri",
+    "legalTitle": "Yasal",
+    "terms": "Şartlar ve koşullar",
+    "privacy": "Gizlilik politikası",
+    "copyright": "© {year} MyRoomAZ. Tüm hakları saklıdır."
+  },
+  "home": {
+    "heroTitle": "Azerbaycan'da tatil için ideal yerinizi bulun",
+    "heroSubtitle": "Seyahatinize uygun Otel, A-frame, Villa ve Sayfiye evlerini tek adreste arayın.",
+    "searchRegion": "Bölge veya şehir seçin",
+    "allRegions": "Tüm bölgeler",
+    "allTypes": "Tüm türler",
+    "search": "Ara",
+    "categories": "Kategoriler",
+    "categoriesSubtitle": "Ne arıyorsunuz?",
+    "vipListings": "Premium ilanlar",
+    "vipEmpty": "VIP ilanlar yakında burada görünecek.",
+    "listings": "İlanlar",
+    "listingsCount": "{total} ilan · Sayfa {page} / {totalPages}",
+    "noListingsTitle": "Henüz ilan yok",
+    "noListingsText": "Yakında yeni ilanlar eklenecek.",
+    "seoAboutTitle": "Azerbaycan'da günlük tatil mekanları",
+    "seoAboutText": "MyRoomAZ — Azerbaycan'ın tüm bölgelerindeki günlük kiralama ve tatil mekanlarını tek platformda bir araya getirir. Bakü, Gabala, Şeki, Gusar, Guba, Gax, Lenkeran, Şamahı ve diğer turistik bölgelerde otel, hostel/apart otel, A-frame (glamping) ve sayfiye evleri arasından size uygun seçeneği kolayca bulabilirsiniz. İster aileniz, isterse arkadaşlarınızla hafta sonu tatili planlarken, bölge, fiyat ve misafir sayısına göre filtreleyerek Azerbaycan'daki en uygun günlük kiralama ilanını MyRoomAZ'da seçin."
+  },
+  "listing": {
+    "noPhoto": "Fotoğraf yok",
+    "vip": "VIP",
+    "perDay": "/gün",
+    "perWeek": "/hafta",
+    "perMonth": "/ay",
+    "guests": "{count} misafir",
+    "bedrooms": "{count} oda",
+    "bathrooms": "{count} banyo",
+    "included": "Dahil olanlar",
+    "propertyFeatures": "Tesis özellikleri",
+    "roomFeatures": "Oda özellikleri",
+    "morePhotos": "+{count} fotoğraf",
+    "directions": "Yol tarifi al",
+    "similar": "Benzer ilanlar",
+    "notFound": "İlan bulunamadı",
+    "establishmentName": "Tesis adı",
+    "roomType": "Oda tipi",
+    "floor": "{floor}. kat",
+    "address": "Adres",
+    "guest": "Misafir sayısı",
+    "guestCount": "{count}",
+    "bedroom": "Oda sayısı",
+    "bathroom": "Banyo sayısı",
+    "ownerTitle": "İlan sahibi",
+    "ownerFallback": "Mülk sahibi",
+    "viewOwnerProfile": "İlan sahibinin profiline bak",
+    "views": "{count} görüntülenme",
+    "call": "Ara",
+    "whatsappContact": "WhatsApp ile iletişim"
+  },
+  "ownerProfile": {
+    "metaTitle": "{name} — İlan sahibi",
+    "metaDescription": "{name} tarafından yayınlanan {count} ilan.",
+    "notFound": "Profil bulunamadı",
+    "ownerFallback": "Mülk sahibi",
+    "memberSince": "Üyelik: {date}",
+    "listingsCount": "{count, plural, one {# ilan} other {# ilan}}",
+    "listingsTitle": "İlanlar",
+    "callButton": "Ara",
+    "whatsappButton": "WhatsApp",
+    "empty": {
+      "title": "İlan yok",
+      "desc": "Bu kullanıcının şu anda aktif ilanı yok."
+    }
+  },
+  "favorites": {
+    "add": "Favorilere ekle",
+    "remove": "Favorilerden çıkar",
+    "metaTitle": "Favoriler",
+    "pageTitle": "Favoriler",
+    "subtitle": "Beğendiğiniz ilanları burada saklayın.",
+    "empty": {
+      "title": "Henüz favori ilanınız yok",
+      "desc": "Beğendiğiniz ilanların üzerindeki kalp simgesine tıklayın.",
+      "browseCta": "İlanlara bak"
+    },
+    "errors": {
+      "authRequired": "Favorilere eklemek için giriş yapın.",
+      "invalidListing": "İlan bulunamadı.",
+      "updateFailed": "Favoriler güncellenemedi."
+    }
+  },
+  "common": {
+    "search": "Arama",
+    "loading": "Yükleniyor",
+    "backHome": "Ana sayfaya dön",
+    "pageNotFound": "Sayfa bulunamadı",
+    "pageNotFoundText": "Aradığınız sayfa mevcut değil veya kaldırılmış."
+  },
+  "auth": {
+    "login": {
+      "title": "Giriş yap",
+      "subtitle": "İlan vermek ve yönetmek için hesabınıza giriş yapın.",
+      "callbackError": "Giriş bağlantısı geçersiz veya süresi dolmuş. Tekrar deneyin.",
+      "resetSuccess": "Şifreniz başarıyla güncellendi. Yeni şifrenizle giriş yapabilirsiniz."
+    },
+    "register": {
+      "title": "Kayıt ol",
+      "subtitle": "Mülk sahibi olarak kayıt olun ve ilan verin."
+    },
+    "form": {
+      "email": "E-posta",
+      "emailPlaceholder": "siz@example.com",
+      "password": "Şifre",
+      "showPassword": "Şifreyi göster",
+      "hidePassword": "Şifreyi gizle",
+      "passwordPlaceholder": "••••••••",
+      "passwordMinPlaceholder": "En az 6 karakter",
+      "fullName": "Ad, soyad",
+      "fullNamePlaceholder": "Ad Soyad",
+      "phone": "Arama için telefon *",
+      "phonePlaceholder": "50 123 45 67",
+      "whatsappSameAsPhone": "WhatsApp numarası telefon ile aynı",
+      "whatsapp": "WhatsApp numarası *",
+      "submitLogin": "Giriş yap",
+      "submitLoginPending": "Giriş yapılıyor...",
+      "submitRegister": "Kayıt ol",
+      "submitRegisterPending": "Kayıt olunuyor...",
+      "noAccount": "Hesabınız yok mu?",
+      "registerLink": "Kayıt olun",
+      "hasAccount": "Zaten hesabınız var mı?",
+      "loginLink": "Giriş yapın",
+      "forgotPasswordLink": "Şifrenizi mi unuttunuz?"
+    },
+    "errors": {
+      "missingCredentials": "E-posta ve şifre girin.",
+      "missingRequired": "Ad, e-posta ve şifre zorunludur.",
+      "missingPhone": "Arama için telefon numarası zorunludur.",
+      "missingWhatsapp": "WhatsApp numarası zorunludur.",
+      "invalidPhone": "Telefon numarası geçersiz. Örnek: +994501234567",
+      "invalidWhatsapp": "WhatsApp numarası geçersiz. Örnek: +994501234567",
+      "passwordTooShort": "Şifre en az 6 karakter olmalıdır.",
+      "legalRequired": "Kullanım şartlarını ve Gizlilik politikasını kabul etmelisiniz.",
+      "emailAlreadyRegistered": "Bu e-posta ile zaten kayıt olunmuş.",
+      "phoneAlreadyRegistered": "Bu telefon numarası ile zaten kayıt olunmuş.",
+      "invalidCredentials": "E-posta veya şifre yanlış.",
+      "emailNotConfirmed": "E-posta adresinizi onaylayın.",
+      "userAlreadyRegistered": "Bu e-posta ile zaten kayıt olunmuş.",
+      "invalidPassword": "Geçerli bir şifre girin.",
+      "invalidEmailFormat": "E-posta formatı geçersiz.",
+      "invalidToken": "Onay kodu hatalı veya süresi dolmuş.",
+      "rateLimitResend": "Yeni kod göndermek için biraz bekleyin.",
+      "confirmationEmailFailed": "Onay e-postası gönderilemedi. Supabase SMTP ve Resend ayarlarını kontrol edin.",
+      "unknown": "Bir hata oluştu. Tekrar deneyin.",
+      "turnstileIncomplete": "Güvenlik doğrulamasını tamamlayın.",
+      "turnstileFailed": "Güvenlik doğrulaması başarısız oldu. Tekrar deneyin.",
+      "rateLimitSignup": "Çok fazla kayıt denemesi. {minutes} dakika sonra tekrar deneyin.",
+      "rateLimitSignin": "Çok fazla giriş denemesi. {minutes} dakika sonra tekrar deneyin.",
+      "rateLimitVerifyOtp": "Çok fazla onay denemesi. {minutes} dakika sonra tekrar deneyin.",
+      "rateLimitResendOtp": "Çok fazla kod gönderme denemesi. {minutes} dakika sonra tekrar deneyin.",
+      "emailNotFound": "E-posta adresi bulunamadı.",
+      "missingOtp": "Onay kodunu girin.",
+      "invalidOtpLength": "{length} haneli kodu girin.",
+      "missingEmail": "E-posta girin.",
+      "passwordMismatch": "Şifreler eşleşmiyor.",
+      "resetSessionExpired": "Şifre sıfırlama bağlantısının süresi doldu. Yeni bağlantı isteyin.",
+      "rateLimitForgotPassword": "Çok fazla şifre sıfırlama denemesi. {minutes} dakika sonra tekrar deneyin.",
+      "rateLimitResetPassword": "Çok fazla şifre güncelleme denemesi. {minutes} dakika sonra tekrar deneyin."
+    },
+    "verify": {
+      "title": "E-posta onayı",
+      "hintSignup": "Kaydı tamamlamak için e-posta adresinize gönderilen onay kodunu girin.",
+      "hintUnconfirmed": "Hesabınızı etkinleştirmek için e-posta adresinize gönderilen onay kodunu girin.",
+      "expiryHint": "Kod {minutes} dakika boyunca geçerlidir.",
+      "expiredNote": "Kodun süresi dolduysa aşağıdan yeni kod isteyin.",
+      "otpLabel": "Onay kodu",
+      "otpDigit": "Kod {index}",
+      "submit": "Onayla ve devam et",
+      "submitPending": "Kontrol ediliyor...",
+      "resend": "Kodu tekrar gönder",
+      "resendPending": "Gönderiliyor...",
+      "resendCooldown": "Kodu tekrar gönder ({seconds}sn)",
+      "resendSuccess": "Yeni onay kodu e-posta adresinize gönderildi.",
+      "missingEmailTitle": "E-posta bulunamadı",
+      "missingEmailSubtitle": "Onay kodunu girmek için önce kayıt olun veya giriş yapın.",
+      "registerCta": "Kayıt ol"
+    },
+    "forgot": {
+      "title": "Şifrenizi mi unuttunuz?",
+      "subtitle": "E-posta adresinizi girin — şifrenizi yenilemeniz için bağlantı göndereceğiz.",
+      "submit": "Bağlantı gönder",
+      "submitPending": "Gönderiliyor...",
+      "emailSent": "Sıfırlama bağlantısı e-postanıza gönderildi.",
+      "backToLogin": "Giriş sayfasına dön",
+      "linkExpired": "Şifre sıfırlama bağlantısı geçersiz veya süresi dolmuş. Yeni bağlantı isteyin."
+    },
+    "reset": {
+      "title": "Yeni şifre",
+      "subtitle": "Hesabınız için yeni bir şifre belirleyin.",
+      "confirmPassword": "Şifreyi tekrar girin",
+      "submit": "Şifreyi güncelle",
+      "submitPending": "Güncelleniyor...",
+      "requestNewLink": "Yeni bağlantı iste",
+      "sessionExpired": "Şifre sıfırlama oturumunun süresi doldu. E-posta adresinize yeni bağlantı gönderin."
+    }
+  },
+  "listingForm": {
+    "metaTitle": "Yeni ilan",
+    "backLink": "← İlanlarım",
+    "pageTitle": "Yeni ilan ver",
+    "pageSubtitle": "Bilgileri adım adım doldurun. İlanınız incelendikten sonra sitede görünecek.",
+    "mapLoading": "Harita yükleniyor...",
+    "categoryAriaLabel": "Kategori",
+    "sections": {
+      "photosTitle": "Fotoğraflar",
+      "photosDesc": "İlk fotoğraf kapak fotoğrafı olacak. En az 1, en fazla 20 fotoğraf.",
+      "basicsTitle": "Temel bilgiler",
+      "basicsDesc": "İlanınızı misafirler için çekici hale getirin.",
+      "locationTitle": "Konum bilgileri",
+      "locationDesc": "Misafirler nerede kalacaklarını ve kaç kişi ağırlayabileceğinizi bilsin.",
+      "priceTitle": "Fiyat ve iletişim",
+      "priceDesc": "Misafirler sizinle kolayca iletişime geçebilsin.",
+      "premiumTitle": "Premium ilan",
+      "premiumDesc": "İlanınızı VIP bölümünde öne çıkarın.",
+      "roomTypeTitle": "Oda tipi",
+      "amenitiesDesc": "Mülkünüzde nelerin bulunduğunu seçin."
+    },
+    "fields": {
+      "title": "İlan başlığı (AZ) *",
+      "description": "Açıklama (AZ) *",
+      "titleRu": "İlan başlığı (RU)",
+      "descriptionRu": "Açıklama (RU)",
+      "ruOptionalHint": "Rusça versiyon isteğe bağlıdır. Doldurulmazsa AZ metin gösterilir.",
+      "category": "Kategori *",
+      "region": "Bölge *",
+      "city": "Şehir / köy *",
+      "address": "Adres (isteğe bağlı)",
+      "mapLocation": "Haritada konum *",
+      "guests": "Misafir sayısı *",
+      "bedrooms": "Oda sayısı",
+      "bathrooms": "Banyo sayısı",
+      "price": "Fiyat (AZN) *",
+      "priceUnit": "Birim *",
+      "whatsapp": "WhatsApp numarası *"
+    },
+    "placeholders": {
+      "title": "Örn: Guba'da dağ manzaralı A-frame ev",
+      "description": "Eviniz, imkanlar ve çevre hakkında yazın...",
+      "titleRu": "Напр.: A-frame дом с видом на горы в Губе",
+      "descriptionRu": "Опишите дом, удобства и окружение...",
+      "region": "Bölge veya şehir seçin",
+      "city": "Gence",
+      "address": "Tam adres",
+      "price": "150",
+      "whatsapp": "+994501234567",
+      "roomTypeName": "Örn: Standart, Elit Suit, Deluxe Suit",
+      "roomTypeFloor": "Örn: 3"
+    },
+    "dropzone": {
+      "selected": "{count} fotoğraf seçildi",
+      "dragHere": "Fotoğraf ekleyin",
+      "orSelect": "Seçmek için dokunun"
+    },
+    "location": {
+      "hint": "Adresi arayın, haritaya tıklayın veya işaretçiyi sürükleyin.",
+      "searchLabel": "Adres araması",
+      "searchPlaceholder": "örn. Gabala, Şeki, İsmayıllı...",
+      "searching": "Aranıyor...",
+      "noResults": "Sonuç bulunamadı. Farklı bir yazım deneyin veya haritadan seçin.",
+      "searchFailed": "Arama başarısız oldu. Biraz sonra tekrar deneyin veya haritadan seçin.",
+      "useMyLocation": "Mevcut konumum",
+      "coords": "Koordinatlar: {lat}, {lng}",
+      "notSelected": "Konum seçilmedi *"
+    },
+    "hotelRoom": {
+      "hint": "Bu ilan bir oda tipini temsil eder (örn: Standart). Farklı bir oda tipi için ayrı bir ilan oluşturun.",
+      "typeName": "Oda tipi adı *",
+      "floor": "Kat"
+    },
+    "premium": {
+      "ariaLabel": "Premium ilan paketi",
+      "intro": "İlanınızı VIP bölümünde gösterin ve daha fazla görüntülenme elde edin.",
+      "recommended": "En avantajlı",
+      "paymentNotice": "Online ödeme henüz aktif değil. Şu an için VIP paket ödemelerini banka kartına havale ve ödeme dekontu ile kabul ediyoruz. Yönetici dekontu kontrol ettikten sonra VIP durumu etkinleştirilir.",
+      "comingSoon": "Ödeme özelliği yakında aktif olacak. Şu anda seçim yalnızca önizleme amaçlıdır.",
+      "plans": {
+        "none": {
+          "duration": "Standart",
+          "price": "Ücretsiz",
+          "desc": "Normal ilan listesinde görünür"
+        },
+        "day": {
+          "duration": "1 gün",
+          "desc": "VIP bölümünde 24 saat"
+        },
+        "week": {
+          "duration": "1 hafta",
+          "desc": "VIP bölümünde 7 gün"
+        }
+      },
+      "payment": {
+        "title": "Ödeme bilgileri",
+        "hint": "Seçtiğiniz paketin tutarını aşağıdaki karta havale edin ve ödeme dekontunu yükleyin.",
+        "bankName": "Banka",
+        "cardNumber": "Kart numarası",
+        "cardholder": "Kart sahibi",
+        "receiptLabel": "Ödeme dekontu *",
+        "receiptHint": "Havale dekontunun fotoğrafını yükleyin (JPEG, PNG veya WebP).",
+        "cardNotConfigured": "Banka kartı henüz tanımlanmadı. Yönetici kart bilgisini ekledikten sonra VIP seçebilirsiniz."
+      }
+    },
+    "footer": {
+      "note": "Gönderdikten sonra ilanınız yönetici tarafından incelenecek.",
+      "submit": "İlanı gönder",
+      "submitting": "Gönderiliyor..."
+    },
+    "errors": {
+      "invalidImageType": "Yalnızca JPEG, PNG veya WebP fotoğraf seçebilirsiniz.",
+      "tooManyImages": "En fazla 20 fotoğraf seçebilirsiniz.",
+      "minOneImage": "En az 1 fotoğraf seçin.",
+      "selectCategory": "Kategori seçin.",
+      "selectRegion": "Listeden bir bölge seçin.",
+      "selectMapLocation": "Haritada mülkün konumunu gösterin.",
+      "legalRequired": "Kullanım şartlarını ve Gizlilik politikasını kabul etmelisiniz.",
+      "vipReceiptRequired": "VIP paket için ödeme dekontu yükleyin.",
+      "createFailed": "İlan oluşturulamadı.",
+      "uploadFailed": "Fotoğraf yükleme hatası",
+      "uploadServerFailed": "Fotoğraf sunucuya yüklenemedi",
+      "uploadConfirmFailed": "Fotoğraf onay hatası",
+      "createdUploadError": "İlan oluşturuldu, ancak fotoğraf hatası: {message}",
+      "createdNoImages": "İlan oluşturuldu, fotoğraflar yüklenemedi.",
+      "authRequired": "Giriş gerekli.",
+      "titleTooShort": "Başlık en az 5 karakter olmalıdır.",
+      "titleRuTooShort": "Rusça başlık en az 5 karakter olmalıdır.",
+      "descriptionTooShort": "Açıklama en az 20 karakter olmalıdır.",
+      "descriptionRuTooShort": "Rusça açıklama en az 20 karakter olmalıdır.",
+      "invalidPrice": "Geçerli bir fiyat girin.",
+      "invalidPriceUnit": "Fiyat birimini seçin.",
+      "cityRegionRequired": "Şehir ve bölge zorunludur.",
+      "invalidMapLocation": "Haritada geçerli bir konum seçin.",
+      "minGuests": "Misafir sayısı en az 1 olmalıdır.",
+      "whatsappRequired": "WhatsApp numarası zorunludur.",
+      "roomTypeNameTooShort": "Oda tipi adı en az 2 karakter olmalıdır.",
+      "amenitiesSaveFailed": "Dahil olanlar bölümü kaydedilemedi.",
+      "roomTypeSaveFailed": "Oda tipi kaydedilemedi.",
+      "roomAmenitiesSaveFailed": "Oda özellikleri kaydedilemedi.",
+      "updateFailed": "İlan güncellenemedi.",
+      "notFound": "İlan bulunamadı.",
+      "tooManyImagesTotal": "Toplam fotoğraf sayısı en fazla 20 olabilir.",
+      "imagesSaveFailed": "Fotoğraflar güncellenemedi.",
+      "cannotDeleteLastPhoto": "En az bir fotoğraf kalmalıdır."
+    },
+    "edit": {
+      "metaTitle": "İlanı düzenle",
+      "pageTitle": "İlanı düzenle",
+      "pageSubtitle": "Bilgileri güncelleyin. Onaylanmış ilanlar değişiklikten sonra yeniden incelenebilir.",
+      "backLink": "← İlanlarım",
+      "existingPhotos": "Mevcut fotoğraflar",
+      "coverBadge": "Kapak",
+      "addPhotos": "Yeni fotoğraf ekle",
+      "photosDesc": "Fotoğrafları silebilir, sırasını değiştirebilir veya yeni fotoğraf ekleyebilirsiniz.",
+      "reorderHint": "Oklarla sırayı değiştirin. İlk fotoğraf kapak fotoğrafı olacak.",
+      "deletePhoto": "Fotoğrafı sil",
+      "moveLeft": "Sola taşı",
+      "moveRight": "Sağa taşı",
+      "submit": "Kaydet",
+      "submitting": "Kaydediliyor...",
+      "note": "Değişiklikler yönetici tarafından yeniden incelenebilir."
+    }
+  },
+  "dashboard": {
+    "metaTitle": "İlanlarım",
+    "pageTitle": "İlanlarım",
+    "subtitle": "İlanlarınızın durumunu takip edin ve yönetin.",
+    "alerts": {
+      "created": "İlanınız başarıyla gönderildi. Yönetici onayından sonra sitede görünecek.",
+      "updated": "İlanınız güncellendi. Onaylanmış ilanlar değişiklikten sonra yeniden incelenebilir."
+    },
+    "filters": {
+      "ariaLabel": "İlan durumu",
+      "all": "Tümü"
+    },
+    "status": {
+      "draft": "Taslak",
+      "pending": "Bekliyor",
+      "approved": "Onaylandı",
+      "rejected": "Reddedildi"
+    },
+    "statusHints": {
+      "draft": "İlan henüz tamamlanmadı.",
+      "pending": "Yönetici onayını bekliyor.",
+      "approved": "İlan sitede görünüyor.",
+      "rejected": "İlan reddedildi. Düzeltip yeniden gönderebilirsiniz."
+    },
+    "empty": {
+      "noneTitle": "Henüz ilanınız yok",
+      "noneDesc": "İlk ilanınızı vererek misafir ağırlamaya başlayın.",
+      "filteredTitle": "{status} ilan yok",
+      "filteredDesc": "Bu durumda ilan bulunamadı.",
+      "createCta": "İlan ver"
+    },
+    "card": {
+      "noImage": "Fotoğraf yok",
+      "createdAt": "Oluşturuldu: {date}",
+      "vip": "VIP",
+      "vipPending": "VIP bekliyor",
+      "edit": "Düzenle",
+      "viewPublic": "Sitede gör",
+      "preview": "Önizleme",
+      "rejectionReason": "Reddedilme nedeni",
+      "newListing": "Yeni ilan",
+      "delete": "Sil",
+      "deleting": "Siliniyor...",
+      "deleteConfirm": "\"{title}\" ilanını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
+    },
+    "vip": {
+      "button": "VIP yap",
+      "submit": "VIP talebi gönder",
+      "submitting": "Gönderiliyor...",
+      "cancel": "İptal et",
+      "selectPlan": "VIP paketi seçin.",
+      "receiptRequired": "Ödeme dekontu yükleyin.",
+      "uploadFailed": "Dekont yüklenemedi."
+    }
+  },
+  "admin": {
+    "settings": {
+      "title": "Banka kartı ayarları",
+      "subtitle": "VIP ödemeleri için kart bilgisini belirleyin. İlan sahipleri bu karta havale yapacak."
+    }
+  },
+  "locale": {
+    "az": "AZ",
+    "ru": "RU"
+  },
+  "legal": {
+    "lastUpdated": "Son güncelleme",
+    "toc": "İçindekiler",
+    "seeAlso": "Ayrıca bakınız",
+    "termsTitle": "Kullanıcı şartları ve kuralları",
+    "termsMetaTitle": "Şartlar ve koşullar",
+    "termsMetaDescription": "MyRoom platformunun kullanıcı şartları, ilan kuralları ve yasal hükümleri.",
+    "privacyTitle": "Gizlilik politikası",
+    "privacyMetaTitle": "Gizlilik politikası",
+    "privacyMetaDescription": "MyRoom platformunda kişisel verilerin toplanması, işlenmesi ve korunması kuralları.",
+    "acceptTermsLink": "Kullanıcı şartları ve kurallarını",
+    "acceptPrivacyLink": "Gizlilik politikasını",
+    "acceptPrefix": "",
+    "acceptAnd": "ve",
+    "acceptSuffix": "okudum ve kabul ediyorum *"
+  }
+}

@@ -26,6 +26,16 @@ export function getAbsoluteUrl(path: string, locale: Locale) {
   return `${getSiteUrl()}${getLocalizedPath(path, locale)}`;
 }
 
+const OG_LOCALES: Record<Locale, string> = {
+  az: "az_AZ",
+  ru: "ru_RU",
+  tr: "tr_TR",
+};
+
+export function getOpenGraphLocale(locale: Locale) {
+  return OG_LOCALES[locale] ?? OG_LOCALES[routing.defaultLocale];
+}
+
 export function buildCanonicalAlternates(path: string, locale: Locale) {
   const languages = Object.fromEntries(
     routing.locales.map((item) => [item, getAbsoluteUrl(path, item)])
