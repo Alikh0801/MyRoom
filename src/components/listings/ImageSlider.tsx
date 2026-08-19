@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { LISTING_IMAGE_DISPLAY_QUALITY } from "@/lib/images/listing-images";
 
@@ -30,6 +31,7 @@ export function ImageSlider({
   quality = LISTING_IMAGE_DISPLAY_QUALITY,
   preferNative = false,
 }: ImageSliderProps) {
+  const t = useTranslations("listing");
   const [index, setIndex] = useState(initialIndex);
   const count = images.length;
 
@@ -96,7 +98,7 @@ export function ImageSlider({
               type="button"
               className="image-slider__arrow image-slider__arrow--prev"
               onClick={goPrev}
-              aria-label="Əvvəlki şəkil"
+              aria-label={t("previousPhoto")}
             >
               ‹
             </button>
@@ -104,7 +106,7 @@ export function ImageSlider({
               type="button"
               className="image-slider__arrow image-slider__arrow--next"
               onClick={goNext}
-              aria-label="Növbəti şəkil"
+              aria-label={t("nextPhoto")}
             >
               ›
             </button>
@@ -123,7 +125,7 @@ export function ImageSlider({
               type="button"
               className={`image-slider__dot${i === index ? " image-slider__dot--active" : ""}`}
               onClick={() => setIndex(i)}
-              aria-label={`Şəkil ${i + 1}`}
+              aria-label={t("photoNumber", { number: i + 1 })}
             />
           ))}
         </div>

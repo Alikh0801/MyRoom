@@ -81,7 +81,13 @@
     "viewOwnerProfile": "Профиль владельца объявления",
     "views": "{count} просмотров",
     "call": "Позвонить",
-    "whatsappContact": "Связаться в WhatsApp"
+    "whatsappContact": "Связаться в WhatsApp",
+    "previousPhoto": "Предыдущее фото",
+    "nextPhoto": "Следующее фото",
+    "photoNumber": "Фото {number}",
+    "photoGallery": "Галерея фотографий",
+    "close": "Закрыть",
+    "mapTitle": "Местоположение на карте"
   },
   "ownerProfile": {
     "metaTitle": "{name} — Владелец объявлений",
@@ -120,7 +126,8 @@
     "loading": "Загрузка",
     "backHome": "На главную",
     "pageNotFound": "Страница не найдена",
-    "pageNotFoundText": "Запрашиваемая страница не существует или была удалена."
+    "pageNotFoundText": "Запрашиваемая страница не существует или была удалена.",
+    "noResults": "Ничего не найдено"
   },
   "pagination": {
     "label": "Постраничная навигация",
@@ -129,6 +136,30 @@
     "previousAria": "Предыдущая страница",
     "nextAria": "Следующая страница",
     "pageAria": "Страница {page}"
+  },
+  "search": {
+    "titleDefault": "Поиск объявлений",
+    "titleWithCategory": "{category} в Азербайджане",
+    "metaDescription": "Ищите посуточную аренду и места для отдыха по району, категории, цене и числу гостей.",
+    "resultsCount": "Найдено {total} объявлений",
+    "vipHeading": "Премиум объявления",
+    "listingsHeading": "Объявления",
+    "notFoundTitle": "Объявление не найдено",
+    "notFoundText": "Измените фильтры и попробуйте снова.",
+    "loading": "Загрузка...",
+    "filters": {
+      "title": "Фильтры",
+      "region": "Район",
+      "regionPlaceholder": "Выберите район или город",
+      "allRegions": "Все",
+      "category": "Категория",
+      "allCategories": "Все",
+      "guests": "Количество гостей",
+      "minPrice": "Мин. цена (AZN)",
+      "maxPrice": "Макс. цена (AZN)",
+      "apply": "Найти",
+      "clear": "Очистить"
+    }
   },
   "auth": {
     "login": {

@@ -81,7 +81,13 @@
     "viewOwnerProfile": "Elan sahibinin profilinə bax",
     "views": "{count} baxış",
     "call": "Zəng et",
-    "whatsappContact": "WhatsApp ilə əlaqə"
+    "whatsappContact": "WhatsApp ilə əlaqə",
+    "previousPhoto": "Əvvəlki şəkil",
+    "nextPhoto": "Növbəti şəkil",
+    "photoNumber": "Şəkil {number}",
+    "photoGallery": "Şəkil qalereyası",
+    "close": "Bağla",
+    "mapTitle": "Xəritədə yer"
   },
   "ownerProfile": {
     "metaTitle": "{name} — Elan sahibi",
@@ -120,7 +126,8 @@
     "loading": "Yüklənir",
     "backHome": "Ana səhifəyə qayıt",
     "pageNotFound": "Səhifə tapılmadı",
-    "pageNotFoundText": "Axtardığınız səhifə mövcud deyil və ya silinib."
+    "pageNotFoundText": "Axtardığınız səhifə mövcud deyil və ya silinib.",
+    "noResults": "Nəticə tapılmadı"
   },
   "pagination": {
     "label": "Səhifələmə",
@@ -129,6 +136,30 @@
     "previousAria": "Əvvəlki səhifə",
     "nextAria": "Növbəti səhifə",
     "pageAria": "Səhifə {page}"
+  },
+  "search": {
+    "titleDefault": "Elan axtarışı",
+    "titleWithCategory": "{category} elanları",
+    "metaDescription": "Rayon, kateqoriya, qiymət və qonaq sayına görə günlük icarə və istirahət elanları axtarın.",
+    "resultsCount": "{total} nəticə tapıldı",
+    "vipHeading": "Premium elanlar",
+    "listingsHeading": "Elanlar",
+    "notFoundTitle": "Elan tapılmadı",
+    "notFoundText": "Filtrləri dəyişib yenidən cəhd edin.",
+    "loading": "Yüklənir...",
+    "filters": {
+      "title": "Filtrlər",
+      "region": "Rayon",
+      "regionPlaceholder": "Rayon və ya şəhər seç",
+      "allRegions": "Hamısı",
+      "category": "Kateqoriya",
+      "allCategories": "Hamısı",
+      "guests": "Qonaq sayı",
+      "minPrice": "Min qiymət (AZN)",
+      "maxPrice": "Max qiymət (AZN)",
+      "apply": "Axtar",
+      "clear": "Təmizlə"
+    }
   },
   "auth": {
     "login": {

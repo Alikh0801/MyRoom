@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { AZ_MAP_DETAIL_ZOOM } from "@/lib/map";
 import { fixLeafletIcon } from "@/lib/leaflet-icon";
@@ -13,13 +14,14 @@ interface ListingMapProps {
 }
 
 export function ListingMap({ lat, lng, title }: ListingMapProps) {
+  const t = useTranslations("listing");
   useEffect(() => {
     fixLeafletIcon();
   }, []);
 
   return (
     <div className="listing-map">
-      <h2 className="listing-map__title">Xəritədə yer</h2>
+      <h2 className="listing-map__title">{t("mapTitle")}</h2>
       <div className="listing-map__frame">
         <MapContainer
           center={[lat, lng]}

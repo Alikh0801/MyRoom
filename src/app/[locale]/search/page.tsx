@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ListingCard } from "@/components/listings/ListingCard";
 import { SearchFilters } from "@/components/search/SearchFilters";
 import type { Locale } from "@/i18n/routing";
@@ -46,24 +46,17 @@ export async function generateMetadata({
     getCategories(),
   ]);
   const typedLocale = locale as Locale;
+  const t = await getTranslations({ locale, namespace: "search" });
   const categorySlug =
     queryParams.category === "otel" ? "hotel" : queryParams.category;
   const activeCategory = categories.find((cat) => cat.slug === categorySlug);
   const categoryName = activeCategory
     ? getLocalizedName(activeCategory, typedLocale)
     : null;
-  const title =
-    typedLocale === "ru"
-      ? categoryName
-        ? `${categoryName} в Азербайджане`
-        : "Поиск объявлений"
-      : categoryName
-        ? `${categoryName} elanları`
-        : "Elan axtarışı";
-  const description =
-    typedLocale === "ru"
-      ? "Ищите посуточную аренду и места для отдыха по району, категории, цене и числу гостей."
-      : "Rayon, kateqoriya, qiymət və qonaq sayına görə günlük icarə və istirahət elanları axtarın.";
+  const title = categoryName
+    ? t("titleWithCategory", { category: categoryName })
+    : t("titleDefault");
+  const description = t("metaDescription");
   const path = buildSearchPath(queryParams);
 
   return {
@@ -85,6 +78,7 @@ export default async function SearchPage({
   const { locale } = await routeParams;
   const typedLocale = locale as Locale;
   setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "search" });
   const params = await searchParams;
   const categorySlug =
     params.category === "otel" ? "hotel" : params.category;
@@ -104,33 +98,32 @@ export default async function SearchPage({
 
   const { vipListings, regularListings, total } = searchResult;
   const activeCategory = categories.find((cat) => cat.slug === categorySlug);
-  const pageTitle = activeCategory
-    ? typedLocale === "ru"
-      ? `${getLocalizedName(activeCategory, typedLocale)}`
-      : `${getLocalizedName(activeCategory, typedLocale)} elanları`
-    : typedLocale === "ru"
-      ? "Поиск объявлений"
-      : "Elan axtarışı";
+  const categoryName = activeCategory
+    ? getLocalizedName(activeCategory, typedLocale)
+    : null;
+  const pageTitle = categoryName
+    ? t("titleWithCategory", { category: categoryName })
+    : t("titleDefault");
 
   return (
     <div className="search-page">
       <div className="container">
         <div className="search-page__layout">
-          <Suspense fallback={<div>Yüklənir...</div>}>
+          <Suspense fallback={<div>{t("loading")}</div>}>
             <SearchFilters categories={categories} />
           </Suspense>
 
           <div className="search-results">
             <h1 className="section__title">{pageTitle}</h1>
             <p className="section__subtitle search-results__count">
-              {total} nəticə tapıldı
+              {t("resultsCount", { total })}
             </p>
 
             {total > 0 ? (
               <>
                 {vipListings.length > 0 && (
                   <section className="search-results__section">
-                    <h2 className="search-results__heading">Premium elanlar</h2>
+                    <h2 className="search-results__heading">{t("vipHeading")}</h2>
                     <div className="listing-grid">
                       {vipListings.map((listing) => (
                         <ListingCard
@@ -147,7 +140,7 @@ export default async function SearchPage({
 
                 {regularListings.length > 0 && (
                   <section className="search-results__section">
-                    <h2 className="search-results__heading">Elanlar</h2>
+                    <h2 className="search-results__heading">{t("listingsHeading")}</h2>
                     <div className="listing-grid">
                       {regularListings.map((listing) => (
                         <ListingCard
@@ -163,8 +156,8 @@ export default async function SearchPage({
               </>
             ) : (
               <div className="empty-state">
-                <h3>Elan tapılmadı</h3>
-                <p>Filtrləri dəyişib yenidən cəhd edin.</p>
+                <h3>{t("notFoundTitle")}</h3>
+                <p>{t("notFoundText")}</p>
               </div>
             )}
           </div>

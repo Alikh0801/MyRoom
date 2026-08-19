@@ -207,7 +207,7 @@ export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
           className="photo-lightbox"
           role="dialog"
           aria-modal="true"
-          aria-label="Şəkil qalereyası"
+          aria-label={t("photoGallery")}
           onClick={closeLightbox}
         >
           <div
@@ -218,7 +218,7 @@ export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
               type="button"
               className="photo-lightbox__close"
               onClick={closeLightbox}
-              aria-label="Bağla"
+              aria-label={t("close")}
             >
               ×
             </button>

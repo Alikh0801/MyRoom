@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { filterRegions } from "@/lib/regions";
 
 interface RegionComboboxProps {
@@ -26,6 +27,7 @@ export function RegionCombobox({
   allowEmpty = false,
   emptyLabel = "Hamısı",
 }: RegionComboboxProps) {
+  const t = useTranslations("common");
   const autoId = useId();
   const inputId = id ?? autoId;
   const rootRef = useRef<HTMLDivElement>(null);
@@ -118,7 +120,7 @@ export function RegionCombobox({
             </li>
           ))}
           {!showEmpty && filtered.length === 0 && (
-            <li className="region-combobox__empty">Nəticə tapılmadı</li>
+            <li className="region-combobox__empty">{t("noResults")}</li>
           )}
         </ul>
       )}

@@ -81,7 +81,13 @@
     "viewOwnerProfile": "İlan sahibinin profiline bak",
     "views": "{count} görüntülenme",
     "call": "Ara",
-    "whatsappContact": "WhatsApp ile iletişim"
+    "whatsappContact": "WhatsApp ile iletişim",
+    "previousPhoto": "Önceki fotoğraf",
+    "nextPhoto": "Sonraki fotoğraf",
+    "photoNumber": "Fotoğraf {number}",
+    "photoGallery": "Fotoğraf galerisi",
+    "close": "Kapat",
+    "mapTitle": "Haritada konum"
   },
   "ownerProfile": {
     "metaTitle": "{name} — İlan sahibi",
@@ -120,7 +126,8 @@
     "loading": "Yükleniyor",
     "backHome": "Ana sayfaya dön",
     "pageNotFound": "Sayfa bulunamadı",
-    "pageNotFoundText": "Aradığınız sayfa mevcut değil veya kaldırılmış."
+    "pageNotFoundText": "Aradığınız sayfa mevcut değil veya kaldırılmış.",
+    "noResults": "Sonuç bulunamadı"
   },
   "pagination": {
     "label": "Sayfalama",
@@ -129,6 +136,30 @@
     "previousAria": "Önceki sayfa",
     "nextAria": "Sonraki sayfa",
     "pageAria": "Sayfa {page}"
+  },
+  "search": {
+    "titleDefault": "İlan arama",
+    "titleWithCategory": "{category} ilanları",
+    "metaDescription": "Bölge, kategori, fiyat ve misafir sayısına göre günlük kiralama ve tatil ilanları arayın.",
+    "resultsCount": "{total} sonuç bulundu",
+    "vipHeading": "Premium ilanlar",
+    "listingsHeading": "İlanlar",
+    "notFoundTitle": "İlan bulunamadı",
+    "notFoundText": "Filtreleri değiştirip tekrar deneyin.",
+    "loading": "Yükleniyor...",
+    "filters": {
+      "title": "Filtreler",
+      "region": "Bölge",
+      "regionPlaceholder": "Bölge veya şehir seçin",
+      "allRegions": "Tümü",
+      "category": "Kategori",
+      "allCategories": "Tümü",
+      "guests": "Misafir sayısı",
+      "minPrice": "Min. fiyat (AZN)",
+      "maxPrice": "Maks. fiyat (AZN)",
+      "apply": "Ara",
+      "clear": "Temizle"
+    }
   },
   "auth": {
     "login": {

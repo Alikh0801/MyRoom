@@ -1,8 +1,11 @@
 "use client";
 
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 import { RegionCombobox } from "@/components/ui/RegionCombobox";
+import { getLocalizedName } from "@/lib/i18n/localized-name";
+import type { Locale } from "@/i18n/routing";
 import type { Category } from "@/types/database";
 
 interface SearchFiltersProps {
@@ -10,6 +13,8 @@ interface SearchFiltersProps {
 }
 
 export function SearchFilters({ categories }: SearchFiltersProps) {
+  const t = useTranslations("search.filters");
+  const locale = useLocale() as Locale;
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -40,33 +45,33 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
 
   return (
     <aside className="search-filters">
-      <h2 className="search-filters__title">Filtrlər</h2>
+      <h2 className="search-filters__title">{t("title")}</h2>
 
       <label className="search-filters__field">
-        Rayon
+        {t("region")}
         <RegionCombobox
           value={region}
           onChange={setRegion}
-          placeholder="Rayon və ya şəhər seç"
+          placeholder={t("regionPlaceholder")}
           allowEmpty
-          emptyLabel="Hamısı"
+          emptyLabel={t("allRegions")}
         />
       </label>
 
       <label className="search-filters__field">
-        Kateqoriya
+        {t("category")}
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value="">Hamısı</option>
+          <option value="">{t("allCategories")}</option>
           {categories.map((c) => (
             <option key={c.id} value={c.slug}>
-              {c.name_az}
+              {getLocalizedName(c, locale)}
             </option>
           ))}
         </select>
       </label>
 
       <label className="search-filters__field">
-        Qonaq sayı
+        {t("guests")}
         <input
           type="number"
           min={1}
@@ -77,7 +82,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
       </label>
 
       <label className="search-filters__field">
-        Min qiymət (AZN)
+        {t("minPrice")}
         <input
           type="number"
           min={0}
@@ -88,7 +93,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
       </label>
 
       <label className="search-filters__field">
-        Max qiymət (AZN)
+        {t("maxPrice")}
         <input
           type="number"
           min={0}
@@ -100,10 +105,10 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
 
       <div className="search-filters__actions">
         <button type="button" className="btn btn--primary" onClick={applyFilters}>
-          Axtar
+          {t("apply")}
         </button>
         <button type="button" className="btn btn--ghost" onClick={clearFilters}>
-          Təmizlə
+          {t("clear")}
         </button>
       </div>
     </aside>
