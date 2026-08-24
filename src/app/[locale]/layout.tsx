@@ -71,6 +71,16 @@ export async function generateMetadata({
   };
 }
 
+function getStorageOrigin(): string | null {
+  const base = process.env.S3_PUBLIC_URL;
+  if (!base) return null;
+  try {
+    return new URL(base).origin;
+  } catch {
+    return null;
+  }
+}
+
 export default async function LocaleLayout({
   children,
   params,
@@ -83,9 +93,16 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
   const messages = await getMessages();
+  const storageOrigin = getStorageOrigin();
 
   return (
     <html lang={locale} suppressHydrationWarning>
+      {storageOrigin && (
+        <head>
+          <link rel="preconnect" href={storageOrigin} crossOrigin="" />
+          <link rel="dns-prefetch" href={storageOrigin} />
+        </head>
+      )}
       <body>
         <script {...jsonLdScriptProps(buildOrganizationJsonLd())} type="application/ld+json" />
         <script

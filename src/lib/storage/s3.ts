@@ -23,6 +23,12 @@ export function getPublicUrl(storagePath: string): string {
   return `${base}/${bucket}/${storagePath}`;
 }
 
+// Yükləmə yolu hər fayl üçün unikaldır (buildStoragePath Date.now() əlavə edir),
+// ona görə uzunmüddətli/immutable keşləmə təhlükəsizdir.
+const LISTING_IMAGE_CACHE_CONTROL = "public, max-age=31536000, immutable";
+
+export { LISTING_IMAGE_CACHE_CONTROL };
+
 export async function getPresignedUploadUrl(
   storagePath: string,
   contentType: string
@@ -32,6 +38,7 @@ export async function getPresignedUploadUrl(
     Bucket: process.env.S3_BUCKET!,
     Key: storagePath,
     ContentType: contentType,
+    CacheControl: LISTING_IMAGE_CACHE_CONTROL,
   });
   return getSignedUrl(client, command, { expiresIn: 300 });
 }
@@ -48,6 +55,7 @@ export async function uploadFile(
       Key: storagePath,
       Body: body,
       ContentType: contentType,
+      CacheControl: LISTING_IMAGE_CACHE_CONTROL,
     })
   );
 }
