@@ -2,7 +2,7 @@ import { AdminActiveListingCard } from "@/components/admin/AdminActiveListingCar
 import { AdminDeletedListingCard } from "@/components/admin/AdminDeletedListingCard";
 import { AdminListingsFilters } from "@/components/admin/AdminListingsFilters";
 import { PendingListingCard } from "@/components/admin/PendingListingCard";
-import type { AdminTab } from "@/lib/admin/tabs";
+import type { ListingsAdminTab } from "@/lib/admin/tabs";
 import { isListingsAdminTab } from "@/lib/admin/tabs";
 import type {
   AdminListingItem,
@@ -11,13 +11,13 @@ import type {
 import { Suspense } from "react";
 
 interface AdminListingsListProps {
-  tab: Exclude<AdminTab, "settings">;
+  tab: ListingsAdminTab;
   listings: AdminListingItem[] | DeletedListingRecord[];
   hasActiveSearch: boolean;
 }
 
 const EMPTY_COPY: Record<
-  Exclude<AdminTab, "settings">,
+  ListingsAdminTab,
   { title: string; description: string }
 > = {
   pending: {

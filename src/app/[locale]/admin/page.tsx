@@ -1,5 +1,6 @@
 import { AdminListingsList } from "@/components/admin/AdminListingsList";
 import { AdminPanelTabs } from "@/components/admin/AdminPanelTabs";
+import { AdminStatsPanel } from "@/components/admin/AdminStatsPanel";
 import { PaymentSettingsForm } from "@/components/admin/PaymentSettingsForm";
 import { requireAdmin } from "@/lib/admin/auth";
 import {
@@ -16,6 +17,7 @@ import {
   type DeletedListingRecord,
 } from "@/lib/queries/admin";
 import { getPaymentSettings } from "@/lib/queries/payment-settings";
+import { getSiteStats } from "@/lib/queries/stats";
 import { Suspense } from "react";
 
 export const metadata = {
@@ -29,6 +31,7 @@ const TAB_SUBTITLES = {
   active: "Saytda aktiv olan elanlar",
   deleted: "Admin tərəfindən silinmiş elanlar",
   settings: "VIP ödənişləri üçün bank kartı məlumatı",
+  stats: "Sayt ziyarətləri və elan baxışları üzrə statistika",
 } as const;
 
 type AdminPageProps = {
@@ -49,10 +52,11 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
     sort !== "newest" ||
     (tab !== "deleted" && vipFilter !== "all");
 
-  const [counts, listings, paymentSettings] = await Promise.all([
+  const [counts, listings, paymentSettings, siteStats] = await Promise.all([
     getAdminTabCounts(),
     isListingsAdminTab(tab) ? getAdminListingsForTab(tab) : Promise.resolve([]),
     tab === "settings" ? getPaymentSettings() : Promise.resolve(null),
+    tab === "stats" ? getSiteStats() : Promise.resolve(null),
   ]);
 
   const filteredListings = isListingsAdminTab(tab)
@@ -87,6 +91,8 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             <div className="admin-settings-card">
               <PaymentSettingsForm settings={paymentSettings} />
             </div>
+          ) : tab === "stats" && siteStats ? (
+            <AdminStatsPanel stats={siteStats} />
           ) : (
             isListingsAdminTab(tab) && (
               <AdminListingsList
