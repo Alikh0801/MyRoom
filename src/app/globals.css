@@ -4857,10 +4857,17 @@ h3.amenities-feature-title {
 }
 
 .admin-stats__card {
+  min-width: 0;
   padding: 1.25rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
+}
+
+@media (max-width: 480px) {
+  .admin-stats__card {
+    padding: 1rem;
+  }
 }
 
 .admin-stats__card-title {
@@ -4963,18 +4970,40 @@ h3.amenities-feature-title {
 .admin-bar-list {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   gap: 0.7rem;
 }
 
 .admin-bar-row {
   display: grid;
-  grid-template-columns: minmax(0, 9rem) 1fr auto;
+  grid-template-columns: minmax(0, 9rem) minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.75rem;
 }
 
+@media (max-width: 640px) {
+  .admin-bar-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "label value" "track track";
+    row-gap: 0.4rem;
+  }
+
+  .admin-bar-row__label {
+    grid-area: label;
+  }
+
+  .admin-bar-row__value {
+    grid-area: value;
+  }
+
+  .admin-bar-row__track {
+    grid-area: track;
+  }
+}
+
 .admin-bar-row__label {
   overflow: hidden;
+  min-width: 0;
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--color-text);
@@ -4988,6 +5017,7 @@ h3.amenities-feature-title {
 }
 
 .admin-bar-row__track {
+  min-width: 0;
   height: 10px;
   background: var(--color-muted-surface);
   border-radius: 999px;
