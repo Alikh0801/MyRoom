@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { useLinkStatus } from "next/link";
 import { FavoriteButton } from "@/components/listings/FavoriteButton";
 import { formatListingCardDate } from "@/lib/date";
+import { formatListingNumber } from "@/lib/listings/listing-number";
 import { getLocalizedListingTitle } from "@/lib/i18n/localized-listing";
 import { getLocalizedName } from "@/lib/i18n/localized-name";
 import { formatPriceSuffix } from "@/lib/price";
@@ -55,9 +56,14 @@ function ListingCardContent({
       </div>
       <div className="listing-card__meta-row">
         <div className="listing-card__meta-left">
-          <time className="listing-card__date" dateTime={listing.created_at}>
-            {formatListingCardDate(listing.created_at)}
-          </time>
+          <div className="listing-card__date-row">
+            <time className="listing-card__date" dateTime={listing.created_at}>
+              {formatListingCardDate(listing.created_at)}
+            </time>
+            <span className="listing-card__id">
+              {formatListingNumber(listing.listing_number)}
+            </span>
+          </div>
           <span
             className="listing-card__views"
             aria-label={t("views", { count: listing.view_count })}

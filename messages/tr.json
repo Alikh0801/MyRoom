@@ -149,6 +149,8 @@
     "loading": "Yükleniyor...",
     "filters": {
       "title": "Filtreler",
+      "listingId": "İlan ID'si",
+      "listingIdPlaceholder": "Örn: MR-1042",
       "region": "Bölge",
       "regionPlaceholder": "Bölge veya şehir seçin",
       "allRegions": "Tümü",

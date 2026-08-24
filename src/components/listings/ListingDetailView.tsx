@@ -13,6 +13,7 @@ import {
   getLocalizedListingDescription,
   getLocalizedListingTitle,
 } from "@/lib/i18n/localized-listing";
+import { formatListingNumber } from "@/lib/listings/listing-number";
 import { groupAmenitiesByCategory } from "@/lib/queries/amenities";
 import type { ListingCardData, ListingWithRelations } from "@/types/database";
 import type { Amenity, AmenityCategory } from "@/types/database";
@@ -109,11 +110,16 @@ export async function ListingDetailView({
       <div className="container">
         <div className="listing-detail__top">
           <div className="listing-detail__gallery-col">
-            {images.length > 0 ? (
-              <ListingGallery images={images} title={displayTitle} />
-            ) : (
-              <div className="listing-detail__no-image">{t("noPhoto")}</div>
-            )}
+            <div className="listing-detail__gallery-wrap">
+              <span className="listing-detail__id-badge">
+                {formatListingNumber(listing.listing_number)}
+              </span>
+              {images.length > 0 ? (
+                <ListingGallery images={images} title={displayTitle} />
+              ) : (
+                <div className="listing-detail__no-image">{t("noPhoto")}</div>
+              )}
+            </div>
 
             <div className="listing-detail__content">
               <span className="listing-card__badge">

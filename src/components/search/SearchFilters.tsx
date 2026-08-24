@@ -18,6 +18,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const [listingId, setListingId] = useState(searchParams.get("id") ?? "");
   const [region, setRegion] = useState(searchParams.get("region") ?? "");
   const [category, setCategory] = useState(searchParams.get("category") ?? "");
   const [guests, setGuests] = useState(searchParams.get("guests") ?? "");
@@ -26,15 +27,17 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
 
   const applyFilters = useCallback(() => {
     const params = new URLSearchParams();
+    if (listingId) params.set("id", listingId);
     if (region) params.set("region", region);
     if (category) params.set("category", category);
     if (guests) params.set("guests", guests);
     if (minPrice) params.set("minPrice", minPrice);
     if (maxPrice) params.set("maxPrice", maxPrice);
     router.push(`/search?${params.toString()}`);
-  }, [region, category, guests, minPrice, maxPrice, router]);
+  }, [listingId, region, category, guests, minPrice, maxPrice, router]);
 
   const clearFilters = () => {
+    setListingId("");
     setRegion("");
     setCategory("");
     setGuests("");
@@ -46,6 +49,16 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
   return (
     <aside className="search-filters">
       <h2 className="search-filters__title">{t("title")}</h2>
+
+      <label className="search-filters__field">
+        {t("listingId")}
+        <input
+          type="text"
+          value={listingId}
+          onChange={(e) => setListingId(e.target.value)}
+          placeholder={t("listingIdPlaceholder")}
+        />
+      </label>
 
       <label className="search-filters__field">
         {t("region")}

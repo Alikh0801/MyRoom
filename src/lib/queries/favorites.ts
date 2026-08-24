@@ -4,7 +4,7 @@ import { mapToListingCards, type ListingRow } from "@/lib/queries/listings";
 
 const FAVORITE_LISTING_SELECT = `
   listing:listings(
-    id, title, title_ru, price_per_night, price_unit, currency, city, region, max_guests, bedrooms, bathrooms, view_count, created_at,
+    id, listing_number, title, title_ru, price_per_night, price_unit, currency, city, region, max_guests, bedrooms, bathrooms, view_count, created_at,
     category:categories(slug, name_az, name_ru),
     listing_images(url, is_cover, sort_order)
   )

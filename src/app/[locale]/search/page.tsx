@@ -5,6 +5,7 @@ import { SearchFilters } from "@/components/search/SearchFilters";
 import type { Locale } from "@/i18n/routing";
 import { getFavoritePageContext } from "@/lib/favorites/page-context";
 import { getLocalizedName } from "@/lib/i18n/localized-name";
+import { parseListingNumber } from "@/lib/listings/listing-number";
 import {
   getCategories,
   getSearchListings,
@@ -14,6 +15,7 @@ import { buildCanonicalAlternates, getAbsoluteUrl } from "@/lib/seo";
 interface SearchPageProps {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{
+    id?: string;
     region?: string;
     category?: string;
     guests?: string;
@@ -26,6 +28,7 @@ export const revalidate = 60;
 
 function buildSearchPath(params: Awaited<SearchPageProps["searchParams"]>) {
   const searchParams = new URLSearchParams();
+  if (params.id) searchParams.set("id", params.id);
   if (params.region) searchParams.set("region", params.region);
   if (params.category) searchParams.set("category", params.category);
   if (params.guests) searchParams.set("guests", params.guests);
@@ -83,6 +86,7 @@ export default async function SearchPage({
   const categorySlug =
     params.category === "otel" ? "hotel" : params.category;
   const filters = {
+    listingNumber: params.id ? (parseListingNumber(params.id) ?? undefined) : undefined,
     region: params.region,
     category: categorySlug,
     guests: params.guests ? Number(params.guests) : undefined,

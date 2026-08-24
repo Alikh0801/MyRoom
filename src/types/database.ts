@@ -50,6 +50,7 @@ export interface Profile {
 
 export interface Listing {
   id: string;
+  listing_number: number;
   owner_id: string;
   category_id: string;
   title: string;
@@ -115,6 +116,7 @@ export interface ListingWithRelations extends Listing {
 
 export interface ListingCardData {
   id: string;
+  listing_number: number;
   title: string;
   title_ru?: string | null;
   price_per_night: number;
