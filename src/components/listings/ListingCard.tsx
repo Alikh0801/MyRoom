@@ -39,7 +39,7 @@ function ListingCardContent({
       <div className="listing-card__image">
         {listing.cover_image ? (
           <Image
-            src={listing.cover_image}
+            src={listing.cover_image_thumb ?? listing.cover_image}
             alt={getLocalizedListingTitle(listing, locale)}
             fill
             quality={LISTING_CARD_IMAGE_QUALITY}

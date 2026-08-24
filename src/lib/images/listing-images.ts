@@ -18,3 +18,17 @@ export async function compressListingImage(file: File) {
   const imageCompression = (await import("browser-image-compression")).default;
   return imageCompression(file, LISTING_IMAGE_COMPRESSION);
 }
+
+/** Kart/grid-də kiçik ölçüdə göstərilən önizləmə üçün ayrıca yüngül versiya */
+export const LISTING_THUMBNAIL_COMPRESSION: Options = {
+  maxSizeMB: 0.15,
+  maxWidthOrHeight: 500,
+  useWebWorker: true,
+  fileType: "image/webp",
+  initialQuality: 0.7,
+};
+
+export async function compressListingThumbnail(file: File) {
+  const imageCompression = (await import("browser-image-compression")).default;
+  return imageCompression(file, LISTING_THUMBNAIL_COMPRESSION);
+}

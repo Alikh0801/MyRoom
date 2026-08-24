@@ -11,6 +11,7 @@ import {
 export interface GridImage {
   id: string;
   url: string;
+  thumbUrl?: string;
   alt: string;
 }
 
@@ -100,6 +101,10 @@ export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
 
   const lastThumbGlobalIndex = 3 + thumbImages.length - 1;
 
+  function asThumb(image: GridImage): GridImage {
+    return image.thumbUrl ? { ...image, url: image.thumbUrl } : image;
+  }
+
   function renderThumb(
     image: GridImage,
     globalIndex: number
@@ -112,7 +117,7 @@ export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
     return (
       <GridCell
         key={image.id}
-        image={image}
+        image={asThumb(image)}
         overlay={overlay}
         sizes="(max-width: 900px) 25vw, 14vw"
         onClick={() => openLightbox(globalIndex)}
@@ -149,7 +154,7 @@ export function ListingPhotoGrid({ images }: ListingPhotoGridProps) {
               return (
                 <GridCell
                   key={image.id}
-                  image={image}
+                  image={asThumb(image)}
                   overlay={overlay}
                   sizes="33vw"
                   onClick={() => openLightbox(isLastWithMore ? 4 : globalIndex)}

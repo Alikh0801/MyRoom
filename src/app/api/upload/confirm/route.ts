@@ -13,9 +13,10 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { listingId, storagePath, isCover, sortOrder } = body as {
+  const { listingId, storagePath, thumbStoragePath, isCover, sortOrder } = body as {
     listingId: string;
     storagePath: string;
+    thumbStoragePath?: string;
     isCover?: boolean;
     sortOrder?: number;
   };
@@ -39,8 +40,12 @@ export async function POST(request: Request) {
   if (!storagePath.startsWith(expectedPrefix)) {
     return NextResponse.json({ error: "Fayl yolu icazəli deyil" }, { status: 400 });
   }
+  if (thumbStoragePath && !thumbStoragePath.startsWith(expectedPrefix)) {
+    return NextResponse.json({ error: "Fayl yolu icazəli deyil" }, { status: 400 });
+  }
 
   const url = getPublicUrl(storagePath);
+  const thumbUrl = thumbStoragePath ? getPublicUrl(thumbStoragePath) : null;
 
   const { data: image, error } = await supabase
     .from("listing_images")
@@ -48,6 +53,8 @@ export async function POST(request: Request) {
       listing_id: listingId,
       url,
       storage_path: storagePath,
+      thumb_url: thumbUrl,
+      thumb_storage_path: thumbStoragePath ?? null,
       is_cover: isCover ?? false,
       sort_order: sortOrder ?? 0,
     })

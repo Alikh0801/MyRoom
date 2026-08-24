@@ -16,6 +16,7 @@ export function ListingGallery({ images, title }: ListingGalleryProps) {
   const gridImages = sorted.map((img) => ({
     id: img.id,
     url: img.url,
+    thumbUrl: img.thumb_url ?? img.url,
     alt: title,
   }));
 

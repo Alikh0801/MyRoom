@@ -87,6 +87,8 @@ export interface ListingImage {
   listing_id: string;
   url: string;
   storage_path: string;
+  thumb_url?: string | null;
+  thumb_storage_path?: string | null;
   is_cover: boolean;
   sort_order: number;
   created_at: string;
@@ -131,6 +133,7 @@ export interface ListingCardData {
   created_at: string;
   category: Pick<Category, "slug" | "name_az" | "name_ru">;
   cover_image: string | null;
+  cover_image_thumb: string | null;
 }
 
 export interface ListingFavorite {

@@ -13,7 +13,7 @@ export async function syncListingImages(
   if (uniqueDeleted.length > 0) {
     const { data: rows, error: fetchError } = await supabase
       .from("listing_images")
-      .select("id, storage_path")
+      .select("id, storage_path, thumb_storage_path")
       .eq("listing_id", listingId)
       .in("id", uniqueDeleted);
 
@@ -32,11 +32,16 @@ export async function syncListingImages(
     }
 
     await Promise.all(
-      rows.map((row) =>
-        deleteFile(row.storage_path).catch((err) => {
-          console.error("syncListingImages S3 delete:", err);
-        })
-      )
+      rows.flatMap((row) => {
+        const paths = [row.storage_path, row.thumb_storage_path].filter(
+          (path): path is string => Boolean(path)
+        );
+        return paths.map((path) =>
+          deleteFile(path).catch((err) => {
+            console.error("syncListingImages S3 delete:", err);
+          })
+        );
+      })
     );
   }
 
