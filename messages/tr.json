@@ -186,6 +186,8 @@
       "phonePlaceholder": "50 123 45 67",
       "whatsappSameAsPhone": "WhatsApp numarası telefon ile aynı",
       "whatsapp": "WhatsApp numarası *",
+      "continueWithGoogle": "Google ile devam et",
+      "orDivider": "veya",
       "submitLogin": "Giriş yap",
       "submitLoginPending": "Giriş yapılıyor...",
       "submitRegister": "Kayıt ol",
@@ -194,7 +196,9 @@
       "registerLink": "Kayıt olun",
       "hasAccount": "Zaten hesabınız var mı?",
       "loginLink": "Giriş yapın",
-      "forgotPasswordLink": "Şifrenizi mi unuttunuz?"
+      "forgotPasswordLink": "Şifrenizi mi unuttunuz?",
+      "googleConsentPrefix": "Google ile devam ederek",
+      "googleConsentSuffix": "kabul edersiniz."
     },
     "errors": {
       "missingCredentials": "E-posta ve şifre girin.",
@@ -229,7 +233,8 @@
       "passwordMismatch": "Şifreler eşleşmiyor.",
       "resetSessionExpired": "Şifre sıfırlama bağlantısının süresi doldu. Yeni bağlantı isteyin.",
       "rateLimitForgotPassword": "Çok fazla şifre sıfırlama denemesi. {minutes} dakika sonra tekrar deneyin.",
-      "rateLimitResetPassword": "Çok fazla şifre güncelleme denemesi. {minutes} dakika sonra tekrar deneyin."
+      "rateLimitResetPassword": "Çok fazla şifre güncelleme denemesi. {minutes} dakika sonra tekrar deneyin.",
+      "oauthFailed": "Google ile giriş başarısız oldu. Tekrar deneyin."
     },
     "verify": {
       "title": "E-posta onayı",

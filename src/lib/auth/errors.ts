@@ -8,6 +8,7 @@ export const AUTH_ERROR_KEYS = {
   invalidToken: "invalidToken",
   rateLimitResend: "rateLimitResend",
   confirmationEmailFailed: "confirmationEmailFailed",
+  oauthFailed: "oauthFailed",
   unknown: "unknown",
 } as const;
 

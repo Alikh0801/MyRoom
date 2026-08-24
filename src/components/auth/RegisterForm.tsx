@@ -12,6 +12,7 @@ import {
 import { LegalAcceptanceField } from "@/components/legal/LegalAcceptanceField";
 import { PasswordInput } from "@/components/auth/PasswordInput";
 import { PhoneInput } from "@/components/auth/PhoneInput";
+import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 
 export function RegisterForm() {
   const t = useTranslations("auth.form");
@@ -62,91 +63,95 @@ export function RegisterForm() {
   const displayError = clientError ?? state?.error;
 
   return (
-    <form className="auth-form" action={formAction} noValidate onSubmit={handleSubmit}>
-      {displayError && <p className="auth-form__error">{displayError}</p>}
+    <div className="auth-form-wrapper">
+      <form className="auth-form" action={formAction} noValidate onSubmit={handleSubmit}>
+        {displayError && <p className="auth-form__error">{displayError}</p>}
 
-      <label className="auth-form__field">
-        {t("fullName")}
-        <input
-          type="text"
-          name="fullName"
-          autoComplete="name"
-          placeholder={t("fullNamePlaceholder")}
-        />
-      </label>
+        <label className="auth-form__field">
+          {t("fullName")}
+          <input
+            type="text"
+            name="fullName"
+            autoComplete="name"
+            placeholder={t("fullNamePlaceholder")}
+          />
+        </label>
 
-      <label className="auth-form__field">
-        {t("email")}
-        <input
-          type="email"
-          name="email"
-          autoComplete="email"
-          placeholder={t("emailPlaceholder")}
-        />
-      </label>
+        <label className="auth-form__field">
+          {t("email")}
+          <input
+            type="email"
+            name="email"
+            autoComplete="email"
+            placeholder={t("emailPlaceholder")}
+          />
+        </label>
 
-      <PhoneInput
-        label={t("phone")}
-        name="phone"
-        value={phone}
-        onChange={handlePhoneChange}
-        placeholder={t("phonePlaceholder")}
-      />
-
-      <label className="auth-form__checkbox">
-        <input
-          type="checkbox"
-          checked={sameAsPhone}
-          onChange={(e) => handleSameAsPhoneChange(e.target.checked)}
-        />
-        {t("whatsappSameAsPhone")}
-      </label>
-
-      {sameAsPhone ? (
-        <input
-          type="hidden"
-          name="whatsappPhone"
-          value={phone ? `+994${phone.replace(/\D/g, "").slice(0, 9)}` : ""}
-        />
-      ) : (
         <PhoneInput
-          label={t("whatsapp")}
-          name="whatsappPhone"
-          value={whatsappPhone}
-          onChange={setWhatsappPhone}
+          label={t("phone")}
+          name="phone"
+          value={phone}
+          onChange={handlePhoneChange}
           placeholder={t("phonePlaceholder")}
         />
-      )}
 
-      <PasswordInput
-        label={t("password")}
-        name="password"
-        autoComplete="new-password"
-        placeholder={t("passwordMinPlaceholder")}
-        minLength={6}
-      />
+        <label className="auth-form__checkbox">
+          <input
+            type="checkbox"
+            checked={sameAsPhone}
+            onChange={(e) => handleSameAsPhoneChange(e.target.checked)}
+          />
+          {t("whatsappSameAsPhone")}
+        </label>
 
-      {turnstileRequired && (
-        <input type="hidden" name="turnstileToken" value={turnstileToken} />
-      )}
-      <TurnstileField
-        resetKey={state?.error}
-        onTokenChange={setTurnstileToken}
-      />
+        {sameAsPhone ? (
+          <input
+            type="hidden"
+            name="whatsappPhone"
+            value={phone ? `+994${phone.replace(/\D/g, "").slice(0, 9)}` : ""}
+          />
+        ) : (
+          <PhoneInput
+            label={t("whatsapp")}
+            name="whatsappPhone"
+            value={whatsappPhone}
+            onChange={setWhatsappPhone}
+            placeholder={t("phonePlaceholder")}
+          />
+        )}
 
-      <LegalAcceptanceField />
+        <PasswordInput
+          label={t("password")}
+          name="password"
+          autoComplete="new-password"
+          placeholder={t("passwordMinPlaceholder")}
+          minLength={6}
+        />
 
-      <button
-        type="submit"
-        className="btn btn--primary auth-form__submit"
-        disabled={submitDisabled}
-      >
-        {pending ? t("submitRegisterPending") : t("submitRegister")}
-      </button>
+        {turnstileRequired && (
+          <input type="hidden" name="turnstileToken" value={turnstileToken} />
+        )}
+        <TurnstileField
+          resetKey={state?.error}
+          onTokenChange={setTurnstileToken}
+        />
+
+        <LegalAcceptanceField />
+
+        <button
+          type="submit"
+          className="btn btn--primary auth-form__submit"
+          disabled={submitDisabled}
+        >
+          {pending ? t("submitRegisterPending") : t("submitRegister")}
+        </button>
+      </form>
+
+      <GoogleSignInButton showConsent />
 
       <p className="auth-form__footer">
         {t("hasAccount")} <Link href="/auth/login">{t("loginLink")}</Link>
       </p>
-    </form>
+    </div>
   );
 }

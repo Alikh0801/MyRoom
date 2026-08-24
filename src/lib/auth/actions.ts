@@ -1,8 +1,10 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { localizedRedirect } from "@/lib/i18n/server-redirect";
+import { withLocalePrefix } from "@/lib/i18n/locale-path";
 import type { Locale } from "@/i18n/routing";
 import { checkAuthRateLimit } from "@/lib/auth/rate-limit";
 import { resolveAuthErrorKey, type AuthErrorKey } from "@/lib/auth/errors";
@@ -57,6 +59,33 @@ function normalizeEmail(email: string): string {
 function normalizeRedirectTo(value: string): string {
   if (!value.startsWith("/") || value.startsWith("//")) return "/";
   return value;
+}
+
+export async function signInWithGoogle(redirectTo: string): Promise<void> {
+  const normalizedRedirectTo = normalizeRedirectTo(redirectTo || "/");
+  const locale = (await getLocale()) as Locale;
+  const supabase = await createClient();
+
+  const callbackUrl = new URL(`${getSiteUrl()}/auth/callback`);
+  callbackUrl.searchParams.set(
+    "next",
+    withLocalePrefix(normalizedRedirectTo, locale)
+  );
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: callbackUrl.toString(),
+      queryParams: { hl: locale },
+    },
+  });
+
+  if (error || !data?.url) {
+    await localizedRedirect("/auth/login?error=oauth_failed");
+    return;
+  }
+
+  redirect(data.url);
 }
 
 export async function signIn(

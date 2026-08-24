@@ -186,6 +186,8 @@
       "phonePlaceholder": "50 123 45 67",
       "whatsappSameAsPhone": "WhatsApp nömrəsi telefon ilə eynidir",
       "whatsapp": "WhatsApp nömrəsi *",
+      "continueWithGoogle": "Google ilə davam et",
+      "orDivider": "və ya",
       "submitLogin": "Daxil ol",
       "submitLoginPending": "Giriş edilir...",
       "submitRegister": "Qeydiyyatdan keç",
@@ -194,7 +196,9 @@
       "registerLink": "Qeydiyyatdan keçin",
       "hasAccount": "Artıq hesabınız var?",
       "loginLink": "Daxil olun",
-      "forgotPasswordLink": "Şifrəni unutmusan?"
+      "forgotPasswordLink": "Şifrəni unutmusan?",
+      "googleConsentPrefix": "Google ilə davam etməklə",
+      "googleConsentSuffix": "qəbul edirsiniz."
     },
     "errors": {
       "missingCredentials": "Email və şifrə daxil edin.",
@@ -229,7 +233,8 @@
       "passwordMismatch": "Şifrələr uyğun gəlmir.",
       "resetSessionExpired": "Şifrə bərpa linkinin vaxtı bitib. Yeni link tələb edin.",
       "rateLimitForgotPassword": "Çox sayda şifrə bərpa cəhdi. {minutes} dəqiqə sonra yenidən cəhd edin.",
-      "rateLimitResetPassword": "Çox sayda şifrə yeniləmə cəhdi. {minutes} dəqiqə sonra yenidən cəhd edin."
+      "rateLimitResetPassword": "Çox sayda şifrə yeniləmə cəhdi. {minutes} dəqiqə sonra yenidən cəhd edin.",
+      "oauthFailed": "Google ilə giriş uğursuz oldu. Yenidən cəhd edin."
     },
     "verify": {
       "title": "Email təsdiqi",

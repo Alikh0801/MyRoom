@@ -20,6 +20,7 @@ export default async function LoginPage({ params, searchParams }: LoginPageProps
   setRequestLocale(locale);
 
   const t = await getTranslations("auth.login");
+  const tErrors = await getTranslations("auth.errors");
   const routeParams = await searchParams;
   const redirectTo = routeParams.redirectTo ?? "/";
 
@@ -31,6 +32,10 @@ export default async function LoginPage({ params, searchParams }: LoginPageProps
 
         {routeParams.error === "auth_callback_failed" && (
           <p className="auth-form__error">{t("callbackError")}</p>
+        )}
+
+        {routeParams.error === "oauth_failed" && (
+          <p className="auth-form__error">{tErrors("oauthFailed")}</p>
         )}
 
         {routeParams.reset === "success" && (

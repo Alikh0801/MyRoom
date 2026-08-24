@@ -186,6 +186,8 @@
       "phonePlaceholder": "50 123 45 67",
       "whatsappSameAsPhone": "Номер WhatsApp совпадает с телефоном",
       "whatsapp": "Номер WhatsApp *",
+      "continueWithGoogle": "Продолжить с Google",
+      "orDivider": "или",
       "submitLogin": "Войти",
       "submitLoginPending": "Вход...",
       "submitRegister": "Зарегистрироваться",
@@ -194,7 +196,9 @@
       "registerLink": "Зарегистрироваться",
       "hasAccount": "Уже есть аккаунт?",
       "loginLink": "Войти",
-      "forgotPasswordLink": "Забыли пароль?"
+      "forgotPasswordLink": "Забыли пароль?",
+      "googleConsentPrefix": "Продолжая с Google, вы принимаете",
+      "googleConsentSuffix": "."
     },
     "errors": {
       "missingCredentials": "Введите email и пароль.",
@@ -229,7 +233,8 @@
       "passwordMismatch": "Пароли не совпадают.",
       "resetSessionExpired": "Ссылка для сброса пароля истекла. Запросите новую.",
       "rateLimitForgotPassword": "Слишком много попыток сброса пароля. Повторите через {minutes} мин.",
-      "rateLimitResetPassword": "Слишком много попыток обновления пароля. Повторите через {minutes} мин."
+      "rateLimitResetPassword": "Слишком много попыток обновления пароля. Повторите через {minutes} мин.",
+      "oauthFailed": "Не удалось войти через Google. Попробуйте снова."
     },
     "verify": {
       "title": "Подтверждение email",
