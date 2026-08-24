@@ -1229,34 +1229,128 @@ img {
 
 .hero__search {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
-  max-width: 640px;
+  align-items: stretch;
+  background: var(--color-surface);
+  border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  padding: 0.375rem;
+  max-width: 820px;
   margin: 0 auto;
+  gap: 0;
+  flex-wrap: wrap;
 }
 
-.hero__search input,
-.hero__search select,
-.hero__search .region-combobox__input {
+.hero__search-segment {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.15rem;
+  padding: 0.4rem 1.25rem;
   min-width: 140px;
-  padding: 0.75rem 1rem;
+}
+
+.hero__search-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  text-align: left;
+}
+
+.hero__search-icon {
+  flex-shrink: 0;
+}
+
+.hero__search-field,
+.hero__search-segment .region-combobox,
+.hero__search-segment .region-combobox__input {
+  width: 100%;
+}
+
+.hero__search-field,
+.hero__search-segment .region-combobox__input {
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  background: transparent;
+  padding: 0;
+  font-size: 0.9rem;
   color: var(--color-text);
-  background: var(--color-input-bg);
+  text-align: left;
 }
 
-.hero__search select option {
-  color: var(--color-text);
-  background: var(--color-input-bg);
+.hero__search-field:focus,
+.hero__search-segment .region-combobox__input:focus {
+  outline: none;
 }
 
-.hero__search .region-combobox {
-  flex: 1;
-  min-width: 180px;
+.hero__search-field::placeholder,
+.hero__search-segment .region-combobox__input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.hero__search-segment select.hero__search-field option {
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.hero__search-divider {
+  width: 1px;
+  align-self: stretch;
+  margin: 0.5rem 0;
+  background: var(--color-border);
+  flex-shrink: 0;
+}
+
+.hero__search-btn {
+  flex-shrink: 0;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--color-accent), #c4956a);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0 2rem;
+  margin: 0.125rem;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.hero__search-btn:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.hero__search-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+@media (max-width: 767px) {
+  .hero__search {
+    border-radius: 20px;
+    padding: 0.5rem;
+  }
+
+  .hero__search-segment {
+    flex-basis: 100%;
+    padding: 0.6rem 1rem;
+  }
+
+  .hero__search-divider {
+    width: auto;
+    height: 1px;
+    align-self: stretch;
+    margin: 0 0.75rem;
+  }
+
+  .hero__search-btn {
+    width: 100%;
+    margin: 0.375rem 0 0;
+    padding: 0.85rem 1rem;
+  }
 }
 
 /* Region combobox */
