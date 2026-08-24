@@ -189,7 +189,7 @@
       "continueWithGoogle": "Google ilə davam et",
       "orDivider": "və ya",
       "googleDomainHintLabel": "Google giriş ekranı haqqında",
-      "googleDomainHint": "Google giriş zamanı ünvan çubuğunda saytımızın adı yerinə texniki bir domen (...supabase.co) görünə bilər. Bu normaldır — hesabınızın təhlükəsizliyini təmin edən doğrulanmış xidmətdir, fişinq deyil.",
+      "googleDomainHint": "Google giriş zamanı ünvan çubuğunda saytımızın adı yerinə texniki bir domen (...supabase.co) görünə bilər. Bu normaldır — hesabınızın təhlükəsizliyini təmin edən doğrulanmış xidmətdir.",
       "submitLogin": "Daxil ol",
       "submitLoginPending": "Giriş edilir...",
       "submitRegister": "Qeydiyyatdan keç",
