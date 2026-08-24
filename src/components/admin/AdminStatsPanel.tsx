@@ -135,7 +135,7 @@ export function AdminStatsPanel({ stats }: AdminStatsPanelProps) {
   );
 
   return (
-    <div className="admin-stats">
+    <div className="admin-stats-panel">
       <div className="admin-stats__tiles">
         <StatTile label="Bu gün ziyarət" value={stats.todayVisits} />
         <StatTile label="Son 7 gün baxış" value={stats.last7DaysVisits} />
