@@ -3065,6 +3065,62 @@ h3.amenities-feature-title {
   background: var(--color-muted-surface);
 }
 
+.auth-form__google-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.auth-form__google-form {
+  flex: 1;
+  min-width: 0;
+}
+
+.google-hint {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.google-hint__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.google-hint__trigger:hover,
+.google-hint__trigger[aria-expanded="true"] {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.google-hint__popover {
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  right: 0;
+  width: 240px;
+  padding: 0.75rem 0.875rem;
+  border-radius: 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  z-index: 20;
+}
+
 .auth-form__google-consent {
   text-align: center;
   font-size: 0.75rem;

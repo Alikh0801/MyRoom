@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { signInWithGoogle } from "@/lib/auth/actions";
@@ -38,6 +39,51 @@ function GoogleIcon() {
   );
 }
 
+function GoogleDomainHint() {
+  const t = useTranslations("auth.form");
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    function handlePointerDown(e: MouseEvent) {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+
+    document.addEventListener("mousedown", handlePointerDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <div className="google-hint" ref={rootRef}>
+      <button
+        type="button"
+        className="google-hint__trigger"
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+        aria-label={t("googleDomainHintLabel")}
+      >
+        ?
+      </button>
+
+      {open && (
+        <div className="google-hint__popover" role="tooltip">
+          {t("googleDomainHint")}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function GoogleSignInButton({
   redirectTo = "/",
   showConsent = false,
@@ -52,12 +98,15 @@ export function GoogleSignInButton({
         <span>{t("orDivider")}</span>
       </div>
 
-      <form action={action}>
-        <button type="submit" className="btn btn--google auth-form__google">
-          <GoogleIcon />
-          {t("continueWithGoogle")}
-        </button>
-      </form>
+      <div className="auth-form__google-row">
+        <form action={action} className="auth-form__google-form">
+          <button type="submit" className="btn btn--google auth-form__google">
+            <GoogleIcon />
+            {t("continueWithGoogle")}
+          </button>
+        </form>
+        <GoogleDomainHint />
+      </div>
 
       {showConsent && (
         <p className="auth-form__google-consent">

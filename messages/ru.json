@@ -188,6 +188,8 @@
       "whatsapp": "Номер WhatsApp *",
       "continueWithGoogle": "Продолжить с Google",
       "orDivider": "или",
+      "googleDomainHintLabel": "Об экране входа через Google",
+      "googleDomainHint": "При входе через Google в адресной строке может отображаться техническое доменное имя (...supabase.co) вместо названия нашего сайта. Это нормально — это проверенный сервис, обеспечивающий безопасность входа, а не фишинг.",
       "submitLogin": "Войти",
       "submitLoginPending": "Вход...",
       "submitRegister": "Зарегистрироваться",
