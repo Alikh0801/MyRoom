@@ -1,7 +1,13 @@
-export type AdminTab = "pending" | "active" | "deleted" | "settings";
+export type AdminTab = "pending" | "active" | "deleted" | "settings" | "stats";
+export type ListingsAdminTab = Exclude<AdminTab, "settings" | "stats">;
 
 export function parseAdminTab(value: string | undefined): AdminTab {
-  if (value === "active" || value === "deleted" || value === "settings") {
+  if (
+    value === "active" ||
+    value === "deleted" ||
+    value === "settings" ||
+    value === "stats"
+  ) {
     return value;
   }
   return "pending";
@@ -42,8 +48,6 @@ export function adminTabHref(
   return `/admin?${qs}`;
 }
 
-export function isListingsAdminTab(
-  tab: AdminTab
-): tab is Exclude<AdminTab, "settings"> {
-  return tab !== "settings";
+export function isListingsAdminTab(tab: AdminTab): tab is ListingsAdminTab {
+  return tab !== "settings" && tab !== "stats";
 }

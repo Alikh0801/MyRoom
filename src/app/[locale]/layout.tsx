@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { HeaderShell } from "@/components/layout/HeaderShell";
 import { ThemeScript } from "@/components/theme/ThemeScript";
+import { VisitLogger } from "@/components/analytics/VisitLogger";
 import { routing, type Locale } from "@/i18n/routing";
 import { getOpenGraphLocale, getSiteUrl, SITE_NAME } from "@/lib/seo";
 import {
@@ -92,6 +93,7 @@ export default async function LocaleLayout({
           type="application/ld+json"
         />
         <ThemeScript />
+        <VisitLogger />
         <NextIntlClientProvider messages={messages}>
           <div className="page-wrapper">
             <Suspense fallback={<HeaderShell />}>

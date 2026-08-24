@@ -9,6 +9,7 @@ const TABS: { id: AdminTab; label: string; showCount: boolean }[] = [
   { id: "pending", label: "Gözləyən elanlar", showCount: true },
   { id: "active", label: "Aktiv elanlar", showCount: true },
   { id: "deleted", label: "Silinmiş elanlar", showCount: true },
+  { id: "stats", label: "Statistika", showCount: false },
   { id: "settings", label: "Bank kartı", showCount: false },
 ];
 
