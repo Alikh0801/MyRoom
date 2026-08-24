@@ -149,6 +149,8 @@
     "loading": "Загрузка...",
     "filters": {
       "title": "Фильтры",
+      "listingId": "ID объявления",
+      "listingIdPlaceholder": "Напр.: MR-1042",
       "region": "Район",
       "regionPlaceholder": "Выберите район или город",
       "allRegions": "Все",

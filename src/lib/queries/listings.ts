@@ -39,7 +39,7 @@ function normalizeListingWithRelations(
 }
 
 const CARD_SELECT = `
-  id, title, title_ru, price_per_night, price_unit, currency, city, region, max_guests, bedrooms, bathrooms, view_count, created_at,
+  id, listing_number, title, title_ru, price_per_night, price_unit, currency, city, region, max_guests, bedrooms, bathrooms, view_count, created_at,
   category:categories(slug, name_az, name_ru),
   listing_images(url, is_cover, sort_order)
 `;
@@ -52,6 +52,7 @@ export interface SearchFilters {
   minPrice?: number;
   maxPrice?: number;
   guests?: number;
+  listingNumber?: number;
 }
 
 export interface SearchListingsResult {
@@ -68,6 +69,7 @@ export interface SitemapListing {
 
 export type ListingRow = {
   id: string;
+  listing_number: number;
   title: string;
   title_ru?: string | null;
   price_per_night: number;
@@ -97,6 +99,7 @@ export function mapToListingCards(rows: ListingRow[]): ListingCardData[] {
 
     return {
       id: row.id,
+      listing_number: row.listing_number,
       title: row.title,
       title_ru: row.title_ru ?? null,
       price_per_night: row.price_per_night,
@@ -256,6 +259,7 @@ function buildPublicSearchQuery(
   if (filters.minPrice) query = query.gte("price_per_night", filters.minPrice);
   if (filters.maxPrice) query = query.lte("price_per_night", filters.maxPrice);
   if (filters.guests) query = query.gte("max_guests", filters.guests);
+  if (filters.listingNumber) query = query.eq("listing_number", filters.listingNumber);
 
   return query;
 }
@@ -302,6 +306,7 @@ export async function getSearchListings(
     minPrice: filters.minPrice ?? null,
     maxPrice: filters.maxPrice ?? null,
     guests: filters.guests ?? null,
+    listingNumber: filters.listingNumber ?? null,
   });
 
   return getSearchListingsCached(filtersKey);

@@ -149,6 +149,8 @@
     "loading": "Yüklənir...",
     "filters": {
       "title": "Filtrlər",
+      "listingId": "Elan ID-si",
+      "listingIdPlaceholder": "Məs: MR-1042",
       "region": "Rayon",
       "regionPlaceholder": "Rayon və ya şəhər seç",
       "allRegions": "Hamısı",
