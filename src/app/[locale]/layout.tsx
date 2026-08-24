@@ -93,8 +93,8 @@ export default async function LocaleLayout({
           type="application/ld+json"
         />
         <ThemeScript />
-        <VisitLogger />
         <NextIntlClientProvider messages={messages}>
+          <VisitLogger />
           <div className="page-wrapper">
             <Suspense fallback={<HeaderShell />}>
               <Header />
