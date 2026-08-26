@@ -65,6 +65,8 @@ export interface SitemapListing {
   id: string;
   updated_at: string;
   created_at: string;
+  title_ru: string | null;
+  description_ru: string | null;
 }
 
 export type ListingRow = {
@@ -329,7 +331,7 @@ const getSitemapListingsCached = unstable_cache(
     const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("listings")
-      .select("id, updated_at, created_at")
+      .select("id, updated_at, created_at, title_ru, description_ru")
       .eq("status", "approved")
       .order("updated_at", { ascending: false })
       .limit(5000);

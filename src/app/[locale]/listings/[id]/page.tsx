@@ -5,6 +5,7 @@ import type { Locale } from "@/i18n/routing";
 import {
   getLocalizedListingDescription,
   getLocalizedListingTitle,
+  hasUniqueLocaleContent,
 } from "@/lib/i18n/localized-listing";
 import { getFavoritePageContext } from "@/lib/favorites/page-context";
 import {
@@ -41,11 +42,15 @@ export async function generateMetadata({ params }: ListingPageProps) {
   const description = pageDescription.slice(0, 160);
   const path = `/listings/${id}`;
   const coverImage = listing.listing_images[0]?.url;
+  const isUniqueForLocale = hasUniqueLocaleContent(listing, locale);
 
   return {
     title: pageTitle,
     description,
     alternates: buildCanonicalAlternates(path, locale as Locale),
+    robots: isUniqueForLocale
+      ? undefined
+      : { index: false, follow: true },
     openGraph: {
       title: pageTitle,
       description,

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
+import { hasUniqueLocaleContent } from "@/lib/i18n/localized-listing";
 import { getCategories, getSitemapListings } from "@/lib/queries/listings";
 import { getAbsoluteUrl } from "@/lib/seo";
 
@@ -57,7 +58,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const listing of listings) {
     const path = `/listings/${listing.id}`;
     const lastModified = new Date(listing.updated_at || listing.created_at);
+    // Tərcüməsi olmayan dil versiyaları AZ mətnini təkrarlayır (dublikat
+    // məzmun) və noindex-dir — sitemap-da yalnız unikal versiyalar olsun.
     for (const locale of routing.locales) {
+      if (!hasUniqueLocaleContent(listing, locale)) continue;
       entries.push({
         url: getAbsoluteUrl(path, locale),
         lastModified,
