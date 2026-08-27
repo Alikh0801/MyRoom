@@ -73,12 +73,38 @@ export async function getBlogPosts(locale: Locale | string): Promise<BlogPost[]>
   return rows.map((row) => mapPost(row, locale as Locale));
 }
 
+/**
+ * Məqaləni birbaşa slug ilə çəkir — bütün siyahının keşinə bağlı deyil.
+ * (Siyahı keşi build zamanı boş yazıla bilir; o zaman detal səhifəsi
+ * mövcud məqaləni "tapılmadı" sayırdı.)
+ */
+const getPostRowBySlug = unstable_cache(
+  async (slug: string): Promise<BlogRow | null> => {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase
+      .from("blog_posts")
+      .select(POST_SELECT)
+      .eq("slug", slug)
+      .eq("status", "published")
+      .maybeSingle();
+
+    if (error) {
+      console.error("getBlogPost:", error.message);
+      return null;
+    }
+
+    return (data as BlogRow | null) ?? null;
+  },
+  ["blog-post-by-slug"],
+  { revalidate: BLOG_REVALIDATE_SECONDS, tags: [BLOG_CACHE_TAG] }
+);
+
 export async function getBlogPost(
   slug: string,
   locale: Locale | string
 ): Promise<BlogPost | null> {
-  const posts = await getBlogPosts(locale);
-  return posts.find((post) => post.slug === slug) ?? null;
+  const row = await getPostRowBySlug(slug);
+  return row ? mapPost(row, locale as Locale) : null;
 }
 
 /** Sitemap üçün — slug-lar bütün dillərdə eynidir */

@@ -4,8 +4,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { BlogCover } from "@/components/blog/BlogCover";
 import { Link } from "@/i18n/navigation";
-import { routing, type Locale } from "@/i18n/routing";
-import { getBlogPost, getBlogSlugs, getRelatedPosts } from "@/lib/blog/content";
+import type { Locale } from "@/i18n/routing";
+import { getBlogPost, getRelatedPosts } from "@/lib/blog/content";
 import { formatBlogDate } from "@/lib/blog/format";
 import {
   buildCanonicalAlternates,
@@ -24,21 +24,14 @@ type BlogPostPageProps = {
 
 export const revalidate = 300;
 
-export async function generateStaticParams() {
-  const slugs = await getBlogSlugs();
-  return routing.locales.flatMap((locale) =>
-    slugs.map((slug) => ({ locale, slug }))
-  );
-}
-
 export async function generateMetadata({ params }: BlogPostPageProps) {
   const { locale, slug } = await params;
   const typedLocale = locale as Locale;
   const post = await getBlogPost(slug, typedLocale);
 
-  // Yalnız komponentdə notFound() çağırmaq kifayət etmir: metadata uğurla
-  // qayıdanda cavab 200 kimi bağlanır və "soft 404" yaranır.
-  if (!post) notFound();
+  // Burada notFound() çağırmırıq: statik/ISR render zamanı bu, 404 əvəzinə
+  // 500 verir. Statusu səhifə komponentindəki notFound() təyin edir.
+  if (!post) return {};
 
   const path = `/blog/${post.slug}`;
 
