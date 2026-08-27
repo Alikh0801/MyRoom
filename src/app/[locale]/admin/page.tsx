@@ -1,3 +1,4 @@
+import { AdminBlogList } from "@/components/admin/AdminBlogList";
 import { AdminListingsList } from "@/components/admin/AdminListingsList";
 import { AdminPanelTabs } from "@/components/admin/AdminPanelTabs";
 import { AdminStatsPanel } from "@/components/admin/AdminStatsPanel";
@@ -16,6 +17,7 @@ import {
   type AdminListingItem,
   type DeletedListingRecord,
 } from "@/lib/queries/admin";
+import { getAdminBlogPosts } from "@/lib/queries/blog-admin";
 import { getPaymentSettings } from "@/lib/queries/payment-settings";
 import { getSiteStats } from "@/lib/queries/stats";
 import { Suspense } from "react";
@@ -30,6 +32,7 @@ const TAB_SUBTITLES = {
   pending: "Təsdiq gözləyən elanlar",
   active: "Saytda aktiv olan elanlar",
   deleted: "Admin tərəfindən silinmiş elanlar",
+  blog: "Sayt blogundakı bələdçi məqalələri",
   settings: "VIP ödənişləri üçün bank kartı məlumatı",
   stats: "Sayt ziyarətləri və elan baxışları üzrə statistika",
 } as const;
@@ -52,12 +55,14 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
     sort !== "newest" ||
     (tab !== "deleted" && vipFilter !== "all");
 
-  const [counts, listings, paymentSettings, siteStats] = await Promise.all([
-    getAdminTabCounts(),
-    isListingsAdminTab(tab) ? getAdminListingsForTab(tab) : Promise.resolve([]),
-    tab === "settings" ? getPaymentSettings() : Promise.resolve(null),
-    tab === "stats" ? getSiteStats() : Promise.resolve(null),
-  ]);
+  const [counts, listings, paymentSettings, siteStats, blogPosts] =
+    await Promise.all([
+      getAdminTabCounts(),
+      isListingsAdminTab(tab) ? getAdminListingsForTab(tab) : Promise.resolve([]),
+      tab === "settings" ? getPaymentSettings() : Promise.resolve(null),
+      tab === "stats" ? getSiteStats() : Promise.resolve(null),
+      tab === "blog" ? getAdminBlogPosts() : Promise.resolve([]),
+    ]);
 
   const filteredListings = isListingsAdminTab(tab)
     ? tab === "deleted"
@@ -87,7 +92,9 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         </Suspense>
 
         <section className="admin-panel__content" role="tabpanel">
-          {tab === "settings" && paymentSettings ? (
+          {tab === "blog" ? (
+            <AdminBlogList posts={blogPosts} />
+          ) : tab === "settings" && paymentSettings ? (
             <div className="admin-settings-card">
               <PaymentSettingsForm settings={paymentSettings} />
             </div>

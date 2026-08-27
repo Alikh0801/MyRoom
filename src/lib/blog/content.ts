@@ -1,40 +1,97 @@
+import { unstable_cache } from "next/cache";
 import type { Locale } from "@/i18n/routing";
-import { BLOG_POSTS_AZ } from "@/lib/blog/posts-az";
-import { BLOG_POSTS_RU } from "@/lib/blog/posts-ru";
-import { BLOG_POSTS_TR } from "@/lib/blog/posts-tr";
+import { routing } from "@/i18n/routing";
+import { accentForSlug, parseBlogBody, parseHighlights } from "@/lib/blog/body";
 import type { BlogPost } from "@/lib/blog/types";
+import { createPublicClient } from "@/lib/supabase/public";
 
-const POSTS_BY_LOCALE: Record<Locale, BlogPost[]> = {
-  az: BLOG_POSTS_AZ,
-  ru: BLOG_POSTS_RU,
-  tr: BLOG_POSTS_TR,
-};
+export const BLOG_CACHE_TAG = "blog-posts";
+const BLOG_REVALIDATE_SECONDS = 300;
 
-/** Ən yeni məqalə birinci olmaqla bütün postlar */
-export function getBlogPosts(locale: Locale | string): BlogPost[] {
-  const posts = POSTS_BY_LOCALE[locale as Locale] ?? BLOG_POSTS_AZ;
-  return [...posts].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+const POST_SELECT = `
+  id, slug, region, read_minutes, cover_url, published_at,
+  title_az, title_ru, title_tr,
+  excerpt_az, excerpt_ru, excerpt_tr,
+  meta_description_az, meta_description_ru, meta_description_tr,
+  highlights_az, highlights_ru, highlights_tr,
+  body_az, body_ru, body_tr
+`;
+
+type BlogRow = Record<string, string | number | null>;
+
+/** Tərcümə boşdursa AZ mətninə qayıdır */
+function pick(row: BlogRow, field: string, locale: Locale): string {
+  const localized = row[`${field}_${locale}`];
+  if (typeof localized === "string" && localized.trim()) return localized;
+  const fallback = row[`${field}_${routing.defaultLocale}`];
+  return typeof fallback === "string" ? fallback : "";
 }
 
-export function getBlogPost(
+function mapPost(row: BlogRow, locale: Locale): BlogPost {
+  const slug = String(row.slug);
+  const { intro, sections } = parseBlogBody(pick(row, "body", locale));
+
+  return {
+    id: String(row.id),
+    slug,
+    region: (row.region as string | null) ?? null,
+    readMinutes: Number(row.read_minutes ?? 5),
+    coverUrl: (row.cover_url as string | null) ?? null,
+    accent: accentForSlug(slug),
+    publishedAt: String(row.published_at),
+    title: pick(row, "title", locale),
+    excerpt: pick(row, "excerpt", locale),
+    metaDescription: pick(row, "meta_description", locale),
+    highlights: parseHighlights(pick(row, "highlights", locale)),
+    intro,
+    sections,
+  };
+}
+
+const getPublishedRows = unstable_cache(
+  async (): Promise<BlogRow[]> => {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase
+      .from("blog_posts")
+      .select(POST_SELECT)
+      .eq("status", "published")
+      .order("published_at", { ascending: false });
+
+    if (error) {
+      console.error("getBlogPosts:", error.message);
+      return [];
+    }
+
+    return (data ?? []) as BlogRow[];
+  },
+  ["blog-posts"],
+  { revalidate: BLOG_REVALIDATE_SECONDS, tags: [BLOG_CACHE_TAG] }
+);
+
+export async function getBlogPosts(locale: Locale | string): Promise<BlogPost[]> {
+  const rows = await getPublishedRows();
+  return rows.map((row) => mapPost(row, locale as Locale));
+}
+
+export async function getBlogPost(
   slug: string,
   locale: Locale | string
-): BlogPost | null {
-  return getBlogPosts(locale).find((post) => post.slug === slug) ?? null;
+): Promise<BlogPost | null> {
+  const posts = await getBlogPosts(locale);
+  return posts.find((post) => post.slug === slug) ?? null;
 }
 
-/** Sitemap və generateStaticParams üçün — slug-lar bütün dillərdə eynidir */
-export function getBlogSlugs(): string[] {
-  return BLOG_POSTS_AZ.map((post) => post.slug);
+/** Sitemap üçün — slug-lar bütün dillərdə eynidir */
+export async function getBlogSlugs(): Promise<string[]> {
+  const rows = await getPublishedRows();
+  return rows.map((row) => String(row.slug));
 }
 
-/** Məqalə altında göstərilən digər bələdçilər */
-export function getRelatedPosts(
+export async function getRelatedPosts(
   slug: string,
   locale: Locale | string,
   limit = 3
-): BlogPost[] {
-  return getBlogPosts(locale)
-    .filter((post) => post.slug !== slug)
-    .slice(0, limit);
+): Promise<BlogPost[]> {
+  const posts = await getBlogPosts(locale);
+  return posts.filter((post) => post.slug !== slug).slice(0, limit);
 }

@@ -1,15 +1,14 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { BlogCard } from "@/components/blog/BlogCard";
+import { BlogFeatureRow } from "@/components/blog/BlogFeatureRow";
 import { routing, type Locale } from "@/i18n/routing";
 import { getBlogPosts } from "@/lib/blog/content";
-import {
-  buildCanonicalAlternates,
-  getAbsoluteUrl,
-} from "@/lib/seo";
+import { buildCanonicalAlternates, getAbsoluteUrl } from "@/lib/seo";
 
 type BlogPageProps = {
   params: Promise<{ locale: string }>;
 };
+
+export const revalidate = 300;
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -39,9 +38,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
   const typedLocale = locale as Locale;
   const t = await getTranslations("blog");
-  const posts = getBlogPosts(typedLocale);
-
-  const [featured, ...rest] = posts;
+  const posts = await getBlogPosts(typedLocale);
 
   return (
     <div className="blog-page">
@@ -54,15 +51,21 @@ export default async function BlogPage({ params }: BlogPageProps) {
       </header>
 
       <div className="container blog-page__inner">
-        {featured && (
-          <BlogCard post={featured} locale={typedLocale} featured />
-        )}
-
-        {rest.length > 0 && (
-          <div className="blog-grid">
-            {rest.map((post) => (
-              <BlogCard key={post.slug} post={post} locale={typedLocale} />
+        {posts.length > 0 ? (
+          <div className="blog-feature-list">
+            {posts.map((post, index) => (
+              <BlogFeatureRow
+                key={post.slug}
+                post={post}
+                locale={typedLocale}
+                reversed={index % 2 === 1}
+                priority={index === 0}
+              />
             ))}
+          </div>
+        ) : (
+          <div className="empty-state">
+            <p>{t("empty")}</p>
           </div>
         )}
 

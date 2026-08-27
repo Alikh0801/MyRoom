@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BlogCard } from "@/components/blog/BlogCard";
@@ -21,20 +22,19 @@ type BlogPostPageProps = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
-export function generateStaticParams() {
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const slugs = await getBlogSlugs();
   return routing.locales.flatMap((locale) =>
-    getBlogSlugs().map((slug) => ({ locale, slug }))
+    slugs.map((slug) => ({ locale, slug }))
   );
 }
-
-// Bələdçilər statik siyahıdır — naməlum slug ümumiyyətlə mövcud deyil.
-// Bu, notFound()-un 200 (soft 404) qaytarması əvəzinə real 404 verir.
-export const dynamicParams = false;
 
 export async function generateMetadata({ params }: BlogPostPageProps) {
   const { locale, slug } = await params;
   const typedLocale = locale as Locale;
-  const post = getBlogPost(slug, typedLocale);
+  const post = await getBlogPost(slug, typedLocale);
 
   // Yalnız komponentdə notFound() çağırmaq kifayət etmir: metadata uğurla
   // qayıdanda cavab 200 kimi bağlanır və "soft 404" yaranır.
@@ -67,12 +67,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   setRequestLocale(locale);
 
   const typedLocale = locale as Locale;
-  const post = getBlogPost(slug, typedLocale);
+  const post = await getBlogPost(slug, typedLocale);
 
   if (!post) notFound();
 
   const t = await getTranslations("blog");
-  const related = getRelatedPosts(slug, typedLocale);
+  const related = await getRelatedPosts(slug, typedLocale);
 
   const breadcrumb = buildBreadcrumbJsonLd(
     [
@@ -92,12 +92,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <script {...jsonLdScriptProps(breadcrumb)} type="application/ld+json" />
 
       <header className="blog-post__hero">
-        <BlogCover
-          accent={post.accent}
-          uid={`hero-${post.slug}`}
-          className="blog-post__hero-art"
-          anchor="bottom"
-        />
+        {post.coverUrl ? (
+          <Image
+            src={post.coverUrl}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="blog-post__hero-img"
+          />
+        ) : (
+          <BlogCover
+            accent={post.accent}
+            uid={`hero-${post.slug}`}
+            className="blog-post__hero-art"
+            anchor="bottom"
+          />
+        )}
         <div className="blog-post__hero-overlay" />
         <div className="container blog-post__hero-inner">
           <nav className="blog-post__breadcrumb" aria-label="breadcrumb">
@@ -120,7 +131,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </header>
 
       <div className="container blog-post__body">
-        <p className="blog-post__intro">{post.intro}</p>
+        {post.intro
+          .split("\n\n")
+          .filter(Boolean)
+          .map((paragraph) => (
+            <p key={paragraph} className="blog-post__intro">
+              {paragraph}
+            </p>
+          ))}
 
         {post.highlights && post.highlights.length > 0 && (
           <aside className="blog-highlights">

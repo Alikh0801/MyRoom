@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { BlogCover } from "@/components/blog/BlogCover";
 import { Link } from "@/i18n/navigation";
@@ -8,24 +9,29 @@ import type { BlogPost } from "@/lib/blog/types";
 interface BlogCardProps {
   post: BlogPost;
   locale: Locale;
-  /** Siyahının başındakı böyük kart */
-  featured?: boolean;
 }
 
-export async function BlogCard({ post, locale, featured = false }: BlogCardProps) {
+export async function BlogCard({ post, locale }: BlogCardProps) {
   const t = await getTranslations("blog");
 
   return (
-    <article className={`blog-card${featured ? " blog-card--featured" : ""}`}>
+    <article className="blog-card">
       <Link href={`/blog/${post.slug}`} className="blog-card__link">
         <div className="blog-card__cover">
-          <BlogCover
-            accent={post.accent}
-            uid={`${featured ? "f" : "c"}-${post.slug}`}
-            className="blog-card__cover-art"
-          />
-          {featured && (
-            <span className="blog-card__featured-badge">{t("featured")}</span>
+          {post.coverUrl ? (
+            <Image
+              src={post.coverUrl}
+              alt={post.title}
+              fill
+              sizes="(max-width: 620px) 100vw, (max-width: 1000px) 50vw, 33vw"
+              className="blog-card__cover-img"
+            />
+          ) : (
+            <BlogCover
+              accent={post.accent}
+              uid={`c-${post.slug}`}
+              className="blog-card__cover-art"
+            />
           )}
           {post.region && (
             <span className="blog-card__region">{post.region}</span>

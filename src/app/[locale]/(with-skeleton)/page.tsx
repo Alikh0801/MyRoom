@@ -55,7 +55,7 @@ export default async function HomePage({ params, searchParams }: HomePageProps) 
   const tBlog = await getTranslations("blog");
   const pageParams = await searchParams;
   const requestedPage = Math.max(1, parseInt(pageParams.page ?? "1", 10) || 1);
-  const blogPosts = getBlogPosts(locale as Locale).slice(0, 3);
+  const blogPosts = (await getBlogPosts(locale as Locale)).slice(0, 3);
 
   const [vipListings, categories, homeListings, favoriteContext] =
     await Promise.all([

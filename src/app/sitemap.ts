@@ -57,7 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // Blog bələdçiləri hər dildə ayrıca tərcümə olunub — hamısı indekslənə bilər.
-  for (const slug of getBlogSlugs()) {
+  for (const slug of await getBlogSlugs()) {
     const path = `/blog/${slug}`;
     for (const locale of routing.locales) {
       entries.push({
