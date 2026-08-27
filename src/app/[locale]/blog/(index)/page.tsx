@@ -51,6 +51,11 @@ export default async function BlogPage({ params }: BlogPageProps) {
       </header>
 
       <div className="container blog-page__inner">
+        <section className="blog-about">
+          <h2 className="blog-about__title">{t("aboutTitle")}</h2>
+          <p className="blog-about__text">{t("aboutText")}</p>
+        </section>
+
         {posts.length > 0 ? (
           <div className="blog-feature-list">
             {posts.map((post, index) => (
@@ -68,11 +73,6 @@ export default async function BlogPage({ params }: BlogPageProps) {
             <p>{t("empty")}</p>
           </div>
         )}
-
-        <section className="blog-about">
-          <h2 className="blog-about__title">{t("aboutTitle")}</h2>
-          <p className="blog-about__text">{t("aboutText")}</p>
-        </section>
       </div>
     </div>
   );

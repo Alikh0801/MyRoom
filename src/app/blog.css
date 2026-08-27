@@ -160,15 +160,17 @@
   }
 }
 
-/* ---------- Blog: siyahı altındakı SEO mətni ---------- */
+/* ---------- Blog: məqalələrin üstündəki SEO mətni ---------- */
 .blog-about {
-  border-top: 1px solid var(--color-border);
-  padding-top: 2.25rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 2.25rem;
   max-width: 780px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .blog-about__title {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 700;
   margin-bottom: 0.75rem;
 }
