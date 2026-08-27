@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
+import { getBlogSlugs } from "@/lib/blog/content";
 import { hasUniqueLocaleContent } from "@/lib/i18n/localized-listing";
 import { getCategories, getSitemapListings } from "@/lib/queries/listings";
 import { getAbsoluteUrl } from "@/lib/seo";
 
-const STATIC_PATHS = ["/", "/search", "/terms", "/privacy"];
+const STATIC_PATHS = ["/", "/search", "/blog", "/terms", "/privacy"];
 
 function buildLocalizedUrls(path: string) {
   return routing.locales.map((locale) => ({
@@ -50,6 +51,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: now,
         changeFrequency: "daily",
         priority: 0.8,
+        alternates: buildAlternates(path),
+      });
+    }
+  }
+
+  // Blog bələdçiləri hər dildə ayrıca tərcümə olunub — hamısı indekslənə bilər.
+  for (const slug of getBlogSlugs()) {
+    const path = `/blog/${slug}`;
+    for (const locale of routing.locales) {
+      entries.push({
+        url: getAbsoluteUrl(path, locale),
+        lastModified: now,
+        changeFrequency: "monthly",
+        priority: 0.6,
         alternates: buildAlternates(path),
       });
     }

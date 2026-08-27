@@ -24,6 +24,7 @@ export async function Footer() {
             <h3 className="footer__col-title">{t("listingsTitle")}</h3>
             <div className="footer__links">
               <Link href="/search">{t("allListings")}</Link>
+              <Link href="/blog">{t("blog")}</Link>
               {categories.map((category) => (
                 <Link
                   key={category.id}

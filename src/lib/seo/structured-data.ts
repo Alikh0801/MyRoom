@@ -34,6 +34,35 @@ export function buildWebSiteJsonLd(locale: Locale) {
   };
 }
 
+export function buildBlogPostingJsonLd(
+  post: { slug: string; title: string; metaDescription: string; publishedAt: string },
+  locale: Locale
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.metaDescription,
+    datePublished: post.publishedAt,
+    dateModified: post.publishedAt,
+    inLanguage: locale,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": getAbsoluteUrl(`/blog/${post.slug}`, locale),
+    },
+    author: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: getSiteUrl(),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: getSiteUrl(),
+    },
+  };
+}
+
 export interface BreadcrumbItem {
   name: string;
   path: string;

@@ -1,7 +1,10 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { BlogCard } from "@/components/blog/BlogCard";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { ListingCard } from "@/components/listings/ListingCard";
 import { Pagination } from "@/components/ui/Pagination";
+import { Link } from "@/i18n/navigation";
+import { getBlogPosts } from "@/lib/blog/content";
 import { getFavoritePageContext } from "@/lib/favorites/page-context";
 import type { Locale } from "@/i18n/routing";
 import {
@@ -49,8 +52,10 @@ export default async function HomePage({ params, searchParams }: HomePageProps) 
   setRequestLocale(locale);
 
   const t = await getTranslations("home");
+  const tBlog = await getTranslations("blog");
   const pageParams = await searchParams;
   const requestedPage = Math.max(1, parseInt(pageParams.page ?? "1", 10) || 1);
+  const blogPosts = getBlogPosts(locale as Locale).slice(0, 3);
 
   const [vipListings, categories, homeListings, favoriteContext] =
     await Promise.all([
@@ -136,12 +141,28 @@ export default async function HomePage({ params, searchParams }: HomePageProps) 
         </div>
       </section>
 
-      <section className="section section--center section--seo-about">
-        <div className="container">
-          <h2 className="section__title">{t("seoAboutTitle")}</h2>
-          <p className="section__subtitle">{t("seoAboutText")}</p>
-        </div>
-      </section>
+      {blogPosts.length > 0 && (
+        <section className="section section--center section--blog-teaser">
+          <div className="container">
+            <h2 className="section__title">{tBlog("homeTeaserTitle")}</h2>
+            <p className="section__subtitle">{tBlog("homeTeaserSubtitle")}</p>
+
+            <div className="blog-grid">
+              {blogPosts.map((post) => (
+                <BlogCard
+                  key={post.slug}
+                  post={post}
+                  locale={locale as Locale}
+                />
+              ))}
+            </div>
+
+            <Link href="/blog" className="blog-teaser__more">
+              {tBlog("allGuides")} →
+            </Link>
+          </div>
+        </section>
+      )}
     </>
   );
 }

@@ -16,7 +16,7 @@ import {
   jsonLdScriptProps,
 } from "@/lib/seo/structured-data";
 import "../globals.css";
-import "../seo.css";
+import "../blog.css";
 
 type LocaleLayoutProps = {
   children: React.ReactNode;
