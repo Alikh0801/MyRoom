@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { submitSupportMessage } from "@/lib/support/actions";
 
 function SupportIcon() {
@@ -21,7 +22,12 @@ function SupportIcon() {
   );
 }
 
-export function SupportButton() {
+interface SupportButtonProps {
+  /** Qonaqlarda ikon modal açmır — giriş səhifəsinə aparır */
+  isLoggedIn: boolean;
+}
+
+export function SupportButton({ isLoggedIn }: SupportButtonProps) {
   const t = useTranslations("support");
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState(false);
@@ -63,6 +69,19 @@ export function SupportButton() {
         setError(t(`errors.${result.error}`));
       }
     });
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <Link
+        href="/auth/login?redirectTo=/"
+        className="support-btn"
+        aria-label={t("open")}
+        title={t("open")}
+      >
+        <SupportIcon />
+      </Link>
+    );
   }
 
   return (

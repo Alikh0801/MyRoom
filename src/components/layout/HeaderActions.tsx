@@ -27,6 +27,7 @@ export function HeaderActions({
     return (
       <div className="header__actions">
         <ThemeToggle />
+        <SupportButton isLoggedIn={false} />
         <LanguageSwitcher variant="mobile" />
         <LanguageSwitcher variant="desktop" />
         <div className="header__auth-desktop">
@@ -45,7 +46,7 @@ export function HeaderActions({
   return (
     <div className="header__actions">
       <ThemeToggle />
-      {!isAdmin && <SupportButton />}
+      {!isAdmin && <SupportButton isLoggedIn />}
       <LanguageSwitcher variant="mobile" />
       <LanguageSwitcher variant="desktop" />
       <Link
