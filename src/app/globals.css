@@ -4803,21 +4803,15 @@ h3.amenities-feature-title {
 }
 
 .admin-panel {
-  display: grid;
-  grid-template-columns: minmax(220px, 260px) 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
-  align-items: start;
-}
-
-@media (max-width: 900px) {
-  .admin-panel {
-    grid-template-columns: 1fr;
-  }
 }
 
 .admin-panel-tabs {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
