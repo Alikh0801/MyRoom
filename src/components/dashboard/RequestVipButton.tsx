@@ -2,11 +2,16 @@
 
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
+import { useRouter } from "@/i18n/navigation";
 import {
   PremiumPlanPicker,
   type PremiumPlanId,
 } from "@/components/listings/PremiumPlanPicker";
 import { createVipCheckout } from "@/lib/payments/vip";
+import {
+  PAYMENTS_ENABLED,
+  PAYMENTS_TEST_MODE_PATH,
+} from "@/lib/payments/config";
 
 interface RequestVipButtonProps {
   listingId: string;
@@ -15,6 +20,7 @@ interface RequestVipButtonProps {
 
 export function RequestVipButton({ listingId, disabled }: RequestVipButtonProps) {
   const t = useTranslations("dashboard.vip");
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [plan, setPlan] = useState<PremiumPlanId>("day");
   const [error, setError] = useState<string | null>(null);
@@ -25,6 +31,13 @@ export function RequestVipButton({ listingId, disabled }: RequestVipButtonProps)
 
     if (plan === "none") {
       setError(t("selectPlan"));
+      return;
+    }
+
+    // Ödəniş şlüzü test mərhələsindədir — bank səhifəsinə yönləndirmək
+    // əvəzinə məlumat səhifəsi göstəririk.
+    if (!PAYMENTS_ENABLED) {
+      router.push(PAYMENTS_TEST_MODE_PATH);
       return;
     }
 

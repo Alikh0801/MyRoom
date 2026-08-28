@@ -3,6 +3,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { getLocale } from "next-intl/server";
 import { createKapitalOrder } from "@/lib/payments/kapital-client";
+import { PAYMENTS_ENABLED } from "@/lib/payments/config";
 import {
   parseRequestedVipPlan,
   vipExpiresAtFromPlan,
@@ -26,6 +27,12 @@ export async function createVipCheckout(
   listingId: string,
   planRaw: string
 ): Promise<VipCheckoutResult> {
+  // Ödəniş şlüzü hələ test mərhələsindədir — server tərəfdə də bağlayırıq ki,
+  // UI-dan yan keçməklə bank sifarişi yaradıla bilməsin.
+  if (!PAYMENTS_ENABLED) {
+    return { ok: false, error: "PAYMENTS_DISABLED" };
+  }
+
   const plan = parseRequestedVipPlan(planRaw);
   if (!listingId || !plan) {
     return { ok: false, error: "VIP paketi seçin." };

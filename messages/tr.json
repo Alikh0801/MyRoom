@@ -415,7 +415,8 @@
         }
       },
       "payment": {
-        "onlineNote": "Ödeme banka kartıyla online olarak yapılır. \"Online öde\" düğmesine tıkladığınızda bankanın güvenli ödeme sayfasına yönlendirileceksiniz."
+        "onlineNote": "Ödeme banka kartıyla online olarak yapılır. \"Online öde\" düğmesine tıkladığınızda bankanın güvenli ödeme sayfasına yönlendirileceksiniz.",
+        "testNote": "Online ödeme sistemi şu anda test aşamasındadır. VIP paketi seçip ilanı gönderebilirsiniz, ödeme ise sistem aktifleştikten sonra mümkün olacaktır."
       }
     },
     "footer": {
@@ -552,5 +553,12 @@
     "acceptPrefix": "",
     "acceptAnd": "ve",
     "acceptSuffix": "okudum ve kabul ediyorum *"
+  },
+  "paymentsTestMode": {
+    "title": "Ödeme sistemi test aşamasında",
+    "description": "Online ödeme sistemi şu anda bankayla birlikte test ediliyor ve geçici olarak kullanılamıyor. Bu nedenle VIP ödemesini şu anda tamamlayamazsınız.",
+    "hint": "İlanınız kaydedildi. Ödeme sistemi devreye girer girmez VIP paketini \"İlanlarım\" bölümünden satın alabileceksiniz. Anlayışınız için teşekkür ederiz.",
+    "backToListings": "İlanlarıma dön",
+    "backHome": "Ana sayfa"
   }
 }

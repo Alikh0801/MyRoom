@@ -415,7 +415,8 @@
         }
       },
       "payment": {
-        "onlineNote": "Ödəniş bank kartı ilə onlayn aparılır. \"Onlayn ödə\" düyməsinə klikləyəndə bankın təhlükəsiz ödəniş səhifəsinə yönləndiriləcəksiniz."
+        "onlineNote": "Ödəniş bank kartı ilə onlayn aparılır. \"Onlayn ödə\" düyməsinə klikləyəndə bankın təhlükəsiz ödəniş səhifəsinə yönləndiriləcəksiniz.",
+        "testNote": "Onlayn ödəniş sistemi hazırda test mərhələsindədir. VIP paketi seçib elanı göndərə bilərsiniz, ödəniş isə sistem aktivləşdikdən sonra mümkün olacaq."
       }
     },
     "footer": {
@@ -552,5 +553,12 @@
     "acceptPrefix": "",
     "acceptAnd": "və",
     "acceptSuffix": "oxudum və qəbul edirəm *"
+  },
+  "paymentsTestMode": {
+    "title": "Ödəniş sistemi test mərhələsindədir",
+    "description": "Onlayn ödəniş sistemi hazırda bankla birlikdə test edilir və müvəqqəti olaraq əlçatan deyil. Bu səbəbdən VIP ödənişini indi tamamlaya bilmirsiniz.",
+    "hint": "Elanınız qeydə alınıb və saxlanılıb. Ödəniş sistemi işə düşən kimi VIP paketini \"Elanlarım\" bölməsindən ala biləcəksiniz. Anlayışınız üçün təşəkkür edirik.",
+    "backToListings": "Elanlarıma qayıt",
+    "backHome": "Ana səhifə"
   }
 }

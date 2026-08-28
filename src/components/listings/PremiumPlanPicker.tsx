@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { PAYMENTS_ENABLED } from "@/lib/payments/config";
 
 export const PREMIUM_PLANS = [
   { id: "none", priceAzn: 0, durationKey: "none" as const },
@@ -95,7 +96,9 @@ export function PremiumPlanPicker({
       </div>
 
       {needsPayment && (
-        <p className="premium-picker__payment-note">{t("payment.onlineNote")}</p>
+        <p className="premium-picker__payment-note">
+          {PAYMENTS_ENABLED ? t("payment.onlineNote") : t("payment.testNote")}
+        </p>
       )}
     </div>
   );

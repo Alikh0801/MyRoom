@@ -26,6 +26,10 @@ import { validateListingFormFields } from "@/lib/form/validate-listing-form";
 import { LegalAcceptanceField } from "@/components/legal/LegalAcceptanceField";
 import type { EditListingData } from "@/lib/queries/edit-listing";
 import { createVipCheckout } from "@/lib/payments/vip";
+import {
+  PAYMENTS_ENABLED,
+  PAYMENTS_TEST_MODE_PATH,
+} from "@/lib/payments/config";
 import type { Locale } from "@/i18n/routing";
 import type { AmenityGroup, Category } from "@/types/database";
 
@@ -232,6 +236,13 @@ export function CreateListingForm({
       }
 
       if (!isEdit && (premiumPlan === "day" || premiumPlan === "week")) {
+        // Ödəniş şlüzü test mərhələsindədir — elan yaradıldı, ödəniş isə
+        // hələlik mümkün deyil, ona görə məlumat səhifəsinə yönləndiririk.
+        if (!PAYMENTS_ENABLED) {
+          router.push(PAYMENTS_TEST_MODE_PATH);
+          return;
+        }
+
         const checkout = await createVipCheckout(result.listingId, premiumPlan);
         if (checkout.ok) {
           window.location.href = checkout.redirectUrl;
