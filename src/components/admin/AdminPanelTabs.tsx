@@ -9,6 +9,7 @@ const TABS: { id: AdminTab; label: string; showCount: boolean }[] = [
   { id: "pending", label: "Gözləyən elanlar", showCount: true },
   { id: "active", label: "Aktiv elanlar", showCount: true },
   { id: "deleted", label: "Silinmiş elanlar", showCount: true },
+  { id: "support", label: "Müraciətlər", showCount: true },
   { id: "blog", label: "Blog", showCount: false },
   { id: "stats", label: "Statistika", showCount: false },
   { id: "settings", label: "Bank kartı", showCount: false },
@@ -23,6 +24,7 @@ function countFor(counts: AdminTabCounts, tab: AdminTab): number {
   if (tab === "pending") return counts.pending;
   if (tab === "active") return counts.active;
   if (tab === "deleted") return counts.deleted;
+  if (tab === "support") return counts.supportUnread;
   return 0;
 }
 

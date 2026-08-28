@@ -1,3 +1,4 @@
+import { getUnreadSupportCount } from "@/lib/queries/support";
 import { createClient } from "@/lib/supabase/server";
 import type { AdminTab } from "@/lib/admin/tabs";
 import type { PriceUnit, VipPaymentStatus, VipPlan } from "@/types/database";
@@ -48,6 +49,7 @@ export interface AdminTabCounts {
   pending: number;
   active: number;
   deleted: number;
+  supportUnread: number;
 }
 
 const LISTING_EMBEDS = `
@@ -190,7 +192,7 @@ async function filterVisibleDeletions(
 export async function getAdminTabCounts(): Promise<AdminTabCounts> {
   const supabase = await createClient();
 
-  const [pending, active, deletedRecords] = await Promise.all([
+  const [pending, active, deletedRecords, supportUnread] = await Promise.all([
     supabase
       .from("listings")
       .select("id", { count: "exact", head: true })
@@ -200,12 +202,14 @@ export async function getAdminTabCounts(): Promise<AdminTabCounts> {
       .select("id", { count: "exact", head: true })
       .eq("status", "approved"),
     getDeletedListings(),
+    getUnreadSupportCount(),
   ]);
 
   return {
     pending: pending.count ?? 0,
     active: active.count ?? 0,
     deleted: deletedRecords.length,
+    supportUnread,
   };
 }
 

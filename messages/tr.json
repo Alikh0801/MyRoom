@@ -24,6 +24,26 @@
     "switchToLight": "Aydınlık mod",
     "switchToDark": "Karanlık mod"
   },
+  "support": {
+    "open": "Destek — şikâyet ve öneri",
+    "title": "Şikâyet veya öneri gönder",
+    "description": "Bize yazın — talebiniz doğrudan site yönetimine ulaşacak.",
+    "subject": "Başlık",
+    "subjectPlaceholder": "Talebinizin konusu",
+    "message": "Mesaj",
+    "messagePlaceholder": "Şikâyet veya önerinizi ayrıntılı yazın",
+    "send": "Gönder",
+    "sending": "Gönderiliyor…",
+    "close": "Kapat",
+    "sentTitle": "Talebiniz gönderildi",
+    "sentText": "Teşekkürler. Talebinizi inceleyeceğiz.",
+    "errors": {
+      "unauthorized": "Talep göndermek için hesabınıza giriş yapın.",
+      "invalidSubject": "Başlık boş olamaz ve 120 karakterden uzun olmamalıdır.",
+      "invalidBody": "Mesaj en az 10, en fazla 2000 karakter olmalıdır.",
+      "failed": "Talep gönderilemedi. Biraz sonra tekrar deneyin."
+    }
+  },
   "footer": {
     "tagline": "Azerbaycan genelinde kısa süreli tatil ve günlük kiralama ilanları",
     "listingsTitle": "İlanlar",

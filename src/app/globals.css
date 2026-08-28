@@ -5658,3 +5658,233 @@ h3.amenities-feature-title {
   background: var(--color-surface);
   color: var(--color-text);
 }
+
+/* ---------- Dəstək (şikayət və təklif) ---------- */
+.support-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-muted-surface);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.support-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.support-btn__icon {
+  width: 17px;
+  height: 17px;
+}
+
+.support-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.support-modal__panel {
+  position: relative;
+  width: min(520px, 100%);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.25);
+  padding: 1.75rem 1.5rem 1.5rem;
+}
+
+.support-modal__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.support-modal__close:hover {
+  color: var(--color-text);
+}
+
+.support-modal__title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  padding-right: 2rem;
+}
+
+.support-modal__text {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  margin-bottom: 1.25rem;
+}
+
+.support-modal__done {
+  text-align: center;
+  padding: 1rem 0 0.5rem;
+}
+
+.support-modal__done .support-modal__title,
+.support-modal__done .support-modal__text {
+  padding-right: 0;
+}
+
+.support-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.support-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.support-form__field input,
+.support-form__field textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  width: 100%;
+}
+
+.support-form__field textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.support-form__submit {
+  align-self: flex-end;
+}
+
+/* ---------- Admin: müraciətlər ---------- */
+.admin-support {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-support-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+}
+
+.admin-support-card--unread {
+  border-color: var(--color-primary-subtle-border);
+  background: var(--color-primary-subtle);
+}
+
+.admin-support-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.admin-support-card__subject {
+  font-size: 1.02rem;
+  font-weight: 700;
+  margin: 0;
+  flex: 1;
+  min-width: 180px;
+}
+
+.admin-support-card__badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--color-success-surface);
+  color: var(--color-primary);
+}
+
+.admin-support-card__date {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.admin-support-card__meta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem 1.5rem;
+  margin: 0 0 0.9rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+@media (min-width: 640px) {
+  .admin-support-card__meta {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.admin-support-card__meta dt {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 0.15rem;
+}
+
+.admin-support-card__meta dd {
+  margin: 0;
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
+.admin-support-card__meta a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.admin-support-card__meta a:hover {
+  text-decoration: underline;
+}
+
+.admin-support-card__body {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.admin-support-card__actions {
+  margin-top: 0.9rem;
+}

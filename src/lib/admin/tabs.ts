@@ -3,15 +3,20 @@ export type AdminTab =
   | "active"
   | "deleted"
   | "blog"
+  | "support"
   | "settings"
   | "stats";
-export type ListingsAdminTab = Exclude<AdminTab, "settings" | "stats" | "blog">;
+export type ListingsAdminTab = Exclude<
+  AdminTab,
+  "settings" | "stats" | "blog" | "support"
+>;
 
 export function parseAdminTab(value: string | undefined): AdminTab {
   if (
     value === "active" ||
     value === "deleted" ||
     value === "blog" ||
+    value === "support" ||
     value === "settings" ||
     value === "stats"
   ) {
@@ -56,5 +61,10 @@ export function adminTabHref(
 }
 
 export function isListingsAdminTab(tab: AdminTab): tab is ListingsAdminTab {
-  return tab !== "settings" && tab !== "stats" && tab !== "blog";
+  return (
+    tab !== "settings" &&
+    tab !== "stats" &&
+    tab !== "blog" &&
+    tab !== "support"
+  );
 }

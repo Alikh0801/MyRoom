@@ -2,6 +2,7 @@ import { AdminBlogList } from "@/components/admin/AdminBlogList";
 import { AdminListingsList } from "@/components/admin/AdminListingsList";
 import { AdminPanelTabs } from "@/components/admin/AdminPanelTabs";
 import { AdminStatsPanel } from "@/components/admin/AdminStatsPanel";
+import { AdminSupportList } from "@/components/admin/AdminSupportList";
 import { PaymentSettingsForm } from "@/components/admin/PaymentSettingsForm";
 import { requireAdmin } from "@/lib/admin/auth";
 import {
@@ -20,6 +21,7 @@ import {
 import { getAdminBlogPosts } from "@/lib/queries/blog-admin";
 import { getPaymentSettings } from "@/lib/queries/payment-settings";
 import { getSiteStats } from "@/lib/queries/stats";
+import { getSupportMessages } from "@/lib/queries/support";
 import { Suspense } from "react";
 
 export const metadata = {
@@ -32,6 +34,7 @@ const TAB_SUBTITLES = {
   pending: "Təsdiq gözləyən elanlar",
   active: "Saytda aktiv olan elanlar",
   deleted: "Admin tərəfindən silinmiş elanlar",
+  support: "İstifadəçilərdən gələn şikayət və təkliflər",
   blog: "Sayt blogundakı bələdçi məqalələri",
   settings: "VIP ödənişləri üçün bank kartı məlumatı",
   stats: "Sayt ziyarətləri və elan baxışları üzrə statistika",
@@ -55,13 +58,14 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
     sort !== "newest" ||
     (tab !== "deleted" && vipFilter !== "all");
 
-  const [counts, listings, paymentSettings, siteStats, blogPosts] =
+  const [counts, listings, paymentSettings, siteStats, blogPosts, supportMessages] =
     await Promise.all([
       getAdminTabCounts(),
       isListingsAdminTab(tab) ? getAdminListingsForTab(tab) : Promise.resolve([]),
       tab === "settings" ? getPaymentSettings() : Promise.resolve(null),
       tab === "stats" ? getSiteStats() : Promise.resolve(null),
       tab === "blog" ? getAdminBlogPosts() : Promise.resolve([]),
+      tab === "support" ? getSupportMessages() : Promise.resolve([]),
     ]);
 
   const filteredListings = isListingsAdminTab(tab)
@@ -92,7 +96,9 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         </Suspense>
 
         <section className="admin-panel__content" role="tabpanel">
-          {tab === "blog" ? (
+          {tab === "support" ? (
+            <AdminSupportList messages={supportMessages} />
+          ) : tab === "blog" ? (
             <AdminBlogList posts={blogPosts} />
           ) : tab === "settings" && paymentSettings ? (
             <div className="admin-settings-card">

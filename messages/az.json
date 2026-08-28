@@ -24,6 +24,26 @@
     "switchToLight": "Açıq rejim",
     "switchToDark": "Qaranlıq rejim"
   },
+  "support": {
+    "open": "Dəstək – şikayət və təklif",
+    "title": "Şikayət və ya təklif göndər",
+    "description": "Fikirlərinizi bizə yazın — müraciətiniz birbaşa sayt administrasiyasına çatacaq.",
+    "subject": "Başlıq",
+    "subjectPlaceholder": "Müraciətinizin mövzusu",
+    "message": "Mətn",
+    "messagePlaceholder": "Şikayət və ya təklifinizi ətraflı yazın",
+    "send": "Göndər",
+    "sending": "Göndərilir…",
+    "close": "Bağla",
+    "sentTitle": "Müraciətiniz göndərildi",
+    "sentText": "Təşəkkür edirik. Müraciətinizi nəzərdən keçirəcəyik.",
+    "errors": {
+      "unauthorized": "Müraciət göndərmək üçün hesabınıza daxil olun.",
+      "invalidSubject": "Başlıq boş ola bilməz və 120 simvoldan uzun olmamalıdır.",
+      "invalidBody": "Mətn ən azı 10, ən çox 2000 simvol olmalıdır.",
+      "failed": "Müraciət göndərilmədi. Bir azdan yenidən cəhd edin."
+    }
+  },
   "footer": {
     "tagline": "Azərbaycan üzrə qısamüddətli istirahət və günlük icarə elanları",
     "listingsTitle": "Elanlar",

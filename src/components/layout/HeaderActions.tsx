@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { AuthMenu } from "@/components/layout/AuthMenu";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { UserMenu } from "@/components/layout/UserMenu";
+import { SupportButton } from "@/components/support/SupportButton";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 interface HeaderActionsProps {
@@ -44,6 +45,7 @@ export function HeaderActions({
   return (
     <div className="header__actions">
       <ThemeToggle />
+      {!isAdmin && <SupportButton />}
       <LanguageSwitcher variant="mobile" />
       <LanguageSwitcher variant="desktop" />
       <Link
