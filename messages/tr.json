@@ -416,7 +416,7 @@
       },
       "payment": {
         "onlineNote": "Ödeme banka kartıyla online olarak yapılır. \"Onayla\" düğmesine tıkladığınızda bankanın güvenli ödeme sayfasına yönlendirileceksiniz.",
-        "testNote": "Online ödeme sistemi şu anda test aşamasındadır. VIP paketi seçip ilanı gönderebilirsiniz, ödeme ise sistem aktifleştikten sonra mümkün olacaktır."
+        "testNote": "Online ödeme sistemi şu anda test aşamasındadır. VIP paket seçimi ödeme sistemi aktifleştikten sonra mümkün olacaktır."
       }
     },
     "footer": {
