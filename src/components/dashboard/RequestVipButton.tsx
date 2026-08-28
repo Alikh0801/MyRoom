@@ -77,7 +77,7 @@ export function RequestVipButton({ listingId, disabled }: RequestVipButtonProps)
           disabled={isPending}
           onClick={handlePay}
         >
-          {isPending ? t("submitting") : t("payOnline")}
+          {isPending ? t("submitting") : t("confirm")}
         </button>
         <button
           type="button"

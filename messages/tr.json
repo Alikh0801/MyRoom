@@ -415,7 +415,7 @@
         }
       },
       "payment": {
-        "onlineNote": "Ödeme banka kartıyla online olarak yapılır. \"Online öde\" düğmesine tıkladığınızda bankanın güvenli ödeme sayfasına yönlendirileceksiniz.",
+        "onlineNote": "Ödeme banka kartıyla online olarak yapılır. \"Onayla\" düğmesine tıkladığınızda bankanın güvenli ödeme sayfasına yönlendirileceksiniz.",
         "testNote": "Online ödeme sistemi şu anda test aşamasındadır. VIP paketi seçip ilanı gönderebilirsiniz, ödeme ise sistem aktifleştikten sonra mümkün olacaktır."
       }
     },
@@ -527,7 +527,7 @@
     "vip": {
       "button": "VIP yap",
       "submitting": "Gönderiliyor...",
-      "payOnline": "Online öde",
+      "confirm": "Onayla",
       "cancel": "İptal et",
       "selectPlan": "VIP paketi seçin."
     }

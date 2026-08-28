@@ -415,7 +415,7 @@
         }
       },
       "payment": {
-        "onlineNote": "Ödəniş bank kartı ilə onlayn aparılır. \"Onlayn ödə\" düyməsinə klikləyəndə bankın təhlükəsiz ödəniş səhifəsinə yönləndiriləcəksiniz.",
+        "onlineNote": "Ödəniş bank kartı ilə onlayn aparılır. \"Təsdiq et\" düyməsinə klikləyəndə bankın təhlükəsiz ödəniş səhifəsinə yönləndiriləcəksiniz.",
         "testNote": "Onlayn ödəniş sistemi hazırda test mərhələsindədir. VIP paketi seçib elanı göndərə bilərsiniz, ödəniş isə sistem aktivləşdikdən sonra mümkün olacaq."
       }
     },
@@ -527,7 +527,7 @@
     "vip": {
       "button": "VIP et",
       "submitting": "Göndərilir...",
-      "payOnline": "Onlayn ödə",
+      "confirm": "Təsdiq et",
       "cancel": "Ləğv et",
       "selectPlan": "VIP paketi seçin."
     }
