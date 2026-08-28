@@ -1,6 +1,10 @@
 /* ---------- Blog: ümumi ---------- */
+/* QEYD: bu element eyni zamanda .container-dir — qısa yazılışlı "padding"
+   konteynerin yan boşluqlarını sıfırlayır və mobil ekranda məzmun kənara
+   yapışırdı. Ona görə yalnız şaquli boşluqları təyin edirik. */
 .blog-page__inner {
-  padding: 2.5rem 0 4rem;
+  padding-top: 2.5rem;
+  padding-bottom: 4rem;
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
