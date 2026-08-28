@@ -399,8 +399,6 @@
       "ariaLabel": "Premium ilan paketi",
       "intro": "İlanınızı VIP bölümünde gösterin ve daha fazla görüntülenme elde edin.",
       "recommended": "En avantajlı",
-      "paymentNotice": "Online ödeme henüz aktif değil. Şu an için VIP paket ödemelerini banka kartına havale ve ödeme dekontu ile kabul ediyoruz. Yönetici dekontu kontrol ettikten sonra VIP durumu etkinleştirilir.",
-      "comingSoon": "Ödeme özelliği yakında aktif olacak. Şu anda seçim yalnızca önizleme amaçlıdır.",
       "plans": {
         "none": {
           "duration": "Standart",
@@ -417,14 +415,7 @@
         }
       },
       "payment": {
-        "title": "Ödeme bilgileri",
-        "hint": "Seçtiğiniz paketin tutarını aşağıdaki karta havale edin ve ödeme dekontunu yükleyin.",
-        "bankName": "Banka",
-        "cardNumber": "Kart numarası",
-        "cardholder": "Kart sahibi",
-        "receiptLabel": "Ödeme dekontu *",
-        "receiptHint": "Havale dekontunun fotoğrafını yükleyin (JPEG, PNG veya WebP).",
-        "cardNotConfigured": "Banka kartı henüz tanımlanmadı. Yönetici kart bilgisini ekledikten sonra VIP seçebilirsiniz."
+        "onlineNote": "Ödeme banka kartıyla online olarak yapılır. \"Online öde\" düğmesine tıkladığınızda bankanın güvenli ödeme sayfasına yönlendirileceksiniz."
       }
     },
     "footer": {
@@ -440,7 +431,6 @@
       "selectRegion": "Listeden bir bölge seçin.",
       "selectMapLocation": "Haritada mülkün konumunu gösterin.",
       "legalRequired": "Kullanım şartlarını ve Gizlilik politikasını kabul etmelisiniz.",
-      "vipReceiptRequired": "VIP paket için ödeme dekontu yükleyin.",
       "createFailed": "İlan oluşturulamadı.",
       "uploadFailed": "Fotoğraf yükleme hatası",
       "uploadServerFailed": "Fotoğraf sunucuya yüklenemedi",
@@ -492,7 +482,9 @@
     "subtitle": "İlanlarınızın durumunu takip edin ve yönetin.",
     "alerts": {
       "created": "İlanınız başarıyla gönderildi. Yönetici onayından sonra sitede görünecek.",
-      "updated": "İlanınız güncellendi. Onaylanmış ilanlar değişiklikten sonra yeniden incelenebilir."
+      "updated": "İlanınız güncellendi. Onaylanmış ilanlar değişiklikten sonra yeniden incelenebilir.",
+      "vipSuccess": "VIP ödemesi başarıyla tamamlandı. İlanınız VIP bölümünde gösterilecek.",
+      "vipFailed": "VIP ödemesi tamamlanmadı. Lütfen tekrar deneyin."
     },
     "filters": {
       "ariaLabel": "İlan durumu",
@@ -533,20 +525,13 @@
     },
     "vip": {
       "button": "VIP yap",
-      "submit": "VIP talebi gönder",
       "submitting": "Gönderiliyor...",
+      "payOnline": "Online öde",
       "cancel": "İptal et",
-      "selectPlan": "VIP paketi seçin.",
-      "receiptRequired": "Ödeme dekontu yükleyin.",
-      "uploadFailed": "Dekont yüklenemedi."
+      "selectPlan": "VIP paketi seçin."
     }
   },
-  "admin": {
-    "settings": {
-      "title": "Banka kartı ayarları",
-      "subtitle": "VIP ödemeleri için kart bilgisini belirleyin. İlan sahipleri bu karta havale yapacak."
-    }
-  },
+  "admin": {},
   "locale": {
     "az": "AZ",
     "ru": "RU",

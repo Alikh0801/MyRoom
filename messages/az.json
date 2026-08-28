@@ -399,8 +399,6 @@
       "ariaLabel": "Premium elan paketi",
       "intro": "Elanınızı VIP bölməsində göstərin və daha çox baxış əldə edin.",
       "recommended": "Ən sərfəli",
-      "paymentNotice": "Onlayn ödəniş hələ aktiv deyil. Müvəqqəti olaraq VIP paket ödənişlərini bank kartına köçürmə və ödəniş çeki ilə qəbul edirik. Admin çeki yoxladıqdan sonra VIP statusu aktivləşdirilir.",
-      "comingSoon": "Ödəniş funksionallığı tezliklə aktiv olacaq. Hazırda seçim yalnız önizləmə üçündür.",
       "plans": {
         "none": {
           "duration": "Standart",
@@ -417,14 +415,7 @@
         }
       },
       "payment": {
-        "title": "Ödəniş məlumatları",
-        "hint": "Seçdiyiniz paket məbləğini aşağıdakı karta köçürün və ödəniş çekini yükləyin.",
-        "bankName": "Bank",
-        "cardNumber": "Kart nömrəsi",
-        "cardholder": "Kart sahibi",
-        "receiptLabel": "Ödəniş çeki *",
-        "receiptHint": "Köçürmə qəbzinin şəklini yükləyin (JPEG, PNG və ya WebP).",
-        "cardNotConfigured": "Bank kartı hələ təyin olunmayıb. Admin kart məlumatını əlavə etdikdən sonra VIP seçə bilərsiniz."
+        "onlineNote": "Ödəniş bank kartı ilə onlayn aparılır. \"Onlayn ödə\" düyməsinə klikləyəndə bankın təhlükəsiz ödəniş səhifəsinə yönləndiriləcəksiniz."
       }
     },
     "footer": {
@@ -440,7 +431,6 @@
       "selectRegion": "Rayon siyahıdan seçin.",
       "selectMapLocation": "Xəritədə mülkün yerini göstərin.",
       "legalRequired": "İstifadəçi şərtləri və Məxfilik siyasəti ilə razı olmalısınız.",
-      "vipReceiptRequired": "VIP paket üçün ödəniş çeki yükləyin.",
       "createFailed": "Elan yaradıla bilmədi.",
       "uploadFailed": "Şəkil yükləmə xətası",
       "uploadServerFailed": "Şəkil serverə yüklənmədi",
@@ -492,7 +482,9 @@
     "subtitle": "Elanlarınızın statusunu izləyin və idarə edin.",
     "alerts": {
       "created": "Elanınız uğurla göndərildi. Admin təsdiqindən sonra saytda görünəcək.",
-      "updated": "Elanınız yeniləndi. Təsdiqlənmiş elanlar dəyişiklikdən sonra yenidən yoxlanıla bilər."
+      "updated": "Elanınız yeniləndi. Təsdiqlənmiş elanlar dəyişiklikdən sonra yenidən yoxlanıla bilər.",
+      "vipSuccess": "VIP ödənişi uğurla tamamlandı. Elanınız VIP bölməsində göstəriləcək.",
+      "vipFailed": "VIP ödənişi tamamlanmadı. Zəhmət olmasa yenidən cəhd edin."
     },
     "filters": {
       "ariaLabel": "Elan statusu",
@@ -533,20 +525,13 @@
     },
     "vip": {
       "button": "VIP et",
-      "submit": "VIP sorğusu göndər",
       "submitting": "Göndərilir...",
+      "payOnline": "Onlayn ödə",
       "cancel": "Ləğv et",
-      "selectPlan": "VIP paketi seçin.",
-      "receiptRequired": "Ödəniş çeki yükləyin.",
-      "uploadFailed": "Çeki yüklənmədi."
+      "selectPlan": "VIP paketi seçin."
     }
   },
-  "admin": {
-    "settings": {
-      "title": "Bank kartı ayarları",
-      "subtitle": "VIP ödənişləri üçün kart məlumatını təyin edin. Elan sahibləri bu karta köçürmə edəcək."
-    }
-  },
+  "admin": {},
   "locale": {
     "az": "AZ",
     "ru": "RU",

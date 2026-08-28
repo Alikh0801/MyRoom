@@ -10,17 +10,12 @@ import { getLocalizedName } from "@/lib/i18n/localized-name";
 import { formatPriceSuffix } from "@/lib/price";
 import type { Locale } from "@/i18n/routing";
 import type { MyListingItem } from "@/lib/queries/my-listings";
-import type { PaymentSettings } from "@/lib/queries/payment-settings";
 
 interface MyListingCardProps {
   listing: MyListingItem;
-  paymentSettings: PaymentSettings;
 }
 
-export function MyListingCard({
-  listing,
-  paymentSettings,
-}: MyListingCardProps) {
+export function MyListingCard({ listing }: MyListingCardProps) {
   const t = useTranslations("dashboard");
   const locale = useLocale() as Locale;
   const dateLocale =
@@ -91,10 +86,7 @@ export function MyListingCard({
         )}
 
         {canRequestVip && (
-          <RequestVipButton
-            listingId={listing.id}
-            paymentSettings={paymentSettings}
-          />
+          <RequestVipButton listingId={listing.id} />
         )}
       </div>
 

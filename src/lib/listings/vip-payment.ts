@@ -8,6 +8,15 @@ export const VIP_PLAN_DURATIONS: Record<VipPlan, { days: number; labelAz: string
   week: { days: 7, labelAz: "1 həftə VIP" },
 };
 
+/**
+ * Ödəniş məbləği — YALNIZ server tərəfdə bu sabitdən istifadə olunmalıdır.
+ * Bank sifarişi yaradarkən heç vaxt müştəridən gələn məbləği etibar etmə.
+ */
+export const VIP_PLAN_PRICE_AZN: Record<VipPlan, number> = {
+  day: 3,
+  week: 16,
+};
+
 export function parseRequestedVipPlan(
   value: string | null | undefined
 ): VipPlan | null {

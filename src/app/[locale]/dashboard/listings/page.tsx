@@ -8,12 +8,11 @@ import {
   getMyListingCounts,
   getMyListings,
 } from "@/lib/queries/my-listings";
-import { getPaymentSettings } from "@/lib/queries/payment-settings";
 import { createClient } from "@/lib/supabase/server";
 
 interface MyListingsPageProps {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ status?: string; created?: string; updated?: string }>;
+  searchParams: Promise<{ status?: string; created?: string; updated?: string; vip?: string }>;
 }
 
 export async function generateMetadata({ params }: MyListingsPageProps) {
@@ -43,10 +42,9 @@ export default async function MyListingsPage({
 
   if (!user) redirect("/auth/login?redirectTo=/dashboard/listings");
 
-  const [listings, counts, paymentSettings] = await Promise.all([
+  const [listings, counts] = await Promise.all([
     getMyListings(user.id, statusFilter),
     getMyListingCounts(user.id),
-    getPaymentSettings(),
   ]);
 
   const pageTitle = statusFilter
@@ -73,16 +71,25 @@ export default async function MyListingsPage({
           <div className="dashboard__alert">{t("alerts.updated")}</div>
         )}
 
+        {resolvedSearchParams.vip === "success" && (
+          <div className="dashboard__alert dashboard__alert--success">
+            {t("alerts.vipSuccess")}
+          </div>
+        )}
+
+        {(resolvedSearchParams.vip === "failed" ||
+          resolvedSearchParams.vip === "checkout_failed") && (
+          <div className="dashboard__alert dashboard__alert--error">
+            {t("alerts.vipFailed")}
+          </div>
+        )}
+
         <MyListingsFilters counts={counts} activeStatus={statusFilter} />
 
         {listings.length > 0 ? (
           <div className="my-listings">
             {listings.map((listing) => (
-              <MyListingCard
-                key={listing.id}
-                listing={listing}
-                paymentSettings={paymentSettings}
-              />
+              <MyListingCard key={listing.id} listing={listing} />
             ))}
           </div>
         ) : (

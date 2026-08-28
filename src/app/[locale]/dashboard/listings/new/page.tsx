@@ -7,7 +7,6 @@ import {
   getCategoriesForForm,
   getProfileContact,
 } from "@/lib/queries/form-data";
-import { getPaymentSettings } from "@/lib/queries/payment-settings";
 
 type NewListingPageProps = {
   params: Promise<{ locale: string }>;
@@ -29,11 +28,10 @@ export default async function NewListingPage({ params }: NewListingPageProps) {
   const user = await requireAuth();
   const t = await getTranslations("listingForm");
 
-  const [categories, amenityGroups, profile, paymentSettings] = await Promise.all([
+  const [categories, amenityGroups, profile] = await Promise.all([
     getCategoriesForForm(),
     getAmenitiesGrouped(),
     getProfileContact(user.id),
-    getPaymentSettings(),
   ]);
 
   const defaultWhatsapp = profile?.whatsapp_phone ?? profile?.phone ?? "";
@@ -54,7 +52,6 @@ export default async function NewListingPage({ params }: NewListingPageProps) {
           categories={categories}
           amenityGroups={amenityGroups}
           defaultWhatsapp={defaultWhatsapp}
-          paymentSettings={paymentSettings}
         />
       </div>
     </div>

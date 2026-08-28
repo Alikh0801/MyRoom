@@ -3,7 +3,6 @@ import { AdminListingsList } from "@/components/admin/AdminListingsList";
 import { AdminPanelTabs } from "@/components/admin/AdminPanelTabs";
 import { AdminStatsPanel } from "@/components/admin/AdminStatsPanel";
 import { AdminSupportList } from "@/components/admin/AdminSupportList";
-import { PaymentSettingsForm } from "@/components/admin/PaymentSettingsForm";
 import { requireAdmin } from "@/lib/admin/auth";
 import {
   filterAdminListingItems,
@@ -19,7 +18,6 @@ import {
   type DeletedListingRecord,
 } from "@/lib/queries/admin";
 import { getAdminBlogPosts } from "@/lib/queries/blog-admin";
-import { getPaymentSettings } from "@/lib/queries/payment-settings";
 import { getSiteStats } from "@/lib/queries/stats";
 import { getSupportMessages } from "@/lib/queries/support";
 import { Suspense } from "react";
@@ -36,7 +34,6 @@ const TAB_SUBTITLES = {
   deleted: "Admin tərəfindən silinmiş elanlar",
   support: "İstifadəçilərdən gələn şikayət və təkliflər",
   blog: "Sayt blogundakı bələdçi məqalələri",
-  settings: "VIP ödənişləri üçün bank kartı məlumatı",
   stats: "Sayt ziyarətləri və elan baxışları üzrə statistika",
 } as const;
 
@@ -58,11 +55,10 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
     sort !== "newest" ||
     (tab !== "deleted" && vipFilter !== "all");
 
-  const [counts, listings, paymentSettings, siteStats, blogPosts, supportMessages] =
+  const [counts, listings, siteStats, blogPosts, supportMessages] =
     await Promise.all([
       getAdminTabCounts(),
       isListingsAdminTab(tab) ? getAdminListingsForTab(tab) : Promise.resolve([]),
-      tab === "settings" ? getPaymentSettings() : Promise.resolve(null),
       tab === "stats" ? getSiteStats() : Promise.resolve(null),
       tab === "blog" ? getAdminBlogPosts() : Promise.resolve([]),
       tab === "support" ? getSupportMessages() : Promise.resolve([]),
@@ -100,10 +96,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             <AdminSupportList messages={supportMessages} />
           ) : tab === "blog" ? (
             <AdminBlogList posts={blogPosts} />
-          ) : tab === "settings" && paymentSettings ? (
-            <div className="admin-settings-card">
-              <PaymentSettingsForm settings={paymentSettings} />
-            </div>
           ) : tab === "stats" && siteStats ? (
             <AdminStatsPanel stats={siteStats} />
           ) : (

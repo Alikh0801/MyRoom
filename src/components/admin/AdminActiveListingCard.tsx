@@ -6,10 +6,7 @@ import {
   setListingVip,
 } from "@/lib/admin/actions";
 import { DeleteListingForm } from "@/components/admin/DeleteListingForm";
-import {
-  isVipCurrentlyActive,
-  vipPlanLabel,
-} from "@/lib/listings/vip-payment";
+import { isVipCurrentlyActive } from "@/lib/listings/vip-payment";
 import { formatDateTimeInBaku } from "@/lib/datetime/baku";
 import { formatPriceSuffix } from "@/lib/price";
 import type { AdminListingItem } from "@/lib/queries/admin";
@@ -29,13 +26,8 @@ export function AdminActiveListingCard({ listing }: AdminActiveListingCardProps)
     listing.is_vip,
     listing.vip_expires_at
   );
-  const vipPending =
-    listing.vip_payment_status === "pending" && listing.requested_vip_plan;
-
   return (
-    <article
-      className={`admin-card${vipPending ? " admin-card--vip-pending" : ""}`}
-    >
+    <article className="admin-card">
       <div className="admin-card__image">
         {listing.cover_image ? (
           <Image
@@ -49,9 +41,6 @@ export function AdminActiveListingCard({ listing }: AdminActiveListingCardProps)
           <span className="admin-card__no-image">Şəkil yoxdur</span>
         )}
         {vipActive && <span className="admin-card__vip-badge">VIP</span>}
-        {!vipActive && vipPending && (
-          <span className="admin-card__vip-badge">VIP sorğusu</span>
-        )}
       </div>
 
       <div className="admin-card__body">
@@ -76,30 +65,6 @@ export function AdminActiveListingCard({ listing }: AdminActiveListingCardProps)
           </p>
         )}
 
-        {vipPending && listing.requested_vip_plan && (
-          <div className="admin-card__vip-box">
-            <p className="admin-card__vip-notice admin-card__vip-notice--pending">
-              Seçilən paket:{" "}
-              <strong>{vipPlanLabel(listing.requested_vip_plan)}</strong>
-            </p>
-            {listing.vip_payment_receipt_url && (
-              <a
-                href={listing.vip_payment_receipt_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="admin-card__receipt-link"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={listing.vip_payment_receipt_url}
-                  alt="Ödəniş çeki"
-                  className="admin-card__receipt-thumb"
-                />
-                <span>Ödəniş çekinə bax →</span>
-              </a>
-            )}
-          </div>
-        )}
       </div>
 
       <div className="admin-card__actions">

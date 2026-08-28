@@ -17,14 +17,12 @@ export function PendingListingCard({ listing }: PendingListingCardProps) {
     year: "numeric",
   });
 
-  const vipPending =
-    listing.vip_payment_status === "pending" && listing.requested_vip_plan;
+  const vipPaid =
+    listing.vip_payment_status === "paid" && listing.requested_vip_plan;
   const defaultVip = listing.requested_vip_plan ?? "";
 
   return (
-    <article
-      className={`admin-card${vipPending ? " admin-card--vip-pending" : ""}`}
-    >
+    <article className="admin-card">
       <div className="admin-card__image">
         {listing.cover_image ? (
           <Image
@@ -37,9 +35,7 @@ export function PendingListingCard({ listing }: PendingListingCardProps) {
         ) : (
           <span className="admin-card__no-image">Şəkil yoxdur</span>
         )}
-        {vipPending && (
-          <span className="admin-card__vip-badge">VIP sorğusu</span>
-        )}
+        {vipPaid && <span className="admin-card__vip-badge">VIP ödənilib</span>}
       </div>
 
       <div className="admin-card__body">
@@ -57,31 +53,11 @@ export function PendingListingCard({ listing }: PendingListingCardProps) {
         </p>
         <p className="admin-card__date">Göndərildi: {date}</p>
 
-        {vipPending && listing.requested_vip_plan && (
-          <div className="admin-card__vip-box">
-            <p className="admin-card__vip-notice admin-card__vip-notice--pending">
-              Seçilən paket:{" "}
-              <strong>{vipPlanLabel(listing.requested_vip_plan)}</strong>
-            </p>
-            {listing.vip_payment_receipt_url ? (
-              <a
-                href={listing.vip_payment_receipt_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="admin-card__receipt-link"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={listing.vip_payment_receipt_url}
-                  alt="Ödəniş çeki"
-                  className="admin-card__receipt-thumb"
-                />
-                <span>Ödəniş çekinə bax →</span>
-              </a>
-            ) : (
-              <p className="admin-card__vip-notice">Ödəniş çeki yüklənməyib.</p>
-            )}
-          </div>
+        {vipPaid && listing.requested_vip_plan && (
+          <p className="admin-card__vip-notice admin-card__vip-notice--paid">
+            Onlayn ödənilib:{" "}
+            <strong>{vipPlanLabel(listing.requested_vip_plan)}</strong>
+          </p>
         )}
       </div>
 
