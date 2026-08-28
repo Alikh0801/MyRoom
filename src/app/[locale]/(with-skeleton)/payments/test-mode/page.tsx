@@ -53,9 +53,6 @@ export default async function PaymentsTestModePage({
 
           <h1 className="payments-notice__title">{t("title")}</h1>
           <p className="payments-notice__text">{t("description")}</p>
-          <p className="payments-notice__text payments-notice__text--muted">
-            {t("hint")}
-          </p>
 
           <div className="payments-notice__actions">
             <Link href="/dashboard/listings" className="btn btn--primary">

@@ -556,8 +556,7 @@
   },
   "paymentsTestMode": {
     "title": "Ödəniş sistemi test mərhələsindədir",
-    "description": "Onlayn ödəniş sistemi hazırda bankla birlikdə test edilir və müvəqqəti olaraq əlçatan deyil. Bu səbəbdən VIP ödənişini indi tamamlaya bilmirsiniz.",
-    "hint": "Elanınız qeydə alınıb və saxlanılıb. Ödəniş sistemi işə düşən kimi VIP paketini \"Elanlarım\" bölməsindən ala biləcəksiniz. Anlayışınız üçün təşəkkür edirik.",
+    "description": "Onlayn ödəniş sistemi hazırda test edilir və müvəqqəti olaraq əlçatan deyil.",
     "backToListings": "Elanlarıma qayıt",
     "backHome": "Ana səhifə"
   }
