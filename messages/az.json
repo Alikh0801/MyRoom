@@ -344,8 +344,8 @@
       "amenitiesDesc": "Mülkünüzdə nələrin olduğunu seçin."
     },
     "fields": {
-      "title": "Elan başlığı (AZ) *",
-      "description": "Təsvir (AZ) *",
+      "title": "Elan başlığı *",
+      "description": "Təsvir *",
       "category": "Kateqoriya *",
       "region": "Rayon *",
       "city": "Şəhər / kənd *",

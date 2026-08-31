@@ -344,8 +344,8 @@
       "amenitiesDesc": "Mülkünüzde nelerin bulunduğunu seçin."
     },
     "fields": {
-      "title": "İlan başlığı (AZ) *",
-      "description": "Açıklama (AZ) *",
+      "title": "İlan başlığı *",
+      "description": "Açıklama *",
       "category": "Kategori *",
       "region": "Bölge *",
       "city": "Şehir / köy *",
