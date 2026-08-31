@@ -1,0 +1,216 @@
+<!--
+  MyRoomAZ — qeydiyyat təsdiq kodu (OTP) email şablonu.
+
+  Harada işlədilir:
+    Supabase Dashboard → Authentication → Emails → "Confirm signup"
+    Şablonu bura olduğu kimi yapışdırın.
+
+  Dəyişən: {{ .Token }} — Supabase-in göndərdiyi 6 rəqəmli kod.
+  Kodun uzunluğu src/lib/auth/otp.ts → EMAIL_OTP_LENGTH ilə eyni olmalıdır.
+
+  QEYD: "60 dəqiqə" mətni Supabase → Email OTP Expiration ayarı ilə əl ilə
+  uyğunlaşdırılmalıdır (şablonda dinamik dəyişən yoxdur).
+
+  Email HTML-i qəsdən köhnə üslubdadır (table layout, inline stillər) —
+  Outlook və Gmail kimi klientlər müasir CSS-i (flex/grid) dəstəkləmir.
+-->
+<!doctype html>
+<html lang="az">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="supported-color-schemes" content="light dark" />
+    <title>MyRoomAZ — təsdiq kodu</title>
+    <style>
+      /* Yalnız dəstəkləyən klientlərdə işləyir (Apple Mail, iOS).
+         Dəstəkləməyən klientlərdə aşağıdakı inline stillər qüvvədə qalır. */
+      @media (prefers-color-scheme: dark) {
+        .mr-bg { background-color: #13151a !important; }
+        .mr-card { background-color: #1c1f26 !important; border-color: #2e3440 !important; }
+        .mr-text { color: #f2f3f5 !important; }
+        .mr-muted { color: #949aa8 !important; }
+        .mr-code-box { background-color: #202a24 !important; border-color: #3d6b53 !important; }
+        .mr-code { color: #a8bdb3 !important; }
+        .mr-divider { border-color: #2e3440 !important; }
+      }
+
+      @media only screen and (max-width: 600px) {
+        .mr-pad { padding-left: 24px !important; padding-right: 24px !important; }
+        .mr-code { font-size: 30px !important; letter-spacing: 8px !important; text-indent: 8px !important; }
+      }
+    </style>
+  </head>
+
+  <body
+    class="mr-bg"
+    style="margin: 0; padding: 0; width: 100%; background-color: #f8f7f4; -webkit-font-smoothing: antialiased;"
+  >
+    <!-- Gələnlər qutusunda başlığın altında görünən ön baxış mətni -->
+    <div
+      style="display: none; max-height: 0; overflow: hidden; opacity: 0; mso-hide: all;"
+    >
+      MyRoomAZ qeydiyyatını tamamlamaq üçün təsdiq kodunuz.
+      &#8199;&#847;&zwnj;&nbsp;&#8199;&#847;&zwnj;&nbsp;&#8199;&#847;&zwnj;&nbsp;&#8199;&#847;&zwnj;&nbsp;
+    </div>
+
+    <table
+      role="presentation"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      width="100%"
+      class="mr-bg"
+      style="background-color: #f8f7f4;"
+    >
+      <tr>
+        <td align="center" style="padding: 32px 16px;">
+          <!--[if mso]>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600"><tr><td>
+          <![endif]-->
+          <table
+            role="presentation"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            width="100%"
+            style="width: 100%; max-width: 600px;"
+          >
+            <!-- Azərbaycan bayrağı rəngləri: incə vurğu zolağı -->
+            <tr>
+              <td style="font-size: 0; line-height: 0;">
+                <table
+                  role="presentation"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  width="100%"
+                  style="border-radius: 14px 14px 0 0; overflow: hidden;"
+                >
+                  <tr>
+                    <td width="33.33%" height="5" style="background-color: #00b5e2; font-size: 0; line-height: 0;">&nbsp;</td>
+                    <td width="33.33%" height="5" style="background-color: #ef3340; font-size: 0; line-height: 0;">&nbsp;</td>
+                    <td width="33.34%" height="5" style="background-color: #509e2f; font-size: 0; line-height: 0;">&nbsp;</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Başlıq zolağı -->
+            <tr>
+              <td
+                align="center"
+                style="background-color: #1b4332; padding: 30px 24px;"
+              >
+                <span
+                  style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.3px; color: #ffffff;"
+                  >My<span style="color: #d4a373;">Room</span
+                  ><span style="color: #ffffff;">AZ</span></span
+                >
+              </td>
+            </tr>
+
+            <!-- Əsas məzmun -->
+            <tr>
+              <td
+                class="mr-card mr-pad"
+                style="background-color: #ffffff; border: 1px solid #e8e4df; border-top: none; border-radius: 0 0 14px 14px; padding: 40px;"
+              >
+                <h1
+                  class="mr-text"
+                  style="margin: 0 0 14px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 22px; line-height: 1.35; font-weight: 700; color: #1a1a1a;"
+                >
+                  Email ünvanınızı təsdiqləyin
+                </h1>
+
+                <p
+                  class="mr-muted"
+                  style="margin: 0 0 28px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #6b6b6b;"
+                >
+                  MyRoomAZ-da qeydiyyatı tamamlamaq üçün aşağıdakı təsdiq kodunu
+                  saytda daxil edin.
+                </p>
+
+                <!-- Kod -->
+                <table
+                  role="presentation"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  width="100%"
+                >
+                  <tr>
+                    <td
+                      class="mr-code-box"
+                      align="center"
+                      style="background-color: #f3f6f2; border: 1px solid #cfe0d5; border-radius: 12px; padding: 26px 16px;"
+                    >
+                      <div
+                        class="mr-code"
+                        style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 34px; font-weight: 700; letter-spacing: 10px; text-indent: 10px; line-height: 1.1; color: #1b4332;"
+                      >
+                        {{ .Token }}
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+
+                <p
+                  class="mr-muted"
+                  style="margin: 18px 0 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; line-height: 1.6; color: #6b6b6b; text-align: center;"
+                >
+                  Kod 60 dəqiqə ərzində etibarlıdır.
+                </p>
+
+                <hr
+                  class="mr-divider"
+                  style="border: none; border-top: 1px solid #e8e4df; margin: 32px 0 24px;"
+                />
+
+                <p
+                  class="mr-muted"
+                  style="margin: 0 0 12px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; line-height: 1.65; color: #6b6b6b;"
+                >
+                  Bu kodu heç kimlə paylaşmayın. MyRoomAZ əməkdaşları sizdən heç
+                  vaxt təsdiq kodunu soruşmur.
+                </p>
+
+                <p
+                  class="mr-muted"
+                  style="margin: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; line-height: 1.65; color: #6b6b6b;"
+                >
+                  Əgər bu qeydiyyatı siz etməmisinizsə, bu məktubu nəzərə
+                  almayın — hesab yaradılmayacaq.
+                </p>
+              </td>
+            </tr>
+
+            <!-- Alt hissə -->
+            <tr>
+              <td align="center" style="padding: 26px 24px 8px;">
+                <p
+                  class="mr-muted"
+                  style="margin: 0 0 6px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #6b6b6b;"
+                >
+                  Azərbaycan üzrə qısamüddətli istirahət və günlük icarə elanları
+                </p>
+                <p
+                  style="margin: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; line-height: 1.6;"
+                >
+                  <a
+                    href="https://myroomaz.com"
+                    style="color: #2d6a4f; text-decoration: none; font-weight: 600;"
+                    >myroomaz.com</a
+                  >
+                </p>
+              </td>
+            </tr>
+          </table>
+          <!--[if mso]>
+          </td></tr></table>
+          <![endif]-->
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
