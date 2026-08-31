@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { AuthMenu } from "@/components/layout/AuthMenu";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { SupportButton } from "@/components/support/SupportButton";
+import { SupportModal } from "@/components/support/SupportModal";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 interface HeaderActionsProps {
@@ -22,6 +24,7 @@ export function HeaderActions({
   isAdmin = false,
 }: HeaderActionsProps) {
   const t = useTranslations("nav");
+  const [supportOpen, setSupportOpen] = useState(false);
 
   if (!user) {
     return (
@@ -43,10 +46,14 @@ export function HeaderActions({
     );
   }
 
+  const showSupport = !isAdmin;
+
   return (
     <div className="header__actions">
       <ThemeToggle />
-      {!isAdmin && <SupportButton isLoggedIn />}
+      {showSupport && (
+        <SupportButton isLoggedIn onOpen={() => setSupportOpen(true)} />
+      )}
       <LanguageSwitcher variant="mobile" />
       <LanguageSwitcher variant="desktop" />
       <Link
@@ -61,7 +68,16 @@ export function HeaderActions({
         email={user.email}
         avatarUrl={avatarUrl}
         isAdmin={isAdmin}
+        onSupportClick={showSupport ? () => setSupportOpen(true) : undefined}
       />
+
+      {/* Modal menyudan kənarda saxlanılır ki, menyu bağlananda yox olmasın */}
+      {showSupport && (
+        <SupportModal
+          open={supportOpen}
+          onClose={() => setSupportOpen(false)}
+        />
+      )}
     </div>
   );
 }

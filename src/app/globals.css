@@ -5635,6 +5635,31 @@ h3.amenities-feature-title {
   height: 17px;
 }
 
+/* Mobildə başlıqda yer qalmır — dəstək profil menyusunun içinə keçir */
+.support-btn--desktop {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .support-btn--desktop {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 640px) {
+  .user-menu__item--mobile {
+    display: none;
+  }
+}
+
+.user-menu__item-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  margin-right: 0.5rem;
+  vertical-align: -2px;
+}
+
 .support-modal {
   position: fixed;
   inset: 0;

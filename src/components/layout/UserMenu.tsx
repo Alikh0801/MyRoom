@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useEffect, useRef, useState } from "react";
+import { SupportIcon } from "@/components/support/SupportIcon";
 import { signOut } from "@/lib/auth/actions";
 
 interface UserMenuProps {
@@ -11,6 +12,8 @@ interface UserMenuProps {
   email?: string;
   avatarUrl: string | null;
   isAdmin?: boolean;
+  /** Mobil ekranlarda dəstək sətrini göstərir (başlıqdakı ikon orada gizlidir) */
+  onSupportClick?: () => void;
 }
 
 function getInitials(fullName: string | null, email?: string) {
@@ -30,8 +33,10 @@ export function UserMenu({
   email,
   avatarUrl,
   isAdmin = false,
+  onSupportClick,
 }: UserMenuProps) {
   const t = useTranslations("nav");
+  const tSupport = useTranslations("support");
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const initials = getInitials(fullName, email);
@@ -129,6 +134,20 @@ export function UserMenu({
               >
                 {t("admin")}
               </Link>
+            )}
+            {onSupportClick && (
+              <button
+                type="button"
+                className="user-menu__item user-menu__item--mobile"
+                role="menuitem"
+                onClick={() => {
+                  setOpen(false);
+                  onSupportClick();
+                }}
+              >
+                <SupportIcon className="user-menu__item-icon" />
+                {tSupport("open")}
+              </button>
             )}
           </div>
 

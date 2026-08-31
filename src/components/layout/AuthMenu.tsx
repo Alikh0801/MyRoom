@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useEffect, useRef, useState } from "react";
+import { SupportIcon } from "@/components/support/SupportIcon";
 
 function PersonIcon() {
   return (
@@ -25,6 +26,7 @@ function PersonIcon() {
 
 export function AuthMenu() {
   const t = useTranslations("nav");
+  const tSupport = useTranslations("support");
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -80,6 +82,16 @@ export function AuthMenu() {
               onClick={() => setOpen(false)}
             >
               {t("register")}
+            </Link>
+            {/* Qonaqda dəstək girişə yönləndirir — başlıqdakı ikon mobildə gizlidir */}
+            <Link
+              href="/auth/login?redirectTo=/"
+              className="user-menu__item"
+              role="menuitem"
+              onClick={() => setOpen(false)}
+            >
+              <SupportIcon className="user-menu__item-icon" />
+              {tSupport("open")}
             </Link>
           </div>
         </div>
