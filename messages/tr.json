@@ -346,9 +346,6 @@
     "fields": {
       "title": "İlan başlığı (AZ) *",
       "description": "Açıklama (AZ) *",
-      "titleRu": "İlan başlığı (RU)",
-      "descriptionRu": "Açıklama (RU)",
-      "ruOptionalHint": "Rusça versiyon isteğe bağlıdır. Doldurulmazsa AZ metin gösterilir.",
       "category": "Kategori *",
       "region": "Bölge *",
       "city": "Şehir / köy *",
@@ -364,8 +361,6 @@
     "placeholders": {
       "title": "Örn: Guba'da dağ manzaralı A-frame ev",
       "description": "Eviniz, imkanlar ve çevre hakkında yazın...",
-      "titleRu": "Напр.: A-frame дом с видом на горы в Губе",
-      "descriptionRu": "Опишите дом, удобства и окружение...",
       "region": "Bölge veya şehir seçin",
       "city": "Gence",
       "address": "Tam adres",
@@ -440,9 +435,7 @@
       "createdNoImages": "İlan oluşturuldu, fotoğraflar yüklenemedi.",
       "authRequired": "Giriş gerekli.",
       "titleTooShort": "Başlık en az 5 karakter olmalıdır.",
-      "titleRuTooShort": "Rusça başlık en az 5 karakter olmalıdır.",
       "descriptionTooShort": "Açıklama en az 20 karakter olmalıdır.",
-      "descriptionRuTooShort": "Rusça açıklama en az 20 karakter olmalıdır.",
       "invalidPrice": "Geçerli bir fiyat girin.",
       "invalidPriceUnit": "Fiyat birimini seçin.",
       "cityRegionRequired": "Şehir ve bölge zorunludur.",

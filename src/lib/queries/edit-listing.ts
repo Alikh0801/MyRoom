@@ -12,8 +12,6 @@ export interface EditListingData {
   id: string;
   title: string;
   description: string;
-  title_ru: string | null;
-  description_ru: string | null;
   category_id: string;
   price_per_night: number;
   price_unit: PriceUnit;
@@ -36,8 +34,6 @@ export type EditListingRow = {
   id: string;
   title: string;
   description: string;
-  title_ru: string | null;
-  description_ru: string | null;
   category_id: string;
   price_per_night: number;
   price_unit: PriceUnit;
@@ -71,7 +67,7 @@ export async function getMyListingForEdit(
     .from("listings")
     .select(
       `
-      id, title, description, title_ru, description_ru,
+      id, title, description,
       category_id, price_per_night, price_unit,
       city, region, address, lat, lng,
       max_guests, bedrooms, bathrooms, whatsapp_phone, status,
@@ -102,8 +98,6 @@ export async function getMyListingForEdit(
     id: row.id,
     title: row.title,
     description: row.description,
-    title_ru: row.title_ru,
-    description_ru: row.description_ru,
     category_id: row.category_id,
     price_per_night: row.price_per_night,
     price_unit: row.price_unit ?? "day",

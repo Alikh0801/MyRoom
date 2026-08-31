@@ -32,10 +32,6 @@ export async function createListing(
 
   const title = (formData.get("title") as string)?.trim();
   const description = (formData.get("description") as string)?.trim();
-  const titleRuRaw = (formData.get("titleRu") as string)?.trim();
-  const descriptionRuRaw = (formData.get("descriptionRu") as string)?.trim();
-  const titleRu = titleRuRaw || null;
-  const descriptionRu = descriptionRuRaw || null;
   const categoryId = formData.get("categoryId") as string;
   const pricePerNight = Number(formData.get("pricePerNight"));
   const priceUnit = (formData.get("priceUnit") as string) || "day";
@@ -58,12 +54,6 @@ export async function createListing(
   }
   if (!description || description.length < 20) {
     return { error: t("descriptionTooShort") };
-  }
-  if (titleRu && titleRu.length < 5) {
-    return { error: t("titleRuTooShort") };
-  }
-  if (descriptionRu && descriptionRu.length < 20) {
-    return { error: t("descriptionRuTooShort") };
   }
   if (!categoryId) {
     return { error: t("selectCategory") };
@@ -122,8 +112,6 @@ export async function createListing(
       category_id: categoryId,
       title,
       description,
-      title_ru: titleRu,
-      description_ru: descriptionRu,
       price_per_night: pricePerNight,
       price_unit: priceUnit,
       city,
@@ -242,10 +230,6 @@ export async function updateListing(
 
   const title = (formData.get("title") as string)?.trim();
   const description = (formData.get("description") as string)?.trim();
-  const titleRuRaw = (formData.get("titleRu") as string)?.trim();
-  const descriptionRuRaw = (formData.get("descriptionRu") as string)?.trim();
-  const titleRu = titleRuRaw || null;
-  const descriptionRu = descriptionRuRaw || null;
   const categoryId = formData.get("categoryId") as string;
   const pricePerNight = Number(formData.get("pricePerNight"));
   const priceUnit = (formData.get("priceUnit") as string) || "day";
@@ -269,12 +253,6 @@ export async function updateListing(
   }
   if (!description || description.length < 20) {
     return { error: t("descriptionTooShort") };
-  }
-  if (titleRu && titleRu.length < 5) {
-    return { error: t("titleRuTooShort") };
-  }
-  if (descriptionRu && descriptionRu.length < 20) {
-    return { error: t("descriptionRuTooShort") };
   }
   if (!categoryId) {
     return { error: t("selectCategory") };
@@ -331,8 +309,6 @@ export async function updateListing(
       category_id: categoryId,
       title,
       description,
-      title_ru: titleRu,
-      description_ru: descriptionRu,
       price_per_night: pricePerNight,
       price_unit: priceUnit,
       city,

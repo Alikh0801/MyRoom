@@ -346,9 +346,6 @@
     "fields": {
       "title": "Elan başlığı (AZ) *",
       "description": "Təsvir (AZ) *",
-      "titleRu": "Elan başlığı (RU)",
-      "descriptionRu": "Təsvir (RU)",
-      "ruOptionalHint": "Rus dilində versiya istəyə bağlıdır. Doldurulmasa, AZ mətn göstərilir.",
       "category": "Kateqoriya *",
       "region": "Rayon *",
       "city": "Şəhər / kənd *",
@@ -364,8 +361,6 @@
     "placeholders": {
       "title": "Məs: Quba dağ mənzərəli A-frame ev",
       "description": "Eviniz, imkanlar və ətraf mühit haqqında yazın...",
-      "titleRu": "Напр.: A-frame дом с видом на горы в Губе",
-      "descriptionRu": "Опишите дом, удобства и окружение...",
       "region": "Rayon və ya şəhər seç",
       "city": "Qəçrəş",
       "address": "Tam ünvan",
@@ -440,9 +435,7 @@
       "createdNoImages": "Elan yaradıldı, şəkillər yüklənmədi.",
       "authRequired": "Giriş tələb olunur.",
       "titleTooShort": "Başlıq ən azı 5 simvol olmalıdır.",
-      "titleRuTooShort": "Rus başlığı ən azı 5 simvol olmalıdır.",
       "descriptionTooShort": "Təsvir ən azı 20 simvol olmalıdır.",
-      "descriptionRuTooShort": "Rus təsviri ən azı 20 simvol olmalıdır.",
       "invalidPrice": "Düzgün qiymət daxil edin.",
       "invalidPriceUnit": "Qiymət vahidi seçin.",
       "cityRegionRequired": "Şəhər və rayon mütləqdir.",

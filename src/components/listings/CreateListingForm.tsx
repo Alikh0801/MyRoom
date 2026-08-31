@@ -366,30 +366,6 @@ export function CreateListingForm({
           />
         </label>
 
-        <p className="listing-form__hint">{t("fields.ruOptionalHint")}</p>
-
-        <label className="listing-form__field">
-          <span className="listing-form__label">{t("fields.titleRu")}</span>
-          <input
-            type="text"
-            name="titleRu"
-            minLength={5}
-            defaultValue={editData?.title_ru ?? ""}
-            placeholder={t("placeholders.titleRu")}
-          />
-        </label>
-
-        <label className="listing-form__field">
-          <span className="listing-form__label">{t("fields.descriptionRu")}</span>
-          <textarea
-            name="descriptionRu"
-            minLength={20}
-            rows={5}
-            defaultValue={editData?.description_ru ?? ""}
-            placeholder={t("placeholders.descriptionRu")}
-          />
-        </label>
-
         <div className="listing-form__field">
           <span className="listing-form__label">{t("fields.category")}</span>
           <CategoryPicker
