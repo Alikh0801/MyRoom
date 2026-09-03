@@ -552,5 +552,26 @@
     "description": "Onlayn ödəniş sistemi hazırda test edilir və müvəqqəti olaraq əlçatan deyil.",
     "backToListings": "Elanlarıma qayıt",
     "backHome": "Ana səhifə"
+  },
+  "account": {
+    "metaTitle": "Hesabım | MyRoomAZ",
+    "pageTitle": "Hesabım",
+    "subtitle": "Ad, soyad və əlaqə nömrənizi buradan yeniləyə bilərsiniz.",
+    "fullName": "Ad, soyad",
+    "fullNamePlaceholder": "Ad Soyad",
+    "phone": "Mobil nömrə",
+    "phonePlaceholder": "50 123 45 67",
+    "email": "Email",
+    "emailHint": "Email ünvanı dəyişdirilə bilməz.",
+    "save": "Yadda saxla",
+    "saving": "Saxlanılır...",
+    "saved": "Məlumatlarınız yeniləndi.",
+    "errors": {
+      "authRequired": "Giriş tələb olunur.",
+      "invalidName": "Ad və soyad ən azı 3 simvol olmalıdır.",
+      "invalidPhone": "Mobil nömrəni düzgün daxil edin.",
+      "phoneTaken": "Bu nömrə başqa hesabda istifadə olunur.",
+      "updateFailed": "Məlumatlar yenilənmədi. Bir azdan yenidən cəhd edin."
+    }
   }
 }

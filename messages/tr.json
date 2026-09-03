@@ -552,5 +552,26 @@
     "description": "Online ödeme sistemi şu anda test ediliyor ve geçici olarak kullanılamıyor.",
     "backToListings": "İlanlarıma dön",
     "backHome": "Ana sayfa"
+  },
+  "account": {
+    "metaTitle": "Hesabım | MyRoomAZ",
+    "pageTitle": "Hesabım",
+    "subtitle": "Ad, soyad ve iletişim numaranızı buradan güncelleyebilirsiniz.",
+    "fullName": "Ad, soyad",
+    "fullNamePlaceholder": "Ad Soyad",
+    "phone": "Cep telefonu",
+    "phonePlaceholder": "50 123 45 67",
+    "email": "E-posta",
+    "emailHint": "E-posta adresi değiştirilemez.",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor...",
+    "saved": "Bilgileriniz güncellendi.",
+    "errors": {
+      "authRequired": "Giriş gerekli.",
+      "invalidName": "Ad ve soyad en az 3 karakter olmalıdır.",
+      "invalidPhone": "Cep telefonu numarasını doğru girin.",
+      "phoneTaken": "Bu numara başka bir hesapta kullanılıyor.",
+      "updateFailed": "Bilgiler güncellenemedi. Daha sonra tekrar deneyin."
+    }
   }
 }
