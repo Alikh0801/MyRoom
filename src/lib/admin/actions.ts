@@ -2,6 +2,9 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/admin/auth";
+import { formatDateTimeInBaku } from "@/lib/datetime/baku";
+import { sendEmail } from "@/lib/email/client";
+import { listingApprovedEmail } from "@/lib/email/templates/listing-approved";
 import {
   parseRequestedVipPlan,
   vipExpiresAtFromPlan,
@@ -10,6 +13,16 @@ import { LISTINGS_CACHE_TAG } from "@/lib/queries/listings";
 import { createClient } from "@/lib/supabase/server";
 
 const MIN_REASON_LENGTH = 10;
+
+/**
+ * Supabase əlaqəli (embedded) sahəni bəzən obyekt, bəzən massiv kimi qaytarır —
+ * hər iki halda e-poçtu çıxarırıq.
+ */
+function normalizeOwnerEmail(owner: unknown): string | null {
+  const record = Array.isArray(owner) ? owner[0] : owner;
+  const email = (record as { email?: string | null } | null)?.email;
+  return email?.trim() ? email.trim() : null;
+}
 
 const DELETION_SNAPSHOT_SELECT = `
   id, title, city, region, price_per_night, price_unit, currency,
@@ -48,7 +61,7 @@ export async function approveListing(formData: FormData) {
 
   const { data: listing } = await supabase
     .from("listings")
-    .select("id")
+    .select("id, title, owner:profiles!listings_owner_id_fkey(email)")
     .eq("id", listingId)
     .eq("status", "pending")
     .maybeSingle();
@@ -82,6 +95,22 @@ export async function approveListing(formData: FormData) {
     .from("listing_deletion_log")
     .delete()
     .eq("listing_id", listingId);
+
+  // Sahibə bildiriş göndəririk. sendEmail xəta atmır və nəticəsi burada
+  // yoxlanılmır — poçt xidməti işləməsə belə elan təsdiqlənmiş qalmalıdır.
+  const ownerEmail = normalizeOwnerEmail(listing.owner);
+
+  if (ownerEmail) {
+    const { subject, html } = listingApprovedEmail({
+      listingTitle: listing.title ?? "",
+      listingId,
+      vipUntil: vipPlan
+        ? formatDateTimeInBaku(vipExpiresAtFromPlan(vipPlan).toISOString())
+        : null,
+    });
+
+    await sendEmail({ to: ownerEmail, subject, html });
+  }
 
   revalidateListingPaths(listingId);
 }
