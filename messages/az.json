@@ -571,7 +571,17 @@
       "invalidName": "Ad və soyad ən azı 3 simvol olmalıdır.",
       "invalidPhone": "Mobil nömrəni düzgün daxil edin.",
       "phoneTaken": "Bu nömrə başqa hesabda istifadə olunur.",
-      "updateFailed": "Məlumatlar yenilənmədi. Bir azdan yenidən cəhd edin."
-    }
+      "updateFailed": "Məlumatlar yenilənmədi. Bir azdan yenidən cəhd edin.",
+      "invalidWhatsapp": "WhatsApp nömrəsini düzgün daxil edin."
+    },
+    "sections": {
+      "personal": "Şəxsi məlumatlar",
+      "contact": "Əlaqə",
+      "login": "Giriş məlumatları"
+    },
+    "whatsapp": "WhatsApp nömrəsi",
+    "whatsappSameAsPhone": "WhatsApp nömrəm mobil nömrə ilə eynidir",
+    "contactNote": "Bu nömrələr yeni elan yaratdıqda əlaqə nömrəsi kimi avtomatik doldurulur.",
+    "memberSince": "Qeydiyyat: {date}"
   }
 }

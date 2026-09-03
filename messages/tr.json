@@ -571,7 +571,17 @@
       "invalidName": "Ad ve soyad en az 3 karakter olmalıdır.",
       "invalidPhone": "Cep telefonu numarasını doğru girin.",
       "phoneTaken": "Bu numara başka bir hesapta kullanılıyor.",
-      "updateFailed": "Bilgiler güncellenemedi. Daha sonra tekrar deneyin."
-    }
+      "updateFailed": "Bilgiler güncellenemedi. Daha sonra tekrar deneyin.",
+      "invalidWhatsapp": "WhatsApp numarasını doğru girin."
+    },
+    "sections": {
+      "personal": "Kişisel bilgiler",
+      "contact": "İletişim",
+      "login": "Giriş bilgileri"
+    },
+    "whatsapp": "WhatsApp numarası",
+    "whatsappSameAsPhone": "WhatsApp numaram cep telefonumla aynı",
+    "contactNote": "Bu numaralar yeni ilan oluştururken iletişim numarası olarak otomatik doldurulur.",
+    "memberSince": "Kayıt: {date}"
   }
 }

@@ -28,6 +28,10 @@ export async function updateAccount(
 
   const fullName = (formData.get("fullName") as string)?.trim() ?? "";
   const phoneRaw = (formData.get("phone") as string)?.trim() ?? "";
+  const sameAsPhone = formData.get("whatsappSameAsPhone") === "on";
+  const whatsappRaw = sameAsPhone
+    ? phoneRaw
+    : ((formData.get("whatsappPhone") as string)?.trim() ?? "");
 
   if (fullName.length < MIN_NAME_LENGTH || fullName.length > MAX_NAME_LENGTH) {
     return { error: t("errors.invalidName") };
@@ -36,6 +40,11 @@ export async function updateAccount(
   const phone = normalizePhone(phoneRaw);
   if (!phone) {
     return { error: t("errors.invalidPhone") };
+  }
+
+  const whatsappPhone = normalizePhone(whatsappRaw);
+  if (!whatsappPhone) {
+    return { error: t("errors.invalidWhatsapp") };
   }
 
   // Nömrə qeydiyyatda unikaldır — profil dəyişikliyində də eyni qayda
@@ -53,7 +62,7 @@ export async function updateAccount(
 
   const { error } = await supabase
     .from("profiles")
-    .update({ full_name: fullName, phone })
+    .update({ full_name: fullName, phone, whatsapp_phone: whatsappPhone })
     .eq("id", user.id);
 
   if (error) {

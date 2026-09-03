@@ -2,7 +2,8 @@
 
 const AZ_PREFIX = "+994";
 
-function toLocalDigits(value: string): string {
+/** "+994501234567" / "0501234567" / "501234567" -> "501234567" */
+export function toLocalDigits(value: string): string {
   const digits = value.replace(/\D/g, "");
 
   if (digits.startsWith("994") && digits.length > 3) {
