@@ -1,4 +1,5 @@
 import type { Locale } from "@/i18n/routing";
+import { toBakuWallClock } from "@/lib/datetime/baku";
 
 const MONTHS: Record<Locale, string[]> = {
   az: [
@@ -15,8 +16,9 @@ const MONTHS: Record<Locale, string[]> = {
   ],
 };
 
+/** Tarix Bakı vaxtı ilə hesablanır — server (UTC) və brauzer eyni günü göstərsin */
 export function formatBlogDate(iso: string, locale: Locale | string): string {
-  const date = new Date(iso);
+  const { day, month, year } = toBakuWallClock(new Date(iso));
   const months = MONTHS[locale as Locale] ?? MONTHS.az;
-  return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  return `${day} ${months[month - 1]} ${year}`;
 }

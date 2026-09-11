@@ -7,6 +7,7 @@ import { DeleteListingButton } from "@/components/dashboard/DeleteListingButton"
 import { ListingStatusBadge } from "@/components/dashboard/ListingStatusBadge";
 import { RequestVipButton } from "@/components/dashboard/RequestVipButton";
 import { getLocalizedName } from "@/lib/i18n/localized-name";
+import { BAKU_TIMEZONE } from "@/lib/datetime/baku";
 import { formatPriceSuffix } from "@/lib/price";
 import type { Locale } from "@/i18n/routing";
 import type { MyListingItem } from "@/lib/queries/my-listings";
@@ -21,7 +22,11 @@ export function MyListingCard({ listing }: MyListingCardProps) {
   const dateLocale =
     locale === "ru" ? "ru-RU" : locale === "tr" ? "tr-TR" : "az-AZ";
 
+  // Saat qurşağı açıq göstərilir: bu komponent client-dir, server UTC-də
+  // render etdiyi üçün qurşaq verilməsə axşam elanlarında gün fərqlənir və
+  // React hidrasiya xətası atır.
   const createdAt = new Date(listing.created_at).toLocaleDateString(dateLocale, {
+    timeZone: BAKU_TIMEZONE,
     day: "numeric",
     month: "long",
     year: "numeric",

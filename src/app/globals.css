@@ -1539,8 +1539,11 @@ img {
 }
 
 .pagination__btn--disabled {
+  /* opacity: 0.5 mətni #b5b5b5-ə çevirirdi (kontrast 2.05). Şəffaflıq
+     əvəzinə solğun fon + kifayət qədər tünd mətn: hələ də "deaktiv"
+     görünür, amma oxunaqlıdır. */
   color: var(--color-text-muted);
-  opacity: 0.5;
+  background: var(--color-muted-surface);
   cursor: not-allowed;
 }
 
