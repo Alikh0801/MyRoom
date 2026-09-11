@@ -47,6 +47,11 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|auth/callback|_next|_vercel|.*\\..*).*)",
+    // icon/apple-icon — Next.js-in generasiya etdiyi ikon marşrutlarıdır və
+    // adlarında nöqtə olmadığı üçün ".*\..*" istisnasına düşmürlər. Onları
+    // ayrıca çıxarmasaq, dil middleware-i "/icon" -> "/az/icon" kimi yazır,
+    // belə səhifə olmadığı üçün 404 qayıdır: manifestdəki ikonlar sınır və
+    // brauzer konsola xəta yazır.
+    "/((?!api|auth/callback|_next|_vercel|icon|apple-icon|.*\\..*).*)",
   ],
 };

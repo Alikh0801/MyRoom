@@ -69,13 +69,15 @@ export function LanguageSwitcher({ variant = "desktop" }: LanguageSwitcherProps)
 
   return (
     <div className={`lang-switcher ${wrapperClass}`} ref={rootRef}>
+      {/* aria-label görünən mətni ("AZ") də ehtiva edir — əks halda səslə
+          idarə edən istifadəçi düyməni gördüyü adla çağıra bilmir */}
       <button
         type="button"
         className="lang-switcher__trigger"
         onClick={() => setOpen((prev) => !prev)}
         aria-expanded={open}
         aria-haspopup="menu"
-        aria-label={t("language")}
+        aria-label={`${t("language")}: ${current.code}`}
         aria-busy={isPending}
       >
         <FlagIcon locale={locale} className="lang-switcher__flag" />

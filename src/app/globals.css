@@ -8,6 +8,11 @@
   --color-primary-btn: #2d6a4f;
   --color-primary-btn-hover: #1b4332;
   --color-accent: #d4a373;
+  /* Açıq fonda MƏTN üçün vurğu rəngi. --color-accent (#d4a373) ağ üzərində
+     yalnız 2.26 kontrast verir və WCAG-i ödəmir; bu ton ~4.6 verir, yəni
+     istənilən şrift ölçüsündə keçir. Qradiyent/haşiyə kimi dekorativ
+     yerlərdə isə --color-accent olduğu kimi qalır. */
+  --color-accent-text: #9c6b30;
   --color-border: #e8e4df;
   --color-whatsapp: #25d366;
   --color-input-bg: #ffffff;
@@ -41,6 +46,8 @@
   --color-primary-btn: #4f6b60;
   --color-primary-btn-hover: #435c53;
   --color-accent: #c9a96e;
+  /* Qaranlıq rejimdə loqo tünd fonda dayanır — burada açıq ton lazımdır */
+  --color-accent-text: #c9a96e;
   --color-border: #2e3440;
   --color-input-bg: #252932;
   --color-muted-surface: #232730;
@@ -138,7 +145,7 @@ img {
 }
 
 .header__logo span {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .header__logo .brand-az,
@@ -1839,7 +1846,9 @@ img {
 .listing-card__id {
   font-size: 0.68rem;
   font-weight: 600;
-  color: var(--color-text-muted);
+  /* --color-text-muted (#6b6b6b) bu fonda yalnız 4.21 verir — kiçik mətn
+     üçün 4.5 tələb olunur, ona görə bir qədər tünd ton */
+  color: #5d5d5d;
   background: var(--color-border);
   padding: 0.05rem 0.4rem;
   border-radius: 999px;
@@ -2857,7 +2866,9 @@ h3.amenities-feature-title {
 
 .footer__copy {
   font-size: 0.8rem;
-  opacity: 0.6;
+  /* .footer-in rgba(255,255,255,.85) rəngi ilə birləşir: 0.6 effektiv 0.51
+     verirdi (kontrast 4.16). 0.75 ilə ~5.5 olur. */
+  opacity: 0.75;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
 }

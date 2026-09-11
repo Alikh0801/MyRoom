@@ -56,11 +56,12 @@ export function HeroSearch({ categories, locale }: HeroSearchProps) {
   return (
     <form className="hero__search" onSubmit={handleSearch}>
       <div className="hero__search-segment">
-        <span className="hero__search-label">
+        <label className="hero__search-label" htmlFor="hero-search-region">
           <SearchIcon />
           {t("searchLocationLabel")}
-        </span>
+        </label>
         <RegionCombobox
+          id="hero-search-region"
           value={region}
           onChange={setRegion}
           placeholder={t("searchRegion")}
@@ -73,8 +74,11 @@ export function HeroSearch({ categories, locale }: HeroSearchProps) {
       <div className="hero__search-divider" aria-hidden="true" />
 
       <div className="hero__search-segment">
-        <span className="hero__search-label">{t("searchCategoryLabel")}</span>
+        <label className="hero__search-label" htmlFor="hero-search-category">
+          {t("searchCategoryLabel")}
+        </label>
         <select
+          id="hero-search-category"
           className="hero__search-field"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
@@ -91,8 +95,11 @@ export function HeroSearch({ categories, locale }: HeroSearchProps) {
       <div className="hero__search-divider" aria-hidden="true" />
 
       <div className="hero__search-segment">
-        <span className="hero__search-label">{t("searchIdLabel")}</span>
+        <label className="hero__search-label" htmlFor="hero-search-id">
+          {t("searchIdLabel")}
+        </label>
         <input
+          id="hero-search-id"
           type="text"
           className="hero__search-field"
           value={listingId}
