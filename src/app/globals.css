@@ -5144,6 +5144,73 @@ h3.amenities-feature-title {
   color: var(--color-text);
 }
 
+.admin-stats__card-note {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+/* Bu gün baxılan elanlar cədvəli */
+.admin-today-listings {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-today-listings__head,
+.admin-today-listings__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 4.5rem 4.5rem;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.55rem 0;
+}
+
+.admin-today-listings__head {
+  padding-top: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-today-listings__head span:not(:first-child),
+.admin-today-listings__num {
+  text-align: right;
+}
+
+.admin-today-listings__row + .admin-today-listings__row {
+  border-top: 1px solid var(--color-border);
+}
+
+.admin-today-listings__title {
+  min-width: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-today-listings__city {
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+.admin-today-listings__num {
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 520px) {
+  .admin-today-listings__head,
+  .admin-today-listings__row {
+    grid-template-columns: minmax(0, 1fr) 3.25rem 3.25rem;
+  }
+}
+
 .admin-stats__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

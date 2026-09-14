@@ -1,9 +1,11 @@
+import { addCalendarDaysInBaku, toBakuWallClock } from "@/lib/datetime/baku";
 import { createClient } from "@/lib/supabase/server";
 
 const DAILY_SERIES_LENGTH = 14;
 const REGION_LOOKBACK_DAYS = 30;
 const TOP_LISTINGS_LIMIT = 8;
 const TOP_REGIONS_LIMIT = 8;
+const TODAY_LISTINGS_LIMIT = 20;
 
 export interface DailyVisitPoint {
   date: string;
@@ -24,6 +26,15 @@ export interface TopViewedListing {
   viewCount: number;
 }
 
+/** Bu gün (Bakı vaxtı) baxılan elan — baxış sayı və neçə fərqli adam */
+export interface TodayListingView {
+  id: string;
+  title: string;
+  city: string;
+  views: number;
+  visitors: number;
+}
+
 export interface SiteStats {
   todayVisits: number;
   last7DaysVisits: number;
@@ -31,10 +42,16 @@ export interface SiteStats {
   dailySeries: DailyVisitPoint[];
   topRegions: RegionVisitCount[];
   topListings: TopViewedListing[];
+  todayListings: TodayListingView[];
 }
 
+/**
+ * Günləri Bakı təqvimi ilə ayırır. Server UTC-də işlədiyi üçün sadə
+ * `iso.slice(0,10)` gecə 00:00–04:00 arası ziyarətləri əvvəlki günə yazırdı.
+ */
 function toDateKey(iso: string): string {
-  return iso.slice(0, 10);
+  const { year, month, day } = toBakuWallClock(new Date(iso));
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
 function buildDailySeries(
@@ -51,12 +68,11 @@ function buildDailySeries(
   }
 
   const series: DailyVisitPoint[] = [];
-  const today = new Date();
+  const now = new Date();
 
   for (let i = DAILY_SERIES_LENGTH - 1; i >= 0; i -= 1) {
-    const day = new Date(today);
-    day.setUTCDate(day.getUTCDate() - i);
-    const key = day.toISOString().slice(0, 10);
+    // Günlər Bakı təqvimi ilə sayılır ki, "bu gün" xanası ilə uyğun olsun
+    const key = toDateKey(addCalendarDaysInBaku(now, -i).toISOString());
     const bucket = byDate.get(key);
 
     series.push({
@@ -67,6 +83,12 @@ function buildDailySeries(
   }
 
   return series;
+}
+
+/** Yol "/listings/<id>" formatındadırsa elan id-sini qaytarır */
+function listingIdFromPath(path: string): string | null {
+  const match = path.match(/^\/listings\/([^/?#]+)\/?$/);
+  return match ? match[1] : null;
 }
 
 function buildRegionBreakdown(
@@ -109,6 +131,78 @@ async function getTopListings(): Promise<TopViewedListing[]> {
   }));
 }
 
+/**
+ * Ziyarət sətirlərindən verilmiş gün üzrə elan baxışlarını yığır.
+ * Saf funksiyadır (bazaya müraciət etmir) — ayrıca test edilə bilsin deyə
+ * ixrac olunur.
+ */
+export function aggregateListingViews(
+  rows: { created_at: string; visitor_id: string; path: string | null }[],
+  dayKey: string
+): Map<string, { views: number; visitors: number }> {
+  const byListing = new Map<string, { views: number; visitors: Set<string> }>();
+
+  for (const row of rows) {
+    if (!row.path || toDateKey(row.created_at) !== dayKey) continue;
+    const listingId = listingIdFromPath(row.path);
+    if (!listingId) continue;
+
+    const bucket = byListing.get(listingId) ?? {
+      views: 0,
+      visitors: new Set<string>(),
+    };
+    bucket.views += 1;
+    bucket.visitors.add(row.visitor_id);
+    byListing.set(listingId, bucket);
+  }
+
+  return new Map(
+    [...byListing].map(([id, b]) => [id, { views: b.views, visitors: b.visitors.size }])
+  );
+}
+
+/**
+ * Bu gün (Bakı vaxtı) hansı elanlara baxılıb: hər elan üzrə baxış sayı və
+ * neçə fərqli ziyarətçi. Məlumat site_visits-dəki yoldan çıxarılır — elan
+ * səhifəsi baxışları onsuz da orada qeyd olunur, əlavə cədvəl lazım deyil.
+ */
+async function buildTodayListingViews(
+  rows: { created_at: string; visitor_id: string; path: string | null }[],
+  todayKey: string
+): Promise<TodayListingView[]> {
+  const byListing = aggregateListingViews(rows, todayKey);
+
+  if (byListing.size === 0) return [];
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("listings")
+    .select("id, title, city")
+    .in("id", [...byListing.keys()]);
+
+  if (error) {
+    console.error("buildTodayListingViews:", error.message);
+    return [];
+  }
+
+  const titles = new Map(
+    (data ?? []).map((row) => [row.id, { title: row.title, city: row.city }])
+  );
+
+  return [...byListing.entries()]
+    // Silinmiş elanlar başlıqsız qalır — onları göstərmirik
+    .filter(([id]) => titles.has(id))
+    .map(([id, bucket]) => ({
+      id,
+      title: titles.get(id)!.title,
+      city: titles.get(id)!.city,
+      views: bucket.views,
+      visitors: bucket.visitors,
+    }))
+    .sort((a, b) => b.views - a.views || b.visitors - a.visitors)
+    .slice(0, TODAY_LISTINGS_LIMIT);
+}
+
 export async function getSiteStats(): Promise<SiteStats> {
   const supabase = await createClient();
 
@@ -118,7 +212,7 @@ export async function getSiteStats(): Promise<SiteStats> {
   const [visitsResult, topListings] = await Promise.all([
     supabase
       .from("site_visits")
-      .select("created_at, visitor_id, country, region, city")
+      .select("created_at, visitor_id, country, region, city, path")
       .gte("created_at", since.toISOString()),
     getTopListings(),
   ]);
@@ -142,6 +236,8 @@ export async function getSiteStats(): Promise<SiteStats> {
       .map((row) => row.visitor_id)
   ).size;
 
+  const todayListings = await buildTodayListingViews(rows, todayKey ?? "");
+
   return {
     todayVisits,
     last7DaysVisits,
@@ -149,5 +245,6 @@ export async function getSiteStats(): Promise<SiteStats> {
     dailySeries,
     topRegions,
     topListings,
+    todayListings,
   };
 }

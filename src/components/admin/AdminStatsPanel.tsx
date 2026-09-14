@@ -154,6 +154,45 @@ export function AdminStatsPanel({ stats }: AdminStatsPanelProps) {
         )}
       </div>
 
+      <div className="admin-stats__card">
+        <h2 className="admin-stats__card-title">
+          Bu gün baxılan elanlar
+          {stats.todayListings.length > 0 && (
+            <span className="admin-stats__card-note">
+              {" "}
+              — {formatNumber(stats.todayListings.length)} elan
+            </span>
+          )}
+        </h2>
+        {stats.todayListings.length > 0 ? (
+          <div className="admin-today-listings">
+            <div className="admin-today-listings__head">
+              <span>Elan</span>
+              <span title="Səhifənin neçə dəfə açıldığı">Baxış</span>
+              <span title="Neçə fərqli adamın baxdığı">Nəfər</span>
+            </div>
+            {stats.todayListings.map((listing) => (
+              <div key={listing.id} className="admin-today-listings__row">
+                <span className="admin-today-listings__title" title={listing.title}>
+                  {listing.title}
+                  {listing.city && (
+                    <span className="admin-today-listings__city"> · {listing.city}</span>
+                  )}
+                </span>
+                <span className="admin-today-listings__num">
+                  {formatNumber(listing.views)}
+                </span>
+                <span className="admin-today-listings__num">
+                  {formatNumber(listing.visitors)}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <EmptyState message="Bu gün hələ heç bir elana baxılmayıb." />
+        )}
+      </div>
+
       <div className="admin-stats__grid">
         <div className="admin-stats__card">
           <h2 className="admin-stats__card-title">Ən çox baxılan elanlar</h2>
