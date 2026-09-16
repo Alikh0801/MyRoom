@@ -12,6 +12,7 @@ const TABS: { id: AdminTab; label: string; showCount: boolean }[] = [
   { id: "support", label: "Müraciətlər", showCount: true },
   { id: "blog", label: "Blog", showCount: false },
   { id: "stats", label: "Statistika", showCount: false },
+  { id: "settings", label: "Parametrlər", showCount: false },
 ];
 
 interface AdminPanelTabsProps {

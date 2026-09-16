@@ -3,11 +3,35 @@ import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { getLocalizedName } from "@/lib/i18n/localized-name";
 import { getCategories } from "@/lib/queries/listings";
+import { getSiteSettings } from "@/lib/queries/site-settings";
+
+function InstagramIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
 
 export async function Footer() {
   const t = await getTranslations("footer");
   const locale = (await getLocale()) as Locale;
-  const categories = await getCategories();
+  const [categories, settings] = await Promise.all([
+    getCategories(),
+    getSiteSettings(),
+  ]);
 
   return (
     <footer className="footer">
@@ -18,6 +42,18 @@ export async function Footer() {
               My<span>Room</span><span className="brand-az">AZ</span>
             </p>
             <p className="footer__tagline">{t("tagline")}</p>
+
+            {settings.instagramUrl && (
+              <a
+                className="footer__social"
+                href={settings.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <InstagramIcon />
+                <span>{t("instagram")}</span>
+              </a>
+            )}
           </div>
 
           <div className="footer__col">

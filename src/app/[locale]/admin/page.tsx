@@ -1,6 +1,7 @@
 import { AdminBlogList } from "@/components/admin/AdminBlogList";
 import { AdminListingsList } from "@/components/admin/AdminListingsList";
 import { AdminPanelTabs } from "@/components/admin/AdminPanelTabs";
+import { AdminSettingsForm } from "@/components/admin/AdminSettingsForm";
 import { AdminStatsPanel } from "@/components/admin/AdminStatsPanel";
 import { AdminSupportList } from "@/components/admin/AdminSupportList";
 import { requireAdmin } from "@/lib/admin/auth";
@@ -18,6 +19,7 @@ import {
   type DeletedListingRecord,
 } from "@/lib/queries/admin";
 import { getAdminBlogPosts } from "@/lib/queries/blog-admin";
+import { getSiteSettings } from "@/lib/queries/site-settings";
 import { getSiteStats } from "@/lib/queries/stats";
 import { getSupportMessages } from "@/lib/queries/support";
 import { Suspense } from "react";
@@ -35,6 +37,7 @@ const TAB_SUBTITLES = {
   support: "İstifadəçilərdən gələn şikayət və təkliflər",
   blog: "Sayt blogundakı bələdçi məqalələri",
   stats: "Sayt ziyarətləri və elan baxışları üzrə statistika",
+  settings: "Saytın ümumi parametrləri",
 } as const;
 
 type AdminPageProps = {
@@ -55,13 +58,14 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
     sort !== "newest" ||
     (tab !== "deleted" && vipFilter !== "all");
 
-  const [counts, listings, siteStats, blogPosts, supportMessages] =
+  const [counts, listings, siteStats, blogPosts, supportMessages, siteSettings] =
     await Promise.all([
       getAdminTabCounts(),
       isListingsAdminTab(tab) ? getAdminListingsForTab(tab) : Promise.resolve([]),
       tab === "stats" ? getSiteStats() : Promise.resolve(null),
       tab === "blog" ? getAdminBlogPosts() : Promise.resolve([]),
       tab === "support" ? getSupportMessages() : Promise.resolve([]),
+      tab === "settings" ? getSiteSettings() : Promise.resolve(null),
     ]);
 
   const filteredListings = isListingsAdminTab(tab)
@@ -98,6 +102,8 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             <AdminBlogList posts={blogPosts} />
           ) : tab === "stats" && siteStats ? (
             <AdminStatsPanel stats={siteStats} />
+          ) : tab === "settings" && siteSettings ? (
+            <AdminSettingsForm settings={siteSettings} />
           ) : (
             isListingsAdminTab(tab) && (
               <AdminListingsList
