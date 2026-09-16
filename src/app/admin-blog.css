@@ -316,3 +316,12 @@
   display: flex;
   justify-content: flex-start;
 }
+
+/* PhoneInput öz .auth-form__field stilini gətirir — burada yalnız aralıq */
+.admin-settings__phone {
+  margin-top: 1rem;
+}
+
+.admin-settings__phone .auth-form__field {
+  margin-bottom: 0.35rem;
+}

@@ -4,6 +4,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/admin/auth";
 import {
   normalizeInstagramUrl,
+  normalizeSitePhone,
   SITE_SETTINGS_CACHE_TAG,
 } from "@/lib/queries/site-settings";
 import { createClient } from "@/lib/supabase/server";
@@ -27,9 +28,23 @@ export async function updateSiteSettings(
     };
   }
 
+  const phone = normalizeSitePhone(String(formData.get("phone") ?? ""));
+
+  if (phone === null) {
+    return {
+      ok: false,
+      error: "Telefon nömrəsi düzgün deyil. Nümunə: 0501234567",
+    };
+  }
+
+  const updatedAt = new Date().toISOString();
   const supabase = await createClient();
+  // Hər iki parametr bir sorğuda yazılır ki, biri keçib digəri qalmasın
   const { error } = await supabase.from("site_settings").upsert(
-    { key: "instagram_url", value: instagramUrl, updated_at: new Date().toISOString() },
+    [
+      { key: "instagram_url", value: instagramUrl, updated_at: updatedAt },
+      { key: "phone", value: phone, updated_at: updatedAt },
+    ],
     { onConflict: "key" }
   );
 

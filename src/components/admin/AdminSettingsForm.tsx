@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { PhoneInput, toLocalDigits } from "@/components/auth/PhoneInput";
 import { updateSiteSettings } from "@/lib/admin/settings-actions";
 import type { SiteSettings } from "@/lib/queries/site-settings";
 
@@ -10,6 +11,8 @@ interface AdminSettingsFormProps {
 
 export function AdminSettingsForm({ settings }: AdminSettingsFormProps) {
   const [instagram, setInstagram] = useState(settings.instagramUrl);
+  // PhoneInput yerli rəqəmlərlə işləyir, saxlanan dəyər isə "+994..."
+  const [phone, setPhone] = useState(() => toLocalDigits(settings.phone));
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -30,10 +33,10 @@ export function AdminSettingsForm({ settings }: AdminSettingsFormProps) {
   return (
     <form action={handleSubmit} className="admin-settings">
       <section className="admin-settings__section">
-        <h2 className="admin-settings__title">Sosial şəbəkələr</h2>
+        <h2 className="admin-settings__title">Əlaqə və sosial şəbəkələr</h2>
         <p className="admin-settings__hint">
-          Ünvan yazılanda footer-də Instagram ikonu görünür. Sahəni boş
-          buraxsanız ikon saytdan silinir.
+          Doldurulan sahələr footer-də ikon şəklində görünür. Boş buraxılan
+          sahənin ikonu saytdan silinir.
         </p>
 
         <label className="admin-settings__field">
@@ -54,6 +57,23 @@ export function AdminSettingsForm({ settings }: AdminSettingsFormProps) {
             bilərsiniz.
           </span>
         </label>
+
+        <div className="admin-settings__phone">
+          <PhoneInput
+            label="Əlaqə telefonu"
+            name="phone"
+            value={phone}
+            onChange={(value) => {
+              setPhone(value);
+              setSaved(false);
+            }}
+            placeholder="501234567"
+            autoComplete="off"
+          />
+          <span className="admin-settings__hint">
+            Footer-dəki nömrəyə toxunanda zəng açılır.
+          </span>
+        </div>
       </section>
 
       {error && <p className="auth-form__error">{error}</p>}

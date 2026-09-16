@@ -2857,17 +2857,25 @@ h3.amenities-feature-title {
   opacity: 0.8;
 }
 
+.footer__socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-top: 1rem;
+}
+
 .footer__social {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 1rem;
   padding: 0.5rem 0.875rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
   font-size: 0.875rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.85);
+  /* Nömrə ortadan sətirə bölünməsin */
+  white-space: nowrap;
   transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 

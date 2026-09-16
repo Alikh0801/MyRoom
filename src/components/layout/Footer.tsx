@@ -3,7 +3,25 @@ import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { getLocalizedName } from "@/lib/i18n/localized-name";
 import { getCategories } from "@/lib/queries/listings";
-import { getSiteSettings } from "@/lib/queries/site-settings";
+import { formatSitePhone, getSiteSettings } from "@/lib/queries/site-settings";
+
+function PhoneIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M21 16.9v2.5a2 2 0 0 1-2.2 2 19.5 19.5 0 0 1-8.5-3 19.2 19.2 0 0 1-5.9-5.9 19.5 19.5 0 0 1-3-8.6A2 2 0 0 1 3.4 1.5h2.5a2 2 0 0 1 2 1.7c.1 1 .3 1.9.7 2.8a2 2 0 0 1-.5 2.1L7 9.3a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z" />
+    </svg>
+  );
+}
 
 function InstagramIcon() {
   return (
@@ -43,16 +61,27 @@ export async function Footer() {
             </p>
             <p className="footer__tagline">{t("tagline")}</p>
 
-            {settings.instagramUrl && (
-              <a
-                className="footer__social"
-                href={settings.instagramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <InstagramIcon />
-                <span>{t("instagram")}</span>
-              </a>
+            {(settings.instagramUrl || settings.phone) && (
+              <div className="footer__socials">
+                {settings.instagramUrl && (
+                  <a
+                    className="footer__social"
+                    href={settings.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <InstagramIcon />
+                    <span>{t("instagram")}</span>
+                  </a>
+                )}
+
+                {settings.phone && (
+                  <a className="footer__social" href={`tel:${settings.phone}`}>
+                    <PhoneIcon />
+                    <span>{formatSitePhone(settings.phone)}</span>
+                  </a>
+                )}
+              </div>
             )}
           </div>
 
