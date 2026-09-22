@@ -3,20 +3,11 @@ function toWhatsAppPhone(phone: string): string {
   return cleaned.startsWith("994") ? cleaned : `994${cleaned.replace(/^0/, "")}`;
 }
 
-export function buildWhatsAppUrl(
-  phone: string,
-  listingTitle: string,
-  checkIn?: string,
-  checkOut?: string
-): string {
-  let message = `Salam! MyRoomAZ-da "${listingTitle}" elanınıza maraqlanıram.`;
-  if (checkIn && checkOut) {
-    message += ` ${checkIn} – ${checkOut} tarixləri üçün müsaitdir?`;
-  } else {
-    message += " Müsaitlik barədə məlumat ala bilərəm?";
-  }
-
-  return `https://wa.me/${toWhatsAppPhone(phone)}?text=${encodeURIComponent(message)}`;
+/**
+ * Söhbəti hazır mətnsiz açır — istifadəçi öz mesajını yazır.
+ */
+export function buildWhatsAppUrl(phone: string): string {
+  return `https://wa.me/${toWhatsAppPhone(phone)}`;
 }
 
 export function buildOwnerWhatsAppUrl(phone: string, ownerName: string): string {

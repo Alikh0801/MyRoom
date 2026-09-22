@@ -197,7 +197,7 @@ export async function ListingContactCard({
 
       <div className="listing-detail__contact-actions">
         {whatsappPhone && (
-          <WhatsAppButton phone={whatsappPhone} listingTitle={listingTitle} />
+          <WhatsAppButton phone={whatsappPhone} />
         )}
         {callHref && (
           <a href={callHref} className="btn btn--call">

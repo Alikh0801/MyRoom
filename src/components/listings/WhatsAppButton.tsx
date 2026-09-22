@@ -3,19 +3,11 @@ import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
 interface WhatsAppButtonProps {
   phone: string;
-  listingTitle: string;
-  checkIn?: string;
-  checkOut?: string;
 }
 
-export async function WhatsAppButton({
-  phone,
-  listingTitle,
-  checkIn,
-  checkOut,
-}: WhatsAppButtonProps) {
+export async function WhatsAppButton({ phone }: WhatsAppButtonProps) {
   const t = await getTranslations("listing");
-  const url = buildWhatsAppUrl(phone, listingTitle, checkIn, checkOut);
+  const url = buildWhatsAppUrl(phone);
 
   return (
     <a
