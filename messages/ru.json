@@ -101,9 +101,6 @@
   "listing": {
     "noPhoto": "Нет фото",
     "vip": "VIP",
-    "perDay": "/день",
-    "perWeek": "/неделя",
-    "perMonth": "/месяц",
     "guests": "{count} гостей",
     "bedrooms": "{count} комнат",
     "bathrooms": "{count} санузлов",

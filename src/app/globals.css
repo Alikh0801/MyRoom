@@ -1931,6 +1931,14 @@ img {
   font-size: 0.72rem;
 }
 
+/* Kəsr işarəsi qəsdən CSS-dədir, mətndə deyil: "/gün" HTML-də mətn kimi
+   qalanda Googlebot onu nisbi keçid sanıb myroomaz.com/gün ünvanını taramağa
+   çalışır və Search Console-da uydurma 404 yaranır. */
+.listing-card__price small::before,
+.listing-detail__price-unit::before {
+  content: "/";
+}
+
 /* Search page */
 .search-page {
   padding: 2rem 0 4rem;

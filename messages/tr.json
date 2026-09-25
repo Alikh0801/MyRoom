@@ -101,9 +101,6 @@
   "listing": {
     "noPhoto": "Fotoğraf yok",
     "vip": "VIP",
-    "perDay": "/gün",
-    "perWeek": "/hafta",
-    "perMonth": "/ay",
     "guests": "{count} misafir",
     "bedrooms": "{count} oda",
     "bathrooms": "{count} banyo",

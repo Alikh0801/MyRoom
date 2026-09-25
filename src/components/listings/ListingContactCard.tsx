@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { WhatsAppButton } from "@/components/listings/WhatsAppButton";
 import type { Locale } from "@/i18n/routing";
-import { formatPriceSuffix } from "@/lib/price";
+import { getPriceUnitLabel } from "@/lib/price";
 import { buildDirectionsUrl } from "@/lib/map";
 import type { PriceUnit } from "@/types/database";
 
@@ -66,8 +66,9 @@ export async function ListingContactCard({
     <aside className="listing-detail__contact">
       <p className="listing-detail__price">
         {pricePerNight} {currency}
+        {/* "/" işarəsi CSS-dən gəlir — bax globals.css, phantom 404 qeydi */}
         <span className="listing-detail__price-unit">
-          {formatPriceSuffix(priceUnit, locale)}
+          {getPriceUnitLabel(priceUnit, locale)}
         </span>
       </p>
 

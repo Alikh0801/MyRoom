@@ -9,7 +9,7 @@ import { formatListingCardDate } from "@/lib/date";
 import { formatListingNumber } from "@/lib/listings/listing-number";
 import { getLocalizedListingTitle } from "@/lib/i18n/localized-listing";
 import { getLocalizedName } from "@/lib/i18n/localized-name";
-import { formatPriceSuffix } from "@/lib/price";
+import { getPriceUnitLabel } from "@/lib/price";
 import { LISTING_CARD_IMAGE_QUALITY } from "@/lib/images/listing-images";
 import type { Locale } from "@/i18n/routing";
 import type { ListingCardData } from "@/types/database";
@@ -174,7 +174,8 @@ function ListingCardContent({
           </div>
           <span className="listing-card__price">
             {listing.price_per_night} {listing.currency}
-            <small>{formatPriceSuffix(listing.price_unit ?? "day", locale)}</small>
+            {/* "/" işarəsi CSS-dən gəlir — bax globals.css, phantom 404 qeydi */}
+            <small>{getPriceUnitLabel(listing.price_unit ?? "day", locale)}</small>
           </span>
         </div>
       </div>
