@@ -2,7 +2,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { ListingCard } from "@/components/listings/ListingCard";
 import { formatListingCardDate } from "@/lib/date";
-import { buildOwnerWhatsAppUrl } from "@/lib/whatsapp";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import type { OwnerPublicProfile } from "@/lib/queries/owner-profile";
 import type { ListingCardData } from "@/types/database";
 
@@ -36,7 +36,7 @@ export async function OwnerProfileView({
   const callPhone = owner.phone ?? owner.whatsapp_phone;
   const callHref = callPhone ? `tel:${callPhone.replace(/[\s()-]/g, "")}` : null;
   const whatsappUrl = owner.whatsapp_phone
-    ? buildOwnerWhatsAppUrl(owner.whatsapp_phone, displayName)
+    ? buildWhatsAppUrl(owner.whatsapp_phone)
     : null;
 
   return (

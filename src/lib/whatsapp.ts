@@ -4,13 +4,9 @@ function toWhatsAppPhone(phone: string): string {
 }
 
 /**
- * Söhbəti hazır mətnsiz açır — istifadəçi öz mesajını yazır.
+ * Söhbəti hazır mətnsiz açır — istifadəçi öz mesajını yazır. Həm elan, həm
+ * sahib profili eyni keçiddən istifadə edir.
  */
 export function buildWhatsAppUrl(phone: string): string {
   return `https://wa.me/${toWhatsAppPhone(phone)}`;
-}
-
-export function buildOwnerWhatsAppUrl(phone: string, ownerName: string): string {
-  const message = `Salam ${ownerName}! MyRoomAZ-da profilinizi gördüm, əlaqə saxlamaq istəyirəm.`;
-  return `https://wa.me/${toWhatsAppPhone(phone)}?text=${encodeURIComponent(message)}`;
 }
