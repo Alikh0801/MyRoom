@@ -28,9 +28,7 @@ const CHECK_EMAIL_PATH = /^\/(?:(az|ru|tr)\/)?auth\/check-email\/?$/;
  * qalmışdı və 404 verirdi. 301 ilə yönləndiririk ki, həmin ünvanların
  * topladığı SEO dəyəri yeni ünvanlara keçsin.
  *
- * QEYD: "seki-sefer-belediyicisi" siyahıda yoxdur — həmin mövzuda yazı artıq
- * mövcud deyil. Onu uyğunsuz səhifəyə yönləndirmək Google tərəfindən
- * "soft 404" sayılır, ona görə təbii 404 olaraq qalır.
+ * Əvəzi olmayan yazılar buraya yox, REMOVED_BLOG_SLUGS-a yazılır.
  */
 const LEGACY_BLOG_SLUGS: Record<string, string> = {
   "quba-istirahet-belediyicisi": "quba-blog",
@@ -39,7 +37,81 @@ const LEGACY_BLOG_SLUGS: Record<string, string> = {
   "qebele-istirahet-belediyicisi": "qebele-istirahet-blog",
 };
 
+/**
+ * Həmişəlik silinmiş, əvəzi olmayan bloq yazıları. Bunlar 404 yox, 410 Gone
+ * qaytarır.
+ *
+ * Fərq praktikdir: 404 "tapılmadı" deməkdir və Google onu müvəqqəti sayıb
+ * ünvanı aylarla təkrar tarayır, Search Console-da isə saxlayır. 410 "bu
+ * ünvan həmişəlik yoxdur" deməkdir — Google onu daha tez indeksdən çıxarır.
+ *
+ * Uyğun mövzuda başqa səhifəyə yönləndirmirik: Google məzmunu uyğun gəlməyən
+ * yönləndirməni "soft 404" sayır, bu isə sadə 404-dən də pisdir.
+ */
+const REMOVED_BLOG_SLUGS = new Set(["seki-sefer-belediyicisi"]);
+
 const BLOG_POST_PATH = /^\/(?:(az|ru|tr)\/)?blog\/([^/]+)\/?$/;
+
+const GONE_TEXT: Record<string, { title: string; body: string; link: string }> = {
+  az: {
+    title: "Bu yazı silinib",
+    body: "Axtardığınız bələdçi artıq saytda yoxdur.",
+    link: "Bütün bələdçilər",
+  },
+  ru: {
+    title: "Эта статья удалена",
+    body: "Запрашиваемый путеводитель больше не доступен на сайте.",
+    link: "Все путеводители",
+  },
+  tr: {
+    title: "Bu yazı silindi",
+    body: "Aradığınız rehber artık sitede bulunmuyor.",
+    link: "Tüm rehberler",
+  },
+};
+
+/**
+ * 410 cavabı middleware-dən gəlir, ona görə səhifə öz layout-unu işlədə
+ * bilmir — minimal, özü-özünə yetən HTML qaytarırıq. Bu ünvanlara praktikada
+ * yalnız axtarış robotları girir, nadir hallarda gələn insan isə bloqa qayıda
+ * bilsin deyə keçid qoyulub.
+ */
+function goneResponse(locale: string | undefined): NextResponse {
+  const lang = locale && locale in GONE_TEXT ? locale : routing.defaultLocale;
+  const text = GONE_TEXT[lang];
+  const blogHref = localizedPath(locale, "/blog");
+
+  const html = `<!doctype html>
+<html lang="${lang}">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>${text.title} — MyRoomAZ</title>
+<style>
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center;
+    justify-content: center; font: 16px/1.6 system-ui, sans-serif;
+    background: #fafaf8; color: #1c1c1c; text-align: center; padding: 1.5rem; }
+  h1 { font-size: 1.375rem; margin: 0 0 0.5rem; }
+  p { margin: 0 0 1.5rem; color: #5d5d5d; }
+  a { display: inline-block; padding: 0.625rem 1.25rem; border-radius: 999px;
+    background: #1b4332; color: #fff; text-decoration: none; font-weight: 600; }
+</style>
+<main>
+  <h1>${text.title}</h1>
+  <p>${text.body}</p>
+  <a href="${blogHref}">${text.link}</a>
+</main>
+</html>`;
+
+  return new NextResponse(html, {
+    status: 410,
+    headers: {
+      "Content-Type": "text/html; charset=utf-8",
+      "X-Robots-Tag": "noindex",
+      "Cache-Control": "public, max-age=3600",
+    },
+  });
+}
 
 /** Default dil (az) prefikssiz işlədilir — localePrefix: "as-needed" */
 function localizedPath(locale: string | undefined, path: string): string {
@@ -58,7 +130,13 @@ export async function middleware(request: NextRequest) {
   }
 
   const blogPost = request.nextUrl.pathname.match(BLOG_POST_PATH);
-  const newSlug = blogPost && LEGACY_BLOG_SLUGS[decodeURIComponent(blogPost[2])];
+  const blogSlug = blogPost ? decodeURIComponent(blogPost[2]) : null;
+
+  if (blogSlug && REMOVED_BLOG_SLUGS.has(blogSlug)) {
+    return goneResponse(blogPost![1]);
+  }
+
+  const newSlug = blogSlug && LEGACY_BLOG_SLUGS[blogSlug];
 
   if (newSlug) {
     const url = request.nextUrl.clone();
