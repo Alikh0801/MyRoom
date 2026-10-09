@@ -2,12 +2,23 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { VIP_PLAN_PRICE_AZN } from "@/lib/listings/vip-payment";
 import { PAYMENTS_ENABLED } from "@/lib/payments/config";
 
+/**
+ * Qiymətlər VIP_PLAN_PRICE_AZN-dən gəlir — banka göndərilən məbləğ də
+ * oradandır. Burada ayrıca rəqəm yazılsaydı, biri dəyişəndə istifadəçi bir
+ * qiymət görüb başqa məbləğ ödəyə bilərdi.
+ */
 export const PREMIUM_PLANS = [
   { id: "none", priceAzn: 0, durationKey: "none" as const },
-  { id: "day", priceAzn: 3, durationKey: "day" as const },
-  { id: "week", priceAzn: 16, durationKey: "week" as const, recommended: true },
+  { id: "day", priceAzn: VIP_PLAN_PRICE_AZN.day, durationKey: "day" as const },
+  {
+    id: "week",
+    priceAzn: VIP_PLAN_PRICE_AZN.week,
+    durationKey: "week" as const,
+    recommended: true,
+  },
 ] as const;
 
 export type PremiumPlanId = (typeof PREMIUM_PLANS)[number]["id"];

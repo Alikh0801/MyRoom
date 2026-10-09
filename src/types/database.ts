@@ -73,6 +73,11 @@ export interface Listing {
   is_vip: boolean;
   requested_vip_plan?: VipPlan | null;
   vip_payment_status?: VipPaymentStatus;
+  /**
+   * Ləğv edilmiş əl ilə çek sistemindən qalan sütunlar. Baza sxemində hələ
+   * mövcuddur (köhnə elanların tarixi qeydi), amma artıq nə yazılır, nə
+   * oxunur — yeni kodda istifadə etmə.
+   */
   vip_payment_receipt_url?: string | null;
   vip_payment_receipt_path?: string | null;
   vip_expires_at?: string | null;

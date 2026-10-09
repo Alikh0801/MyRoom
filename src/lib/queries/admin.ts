@@ -19,7 +19,6 @@ export interface AdminListingItem {
   created_at: string;
   requested_vip_plan: VipPlan | null;
   vip_payment_status: VipPaymentStatus;
-  vip_payment_receipt_url: string | null;
   vip_expires_at: string | null;
   category: { name_az: string } | null;
   owner: { full_name: string | null; phone: string | null } | null;
@@ -64,7 +63,7 @@ const LISTING_CORE = `
 `;
 
 const LISTING_VIP =
-  "requested_vip_plan, vip_payment_status, vip_payment_receipt_url, vip_expires_at";
+  "requested_vip_plan, vip_payment_status, vip_expires_at";
 
 type AdminListingRow = {
   id: string;
@@ -82,7 +81,6 @@ type AdminListingRow = {
   created_at: string;
   requested_vip_plan?: VipPlan | null;
   vip_payment_status?: VipPaymentStatus;
-  vip_payment_receipt_url?: string | null;
   vip_expires_at?: string | null;
   category:
     | { name_az: string }
@@ -122,7 +120,6 @@ function mapAdminListing(row: AdminListingRow): AdminListingItem {
     created_at: row.created_at,
     requested_vip_plan: row.requested_vip_plan ?? null,
     vip_payment_status: row.vip_payment_status ?? "none",
-    vip_payment_receipt_url: row.vip_payment_receipt_url ?? null,
     vip_expires_at: row.vip_expires_at ?? null,
     category: category ?? null,
     owner: owner ?? null,
