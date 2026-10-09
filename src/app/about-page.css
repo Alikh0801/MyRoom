@@ -1,0 +1,132 @@
+/* Yalnız /about marşrutunda yüklənir — səhifənin özündən import olunur. */
+
+.about-page {
+  padding: 2.5rem 0 4rem;
+}
+
+.about-page__header {
+  max-width: 48rem;
+  margin-bottom: 2.5rem;
+}
+
+.about-page__title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text);
+  margin-bottom: 0.875rem;
+}
+
+.about-page__intro {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+.about-page__sections {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.about-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .about-card {
+    padding: 1.875rem 2rem;
+  }
+}
+
+.about-card__title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.625rem;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--color-text);
+  margin-bottom: 0.875rem;
+}
+
+.about-card__icon {
+  font-size: 1.125rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.about-card__text {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--color-text-muted);
+}
+
+.about-card__text + .about-card__text {
+  margin-top: 0.875rem;
+}
+
+.about-card__list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  gap: 0.875rem;
+}
+
+.about-card__list-item {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+.about-card__list-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.about-card__list-item strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.about-cta {
+  margin-top: 2.5rem;
+  padding: 2rem 1.5rem;
+  border-radius: var(--radius);
+  background: var(--color-highlight-surface);
+  border: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.about-cta__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.about-cta__text {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+  max-width: 34rem;
+  margin: 0 auto 1.5rem;
+}
+
+.about-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}

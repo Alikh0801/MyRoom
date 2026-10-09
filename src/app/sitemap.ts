@@ -5,7 +5,7 @@ import { hasUniqueLocaleContent } from "@/lib/i18n/localized-listing";
 import { getCategories, getSitemapListings } from "@/lib/queries/listings";
 import { getAbsoluteUrl } from "@/lib/seo";
 
-const STATIC_PATHS = ["/", "/search", "/blog", "/terms", "/privacy"];
+const STATIC_PATHS = ["/", "/search", "/blog", "/about", "/terms", "/privacy"];
 
 function buildLocalizedUrls(path: string) {
   return routing.locales.map((locale) => ({
