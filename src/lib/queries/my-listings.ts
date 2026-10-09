@@ -9,7 +9,7 @@ import { isVipCurrentlyActive } from "@/lib/listings/vip-payment";
 const MY_LISTING_SELECT = `
   id, title, status, is_vip, vip_payment_status, vip_expires_at, rejection_reason,
   price_per_night, price_unit, currency,
-  city, region, created_at, updated_at,
+  city, region, created_at, updated_at, view_count,
   category:categories(slug, name_az),
   listing_images(url, is_cover, sort_order)
 `;
@@ -29,6 +29,7 @@ type MyListingRow = {
   region: string;
   created_at: string;
   updated_at: string;
+  view_count: number | null;
   category:
     | { slug: string; name_az: string }
     | { slug: string; name_az: string }[];
@@ -50,6 +51,7 @@ export interface MyListingItem {
   region: string;
   created_at: string;
   updated_at: string;
+  view_count: number;
   category: { slug: string; name_az: string };
   cover_image: string | null;
 }
@@ -87,6 +89,7 @@ function mapMyListing(row: MyListingRow): MyListingItem {
     region: row.region,
     created_at: row.created_at,
     updated_at: row.updated_at,
+    view_count: row.view_count ?? 0,
     category: category ?? { slug: "", name_az: "" },
     cover_image: sorted[0]?.url ?? null,
   };

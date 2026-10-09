@@ -16,6 +16,26 @@ interface MyListingCardProps {
   listing: MyListingItem;
 }
 
+function EyeIcon() {
+  return (
+    <svg
+      className="my-listing-card__views-icon"
+      viewBox="0 0 24 24"
+      width="15"
+      height="15"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
 export function MyListingCard({ listing }: MyListingCardProps) {
   const t = useTranslations("dashboard");
   const locale = useLocale() as Locale;
@@ -80,6 +100,15 @@ export function MyListingCard({ listing }: MyListingCardProps) {
           {formatPriceSuffix(listing.price_unit, locale)} ·{" "}
           {t("card.createdAt", { date: createdAt })}
         </p>
+        {/* Yalnız təsdiqlənmiş elanlar saytda görünür — digərlərində rəqəm
+            həmişə 0 olardı və çaşdırıcı olardı. */}
+        {canViewPublic && (
+          <p className="my-listing-card__views">
+            <EyeIcon />
+            {t("card.views", { count: listing.view_count })}
+          </p>
+        )}
+
         <p className="my-listing-card__hint">
           {t(`statusHints.${listing.status}`)}
         </p>

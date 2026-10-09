@@ -515,7 +515,8 @@
       "newListing": "Yeni elan",
       "delete": "Sil",
       "deleting": "Silinir...",
-      "deleteConfirm": "\"{title}\" elanını silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz."
+      "deleteConfirm": "\"{title}\" elanını silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.",
+      "views": "{count, plural, one {# baxış} other {# baxış}}"
     },
     "vip": {
       "button": "VIP et",

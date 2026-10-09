@@ -515,7 +515,8 @@
       "newListing": "Yeni ilan",
       "delete": "Sil",
       "deleting": "Siliniyor...",
-      "deleteConfirm": "\"{title}\" ilanını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
+      "deleteConfirm": "\"{title}\" ilanını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+      "views": "{count, plural, one {# görüntülenme} other {# görüntülenme}}"
     },
     "vip": {
       "button": "VIP yap",
