@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useEffect, useRef, useState } from "react";
 import { SupportIcon } from "@/components/support/SupportIcon";
+import { HEADER_NAV_LINKS } from "@/components/layout/nav-links";
 import { signOut } from "@/lib/auth/actions";
 
 interface UserMenuProps {
@@ -109,6 +110,18 @@ export function UserMenu({
           </div>
 
           <div className="user-menu__links">
+            {/* Masaüstündə bu keçidlər başlıqda görünür, burada gizlənir */}
+            {HEADER_NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="user-menu__item user-menu__item--nav"
+                role="menuitem"
+                onClick={() => setOpen(false)}
+              >
+                {t(link.labelKey)}
+              </Link>
+            ))}
             <Link
               href="/dashboard/listings"
               className="user-menu__item"

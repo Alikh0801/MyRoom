@@ -18,7 +18,10 @@
     "accountMenu": "Hesap menüsü",
     "myAccount": "Hesabım",
     "language": "Dil",
-    "authMenu": "Giriş ve kayıt"
+    "authMenu": "Giriş ve kayıt",
+    "blog": "Rehberler",
+    "about": "Hakkımızda",
+    "mainNav": "Ana gezinme"
   },
   "theme": {
     "switchToLight": "Aydınlık mod",
@@ -578,5 +581,9 @@
     "whatsappSameAsPhone": "WhatsApp numaram cep telefonumla aynı",
     "contactNote": "Bu numaralar yeni ilan oluştururken iletişim numarası olarak otomatik doldurulur.",
     "memberSince": "Kayıt: {date}"
+  },
+  "about": {
+    "metaTitle": "Hakkımızda",
+    "title": "Hakkımızda"
   }
 }

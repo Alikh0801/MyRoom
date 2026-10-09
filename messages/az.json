@@ -18,7 +18,10 @@
     "accountMenu": "Hesab menyusu",
     "myAccount": "Hesabım",
     "language": "Dil",
-    "authMenu": "Giriş və qeydiyyat"
+    "authMenu": "Giriş və qeydiyyat",
+    "blog": "Bələdçilər",
+    "about": "Haqqımızda",
+    "mainNav": "Əsas naviqasiya"
   },
   "theme": {
     "switchToLight": "Açıq rejim",
@@ -578,5 +581,9 @@
     "whatsappSameAsPhone": "WhatsApp nömrəm mobil nömrə ilə eynidir",
     "contactNote": "Bu nömrələr yeni elan yaratdıqda əlaqə nömrəsi kimi avtomatik doldurulur.",
     "memberSince": "Qeydiyyat: {date}"
+  },
+  "about": {
+    "metaTitle": "Haqqımızda",
+    "title": "Haqqımızda"
   }
 }

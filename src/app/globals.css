@@ -165,6 +165,35 @@ img {
   font-weight: 800;
 }
 
+/* Mobildə başlıqda yer yoxdur — eyni keçidlər hesab menyusunda göstərilir
+   (user-menu__item--nav). Sərhəd 640px-dir, çünki qonaq menyusunu açan
+   .auth-menu düyməsi məhz orada gizlənir: başqa rəqəm seçsək aralıqda nə
+   başlıqda, nə menyuda keçid qalmazdı. */
+.header__nav {
+  display: none;
+  align-items: center;
+  gap: 1.25rem;
+  margin-left: 1.75rem;
+}
+
+.header__nav-link {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.header__nav-link:hover {
+  color: var(--color-primary);
+}
+
+@media (min-width: 640px) {
+  .header__nav {
+    display: flex;
+  }
+}
+
 .header__actions {
   display: flex;
   align-items: center;
@@ -5937,6 +5966,14 @@ h3.amenities-feature-title {
 
 @media (min-width: 640px) {
   .user-menu__item--mobile {
+    display: none;
+  }
+}
+
+/* Naviqasiya sətirləri başlıqdakı .header__nav ilə eyni nöqtədə yer
+   dəyişir — aralıqda hər ikisinin gizlənməməsi üçün breakpoint eynidir. */
+@media (min-width: 640px) {
+  .user-menu__item--nav {
     display: none;
   }
 }

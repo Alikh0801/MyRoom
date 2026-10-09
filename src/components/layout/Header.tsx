@@ -1,9 +1,12 @@
+import { getTranslations } from "next-intl/server";
 import { HeaderActions } from "@/components/layout/HeaderActions";
+import { HEADER_NAV_LINKS } from "@/components/layout/nav-links";
 import { Link } from "@/i18n/navigation";
 import { getHeaderAuth } from "@/lib/auth/session";
 
 export async function Header() {
   const { user, fullName, avatarUrl, isAdmin } = await getHeaderAuth();
+  const t = await getTranslations("nav");
 
   return (
     <header className="header">
@@ -12,6 +15,15 @@ export async function Header() {
           <Link href="/" className="header__logo">
             My<span>Room</span><span className="brand-az">AZ</span>
           </Link>
+
+          {/* Mobildə gizlidir — orada eyni keçidlər hesab menyusundadır */}
+          <nav className="header__nav" aria-label={t("mainNav")}>
+            {HEADER_NAV_LINKS.map((link) => (
+              <Link key={link.href} href={link.href} className="header__nav-link">
+                {t(link.labelKey)}
+              </Link>
+            ))}
+          </nav>
         </div>
         <HeaderActions
           user={user}
