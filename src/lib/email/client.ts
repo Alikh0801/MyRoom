@@ -2,8 +2,7 @@
  * Transaksiya e-poçtları üçün göndərici (Resend REST API).
  * Sənəd: https://resend.com/docs/api-reference/emails/send-email
  *
- * Ayrıca kitabxana quraşdırılmır — sadə fetch kifayətdir (eyni yanaşma
- * kapital-client.ts-də də işlədilir).
+ * Ayrıca kitabxana quraşdırılmır — sadə fetch kifayətdir.
  *
  * VACİB: bu funksiya HEÇ VAXT xəta atmır. E-poçt göndərilməsi əlavə
  * bildirişdir — poçt xidməti işləmirsə belə, onu çağıran əməliyyat (məsələn

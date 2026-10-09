@@ -90,9 +90,7 @@ export function MyListingCard({ listing }: MyListingCardProps) {
           </p>
         )}
 
-        {canRequestVip && (
-          <RequestVipButton listingId={listing.id} />
-        )}
+        {canRequestVip && <RequestVipButton />}
       </div>
 
       <div className="my-listing-card__actions">

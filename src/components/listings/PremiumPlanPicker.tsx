@@ -3,12 +3,10 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { VIP_PLAN_PRICE_AZN } from "@/lib/listings/vip-payment";
-import { PAYMENTS_ENABLED } from "@/lib/payments/config";
 
 /**
- * Qiymətlər VIP_PLAN_PRICE_AZN-dən gəlir — banka göndərilən məbləğ də
- * oradandır. Burada ayrıca rəqəm yazılsaydı, biri dəyişəndə istifadəçi bir
- * qiymət görüb başqa məbləğ ödəyə bilərdi.
+ * Qiymətlər VIP_PLAN_PRICE_AZN-dən gəlir ki, tək mənbə olsun — ödəniş
+ * sistemi qoşulanda tutulacaq məbləğ də elə oradan götürüləcək.
  */
 export const PREMIUM_PLANS = [
   { id: "none", priceAzn: 0, durationKey: "none" as const },
@@ -108,7 +106,7 @@ export function PremiumPlanPicker({
 
       {needsPayment && (
         <p className="premium-picker__payment-note">
-          {PAYMENTS_ENABLED ? t("payment.onlineNote") : t("payment.testNote")}
+          {t("payment.inactiveNote")}
         </p>
       )}
     </div>

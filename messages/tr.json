@@ -408,8 +408,7 @@
         }
       },
       "payment": {
-        "onlineNote": "Ödeme banka kartıyla online olarak yapılır. \"Onayla\" düğmesine tıkladığınızda bankanın güvenli ödeme sayfasına yönlendirileceksiniz.",
-        "testNote": "Online ödeme sistemi şu anda test aşamasındadır. VIP paket seçimi ödeme sistemi aktifleştikten sonra mümkün olacaktır."
+        "inactiveNote": "Online ödeme sistemi henüz aktif değil. VIP paket seçiminiz kaydedilir ve ödeme sistemi devreye girer girmez etkinleştirilebilecek."
       }
     },
     "footer": {
@@ -517,10 +516,8 @@
     },
     "vip": {
       "button": "VIP yap",
-      "submitting": "Gönderiliyor...",
       "confirm": "Onayla",
-      "cancel": "İptal et",
-      "selectPlan": "VIP paketi seçin."
+      "cancel": "İptal et"
     }
   },
   "admin": {},

@@ -25,11 +25,6 @@ import { hasAcceptedLegalTerms } from "@/lib/legal/validation";
 import { validateListingFormFields } from "@/lib/form/validate-listing-form";
 import { LegalAcceptanceField } from "@/components/legal/LegalAcceptanceField";
 import type { EditListingData } from "@/lib/queries/edit-listing";
-import { createVipCheckout } from "@/lib/payments/vip";
-import {
-  PAYMENTS_ENABLED,
-  PAYMENTS_TEST_MODE_PATH,
-} from "@/lib/payments/config";
 import type { Locale } from "@/i18n/routing";
 import type { AmenityGroup, Category } from "@/types/database";
 
@@ -213,8 +208,6 @@ export function CreateListingForm({
       return;
     }
 
-    const premiumPlan = formData.get("premiumPlan") as string;
-
     setSubmitting(true);
 
     const result = isEdit
@@ -235,25 +228,9 @@ export function CreateListingForm({
         });
       }
 
-      if (!isEdit && (premiumPlan === "day" || premiumPlan === "week")) {
-        // Ödəniş şlüzü test mərhələsindədir — elan yaradıldı, ödəniş isə
-        // hələlik mümkün deyil, ona görə məlumat səhifəsinə yönləndiririk.
-        if (!PAYMENTS_ENABLED) {
-          router.push(PAYMENTS_TEST_MODE_PATH);
-          return;
-        }
-
-        const checkout = await createVipCheckout(result.listingId, premiumPlan);
-        if (checkout.ok) {
-          window.location.href = checkout.redirectUrl;
-          return;
-        }
-        // Elan artıq yaradılıb — ödəniş alınmasa da yaradılmanı uğursuz saymırıq,
-        // sahib "Elanlarım"-dan sonra VIP ödənişini yenidən cəhd edə bilər.
-        router.push("/dashboard/listings?created=1&vip=checkout_failed");
-        return;
-      }
-
+      // Seçilmiş VIP paketi elanla birlikdə requested_vip_plan kimi yazılır —
+      // admin panelində sorğu kimi görünür. Ödəniş sistemi qoşulana qədər
+      // başqa addım yoxdur, ona görə sahib adi qaydada "Elanlarım"-a qayıdır.
       router.push(
         isEdit ? "/dashboard/listings?updated=1" : "/dashboard/listings?created=1"
       );
