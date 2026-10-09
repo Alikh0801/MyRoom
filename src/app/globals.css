@@ -172,8 +172,7 @@ img {
 .header__nav {
   display: none;
   align-items: center;
-  gap: 1.25rem;
-  margin-left: 1.75rem;
+  gap: 1.5rem;
 }
 
 .header__nav-link {
@@ -188,9 +187,48 @@ img {
   color: var(--color-primary);
 }
 
+/* Nav 640px-dən görünür, amma orada mərkəzə qoymaq olmur: loqo + nav +
+   düymələr birlikdə enin demək olar hamısını tutur, nav mərkəzə çəkilsə
+   loqonun üstünə minir (ölçülüb: 768px-də 0, 700px-də -17px). Ona görə bu
+   aralıqda loqonun yanında saxlanılır. */
 @media (min-width: 640px) {
   .header__nav {
     display: flex;
+    margin-left: 1.5rem;
+    margin-right: auto;
+  }
+}
+
+/* 880px-dən yuxarıda boşluq çatır — marginlər götürülür və space-between
+   navı loqo ilə düymələrin tam ortasına, bərabər boşluqla qoyur. */
+@media (min-width: 880px) {
+  .header__nav {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* Həqiqi mərkəz (yan sütunlar bərabər 1fr) yalnız geniş ekranda mümkündür.
+   Düymələr bloku təkbaşına ~435px tutur, ona görə 1200px-dən dar ekranda
+   səhifənin orta xətti elə həmin blokun içinə düşür — orada mərkəzləşdirsək
+   nav düymələrin üstünə minir (ölçülüb: 1100px-də artıq 14px qalır, 1024px-də
+   24px üst-üstə düşür). Dar ekranda bərabər boşluqlu yerləşim saxlanılır. */
+@media (min-width: 1200px) {
+  .header__inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .header__start {
+    justify-self: start;
+  }
+
+  .header__nav {
+    justify-self: center;
+  }
+
+  .header__actions {
+    justify-self: end;
   }
 }
 
@@ -910,7 +948,14 @@ img {
   .lang-switcher--mobile {
     display: none;
   }
+}
 
+/* Giriş/qeydiyyat düymələri 233px tutur. Naviqasiya əlavə olunandan sonra
+   640-780px aralığında loqo + nav + həmin düymələr başlığa sığmırdı (ölçülüb:
+   640px-də nav loqonun üstünə 15px minirdi). Bu aralıqda düymələr kompakt
+   şəxs ikonuna (.auth-menu) yığılır — onun içində onsuz da giriş, qeydiyyat
+   və dəstək sətirləri var. */
+@media (min-width: 780px) {
   .header__auth-desktop {
     display: flex;
   }

@@ -15,16 +15,16 @@ export async function Header() {
           <Link href="/" className="header__logo">
             My<span>Room</span><span className="brand-az">AZ</span>
           </Link>
-
-          {/* Mobildə gizlidir — orada eyni keçidlər hesab menyusundadır */}
-          <nav className="header__nav" aria-label={t("mainNav")}>
-            {HEADER_NAV_LINKS.map((link) => (
-              <Link key={link.href} href={link.href} className="header__nav-link">
-                {t(link.labelKey)}
-              </Link>
-            ))}
-          </nav>
         </div>
+
+        {/* Mobildə gizlidir — orada eyni keçidlər hesab menyusundadır */}
+        <nav className="header__nav" aria-label={t("mainNav")}>
+          {HEADER_NAV_LINKS.map((link) => (
+            <Link key={link.href} href={link.href} className="header__nav-link">
+              {t(link.labelKey)}
+            </Link>
+          ))}
+        </nav>
         <HeaderActions
           user={user}
           fullName={fullName}
