@@ -4,6 +4,10 @@ import type { Locale } from "@/i18n/routing";
 import { getLocalizedName } from "@/lib/i18n/localized-name";
 import { getCategories } from "@/lib/queries/listings";
 import { getSiteSettings } from "@/lib/queries/site-settings";
+import {
+  getLandingByCategory,
+  landingHref,
+} from "@/lib/seo/category-landings";
 
 function InstagramIcon() {
   return (
@@ -63,14 +67,28 @@ export async function Footer() {
             <div className="footer__links">
               <Link href="/search">{t("allListings")}</Link>
               <Link href="/blog">{t("blog")}</Link>
-              {categories.map((category) => (
-                <Link
-                  key={category.id}
-                  href={`/search?category=${category.slug}`}
-                >
-                  {getLocalizedName(category, locale)}
-                </Link>
-              ))}
+              {/* Hər səhifədə olan bu keçidlər açılış səhifələrinə ən güclü
+                  daxili siqnaldır — həm ünvan, həm də keçid mətni açar sözü
+                  daşıyır ("A-frame evləri", "Rayon evləri"). Açılış səhifəsi
+                  olmayan kateqoriya (gələcəkdə əlavə olunarsa) axtarışa
+                  yönləndirilir. */}
+              {categories.map((category) => {
+                const landing = getLandingByCategory(category.slug);
+                return (
+                  <Link
+                    key={category.id}
+                    href={
+                      landing
+                        ? landingHref(landing)
+                        : `/search?category=${category.slug}`
+                    }
+                  >
+                    {landing
+                      ? landing.copy[locale].label
+                      : getLocalizedName(category, locale)}
+                  </Link>
+                );
+              })}
             </div>
           </div>
 

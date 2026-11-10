@@ -11,6 +11,10 @@ import {
   getSearchListings,
 } from "@/lib/queries/listings";
 import { buildCanonicalAlternates, getAbsoluteUrl } from "@/lib/seo";
+import {
+  getLandingByCategory,
+  landingHref,
+} from "@/lib/seo/category-landings";
 
 interface SearchPageProps {
   params: Promise<{ locale: string }>;
@@ -62,14 +66,27 @@ export async function generateMetadata({
   const description = t("metaDescription");
   const path = buildSearchPath(queryParams);
 
+  // Yalnız kateqoriya ilə süzülmüş axtarış (/search?category=a-frame) eyni
+  // elanları göstərən açılış səhifəsinin (/a-frame-evleri) dublikatıdır.
+  // Canonical ora yönəldilir ki, Google sıralama dəyərini iki ünvan arasında
+  // bölməsin. Yönləndirmə edilmir: filtr formasından gələn istifadəçi
+  // axtarış səhifəsində, filtrlərin yanında qalmalıdır.
+  const onlyCategory =
+    Boolean(queryParams.category) &&
+    Object.entries(queryParams).every(
+      ([key, value]) => key === "category" || !value
+    );
+  const landing = onlyCategory ? getLandingByCategory(categorySlug) : null;
+  const canonicalPath = landing ? landingHref(landing) : path;
+
   return {
     title,
     description,
-    alternates: buildCanonicalAlternates(path, typedLocale),
+    alternates: buildCanonicalAlternates(canonicalPath, typedLocale),
     openGraph: {
       title,
       description,
-      url: getAbsoluteUrl(path, typedLocale),
+      url: getAbsoluteUrl(canonicalPath, typedLocale),
     },
   };
 }

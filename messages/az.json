@@ -587,5 +587,15 @@
     "metaTitle": "Haqqımızda",
     "title": "Haqqımızda",
     "metaDescription": "myroomaz.com Azərbaycanın bütün bölgələri üzrə günlük icarə elanlarını bir platformada birləşdirir. Məqsədimiz, nəticələrimiz və AI planlarımız."
+  },
+  "landing": {
+    "home": "Ana səhifə",
+    "breadcrumb": "Naviqasiya yolu",
+    "count": "{total, plural, one {# elan} other {# elan}}",
+    "filterLink": "Rayon, qiymət və qonaq sayına görə süz →",
+    "emptyTitle": "Bu bölmədə hələ elan yoxdur",
+    "emptyText": "Tezliklə yeni elanlar əlavə olunacaq. Digər kateqoriyalara da baxa bilərsiniz.",
+    "faqTitle": "Tez-tez verilən suallar",
+    "otherCategories": "Digər kateqoriyalar"
   }
 }

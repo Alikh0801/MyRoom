@@ -2,8 +2,9 @@ import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import { getBlogSlugs } from "@/lib/blog/content";
 import { hasUniqueLocaleContent } from "@/lib/i18n/localized-listing";
-import { getCategories, getSitemapListings } from "@/lib/queries/listings";
+import { getSitemapListings } from "@/lib/queries/listings";
 import { getAbsoluteUrl } from "@/lib/seo";
+import { CATEGORY_LANDINGS, landingHref } from "@/lib/seo/category-landings";
 
 const STATIC_PATHS = ["/", "/search", "/blog", "/about", "/terms", "/privacy"];
 
@@ -23,10 +24,7 @@ function buildAlternates(path: string) {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [categories, listings] = await Promise.all([
-    getCategories(),
-    getSitemapListings(),
-  ]);
+  const listings = await getSitemapListings();
 
   const now = new Date();
   const entries: MetadataRoute.Sitemap = [];
@@ -43,14 +41,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  for (const category of categories) {
-    const path = `/search?category=${encodeURIComponent(category.slug)}`;
+  // Kateqoriyalar üçün /search?category=... yox, açılış səhifələri təqdim
+  // olunur — axtarış ünvanları onlara canonical göstərir.
+  for (const landing of CATEGORY_LANDINGS) {
+    const path = landingHref(landing);
     for (const locale of routing.locales) {
       entries.push({
         url: getAbsoluteUrl(path, locale),
         lastModified: now,
         changeFrequency: "daily",
-        priority: 0.8,
+        priority: 0.9,
         alternates: buildAlternates(path),
       });
     }

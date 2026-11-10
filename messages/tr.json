@@ -587,5 +587,15 @@
     "metaTitle": "Hakkımızda",
     "title": "Hakkımızda",
     "metaDescription": "myroomaz.com, Azerbaycan'ın tüm bölgelerindeki günlük kiralama ilanlarını tek platformda birleştiriyor. Amacımız, sonuçlarımız ve yapay zekâ planlarımız."
+  },
+  "landing": {
+    "home": "Ana sayfa",
+    "breadcrumb": "Gezinme yolu",
+    "count": "{total, plural, one {# ilan} other {# ilan}}",
+    "filterLink": "Bölge, fiyat ve misafir sayısına göre filtrele →",
+    "emptyTitle": "Bu bölümde henüz ilan yok",
+    "emptyText": "Yakında yeni ilanlar eklenecek. Diğer kategorilere de göz atabilirsiniz.",
+    "faqTitle": "Sık sorulan sorular",
+    "otherCategories": "Diğer kategoriler"
   }
 }
